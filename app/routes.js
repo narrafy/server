@@ -5,7 +5,7 @@ module.exports = function(app){
     });
 
     app.get('/.well-known/acme-challenge/:content', function(req,res){
-        req.send('TCXuFCAVo1SX_m70K8spisymJqAXEd6k4EeJyQi0SsY.DqH5Yu5qS7LsaYrDHVTo6hbZgjtbea5MxucBs24Mxno');
+        res.send('TCXuFCAVo1SX_m70K8spisymJqAXEd6k4EeJyQi0SsY.DqH5Yu5qS7LsaYrDHVTo6hbZgjtbea5MxucBs24Mxno');
     });
 
     app.post('/subscribe', function(req, res){
