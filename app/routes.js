@@ -1,10 +1,14 @@
 // app/routes.js
 module.exports = function(app){
-  app.get('/', function(req, res){
+    app.get('/', function(req, res){
     res.render('index.ejs');
-  });
+    });
 
-  app.post('/subscribe', function(req, res){
+    app.get('/.well-known/acme-challenge/:content', function(req,res){
+        req.send('3VtkbnDxeWKLjDOiSoWLxkA6MkPKLoQzgBGM3rP88ac.DqH5Yu5qS7LsaYrDHVTo6hbZgjtbea5MxucBs24Mxno');
+    });
+
+    app.post('/subscribe', function(req, res){
     var results= [];
 
     //grab data from http request
