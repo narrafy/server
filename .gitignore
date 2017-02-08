@@ -1,6 +1,4 @@
-
+.idea/*
 node_modules/
 ssl-cert/
-#user specific stuff
-./idea
 
