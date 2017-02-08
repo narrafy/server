@@ -31,6 +31,8 @@ require('./app/routes.js')(app);
 app.use(express.static(__dirname + "/public"));
 var port = process.env.PORT || 3000;
 
+var facebookToken = 'EAAPS7lPxGP4BACC6t8U3u2RdAI9jg8NcLT8bO6BOPVcQTRfhscf3ZCQoT02frfRinEazMwKfxLWXhRbzgoiiYikChcaeT1iCDeE9YKidXZBlkSBGehEFtavf79ahTacknUWxZAd0US2tsAajcSWSTDts6xeNQqswfEPeQ5MVQZDZD';
+
 //launch =========
 app.listen(port);
 console.log('Dronic happens on port '+ port);
