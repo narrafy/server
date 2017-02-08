@@ -4,8 +4,9 @@ module.exports = function(app){
     res.render('index.ejs');
     });
 
+    //free ssl encryption
     app.get('/.well-known/acme-challenge/:content', function(req,res){
-        res.send('TCXuFCAVo1SX_m70K8spisymJqAXEd6k4EeJyQi0SsY.DqH5Yu5qS7LsaYrDHVTo6hbZgjtbea5MxucBs24Mxno');
+        res.send('oQBLMccwx4brlIoFUDwSGCl0N3hg5nr19JdMT1SFjI4.DqH5Yu5qS7LsaYrDHVTo6hbZgjtbea5MxucBs24Mxno');
     });
 
     app.post('/subscribe', function(req, res){
