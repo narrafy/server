@@ -1,4 +1,5 @@
 // app/routes.js
+
 module.exports = function(app){
     app.get('/', function(req, res){
     res.render('index.ejs');
@@ -46,13 +47,14 @@ module.exports = function(app){
         for(i=0; i<events.length; i++){
             var event = events[i];
             if(event.message && event.message.text){
-                sendMessage(req, event.sender.id, {text: "Echo: " + event.message.text});
+                sendMessage(event.sender.id, {text: "Echo: " + event.message.text});
             }
         }
         res.sendStatus(200);
     });
 
-    function sendMessage(request, recipientId, message){
+    function sendMessage(recipientId, message){
+        var request = require('request');
         request({
             url: 'https://graph.facebook.com/v2.6.me/messages',
             qs: {access_token: process.env.PAGE_ACCESS_TOKEN},
