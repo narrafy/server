@@ -1,4 +1,5 @@
 // app/routes.js
+var r = require('request');
 
 module.exports = function(app){
     app.get('/', function(req, res){
@@ -54,8 +55,7 @@ module.exports = function(app){
     });
 
     function sendMessage(recipientId, message){
-        var request = require('request');
-        request({
+        r({
             url: 'https://graph.facebook.com/v2.6.me/messages',
             qs: {access_token: process.env.PAGE_ACCESS_TOKEN},
             method: 'POST',
