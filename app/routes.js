@@ -47,9 +47,9 @@ module.exports = function(app){
        var events = req.body.entry[0].messaging;
         for(i=0; i<events.length; i++){
             var event = events[i];
-            if(event.message){
+            if(event.message &&event.message.text){
                 var word = event.message.text.split(' ');
-                if( word[0]==='kitten'){
+                if(word[0]==='kitten'){
                     kittenMessage(event.sender.id,event.message.text);
                 } else if(event.message && event.message.text){
                     sendMessage(event.sender.id, {text: "Echo: " + event.message.text});
