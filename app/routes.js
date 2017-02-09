@@ -63,7 +63,7 @@ module.exports = function(app){
                 recipient: {id: recipientId},
                 message: message
             }
-        }, function(error,response, body){
+        }, function(error,response){
             if(error){
                 console.log('Error sending message: ', error);
             }else if(response.body.error){
