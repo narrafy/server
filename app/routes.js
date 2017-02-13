@@ -62,7 +62,7 @@ module.exports = function (app) {
                    // sendMessage(event.sender.id, {text: event.message.text});
                     r("https://www.dronic.io/api/message",
                         function (request, response) {
-                            sendMessage(event.sender.id, "echo: "+ request);
+                            sendMessage(event.sender.id, "echo: "+ response);
                     });
                 }
             }
