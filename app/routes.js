@@ -59,11 +59,11 @@ module.exports = function (app) {
             var event = events[i];
             if (event.message && event.message.text) {
                 if (event.message && event.message.text) {
-                    sendMessage(event.sender.id, {text: event.message.text});
-                    //r("/api/message",
-                    //    function (error, response, body) {
-                    //        sendMessage(event.sender.id, body);
-                    //    });
+                   // sendMessage(event.sender.id, {text: event.message.text});
+                    r("/api/message",
+                        function (error, response, body) {
+                            sendMessage(event.sender.id, {text: body});
+                        });
                 }
             }
         }
