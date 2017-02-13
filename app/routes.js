@@ -61,8 +61,8 @@ module.exports = function (app) {
                 if (event.message && event.message.text) {
                    // sendMessage(event.sender.id, {text: event.message.text});
                     r("/api/message",
-                        function (error, response, body) {
-                            sendMessage(event.sender.id, "echo: "+ body);
+                        function (request, response) {
+                            sendMessage(event.sender.id, "echo: "+ request);
                     });
                 }
             }
