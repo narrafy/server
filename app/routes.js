@@ -62,14 +62,14 @@ module.exports = function(app){
             if(event.message &&event.message.text){
                  if(event.message && event.message.text){
                    var response = askWatson(req,res);
-                    sendMessage(event.sender.id,response.output.text[1]);
+                    sendMessage(event.sender.id, response.output.text);
                 }
             }
         }
         res.sendStatus(200);
     });
 
-    app.post( '/api/message', function(req, res){
+    app.post('/api/message', function(req, res){
         askWatson(req, res);
     });
 
@@ -171,7 +171,7 @@ module.exports = function(app){
     }
 
     // Create the service wrapper
-    var conversation = new Watson( {
+    var conversation = new Watson({
         // If unspecified here, the CONVERSATION_USERNAME and CONVERSATION_PASSWORD env properties will be checked
         // After that, the SDK will fall back to the bluemix-provided VCAP_SERVICES environment property
         username: process.env.CONVERSATION_USERNAME,
@@ -180,6 +180,4 @@ module.exports = function(app){
         version_date: '2016-09-20',
         version: 'v1'
     } );
-
-
 }
