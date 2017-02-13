@@ -62,8 +62,9 @@ module.exports = function (app) {
                    // sendMessage(event.sender.id, {text: event.message.text});
                     r("/api/message",
                         function (error, response, body) {
-                            sendMessage(event.sender.id, {text: body});
-                        });
+                            console.log(body.output.text);
+                            sendMessage(event.sender.id, {text: body.output.text});
+                    });
                 }
             }
         }
