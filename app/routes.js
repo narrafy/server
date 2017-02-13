@@ -70,7 +70,7 @@ module.exports = function(app){
     });
 
     app.post( '/api/message', function(req, res){
-        askWatson(req, res)
+        askWatson(req, res);
     });
 
     // Endpoint to be call from the client side
