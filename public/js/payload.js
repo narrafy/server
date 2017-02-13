@@ -31,7 +31,7 @@ var PayloadPanel = (function(){
     // full width (regardless of screen size)
     function togglePanel(event, element){
         var payloadColumn = document.querySelector(settings.selectors.payloadColumn);
-        if(element.classList.contains('full')){
+        if(element.classList.contains('full') || location.hostname !== 'localhost'){
             element.classList.remove('full');
             payloadColumn.classList.remove('full');
         }

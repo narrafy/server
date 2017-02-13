@@ -64,7 +64,7 @@ var Common = (function () {
             return element.fireEvent('on'+ event, evt);
         }
         //otherwise, dispatch for Firefox, Chrome + others
-        evt = document.createEvent('HTMLEvent');
+        evt = document.createEvent('HTMLEvents');
         evt.initEvent(event,true, true); // event type, bubbling, cancellable
         return !element.dispatchEvent(evt);
     }
