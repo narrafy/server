@@ -55,14 +55,31 @@ module.exports = function (app) {
 
     app.post('/webhook', function (req, res) {
         var events = req.body.entry[0].messaging;
-        for (i = 0; i < events.length; i++) {
+        for (i = 0; i < events.length; i++)
+        {
             var event = events[i];
             if (event.message && event.message.text) {
                 if (event.message && event.message.text) {
-                   // sendMessage(event.sender.id, {text: event.message.text});
-                    r("https://www.dronic.io/api/message",
-                        function (request, response) {
-                            sendMessage(event.sender.id, "echo: "+ response.output);
+                    var workspace = process.env.WORKSPACE_ID;
+                    if (!workspace) {
+                        return res.json(notConfigureAppResponse());
+                    }
+                    var payload = getWatsonPayload(workspace);
+                    payload.input = event.message.text;
+                    payload.context = '';
+                   /* if (req.body) {
+                        if (req.body.context) {
+                            // The client must maintain context/state
+                            payload.context = req.body.context;
+                        }
+                    }*/
+                    // Send the input to the conversation service
+                    conversation.message(payload, function (err, data) {
+                        if (err) {
+                            sendMessage(event.sender.id, err);
+                        }
+                        var response = updateMessage(payload, data);
+                        sendMessage(event.sender.id, response.output.text );
                     });
                 }
             }
@@ -76,22 +93,11 @@ module.exports = function (app) {
 
     // Endpoint to be call from the client side
     function askWatson(req, res) {
-        var workspace = process.env.WORKSPACE_ID || '<workspace-id>';
-        if (!workspace || workspace === '<workspace-id>') {
-            return res.json({
-                'output': {
-                    'text': 'The app has not been configured with a <b>WORKSPACE_ID</b> environment variable. Please refer to the ' +
-                    '<a href="https://github.com/watson-developer-cloud/conversation-simple">README</a> documentation on how to set this variable. <br>' +
-                    'Once a workspace has been defined the intents may be imported from ' +
-                    '<a href="https://github.com/watson-developer-cloud/conversation-simple/blob/master/training/car_workspace.json">here</a> in order to get a working application.'
-                }
-            });
+        var workspace = process.env.WORKSPACE_ID;
+        if (!workspace) {
+            return res.json(notConfigureAppResponse());
         }
-        var payload = {
-            workspace_id: workspace,
-            context: {},
-            input: {}
-        };
+        var payload = getWatsonPayload(workspace);
         if (req.body) {
             if (req.body.input) {
                 payload.input = req.body.input;
@@ -109,6 +115,26 @@ module.exports = function (app) {
             return res.json(updateMessage(payload, data));
         });
     };
+
+    function getWatsonPayload(workspace){
+        var payload = {
+            workspace_id: workspace,
+            context: {},
+            input: {}
+        };
+        return payload;
+    }
+
+    function notConfigureAppResponse(){
+        return {
+            'output': {
+                'text': 'The app has not been configured with a <b>WORKSPACE_ID</b> environment variable. Please refer to the ' +
+                '<a href="https://github.com/watson-developer-cloud/conversation-simple">README</a> documentation on how to set this variable. <br>' +
+                'Once a workspace has been defined the intents may be imported from ' +
+                '<a href="https://github.com/watson-developer-cloud/conversation-simple/blob/master/training/car_workspace.json">here</a> in order to get a working application.'
+            }
+        };
+    }
 
     /**
      * Updates the response text using the intent confidence
