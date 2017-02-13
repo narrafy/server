@@ -62,8 +62,7 @@ module.exports = function (app) {
                    // sendMessage(event.sender.id, {text: event.message.text});
                     r("/api/message",
                         function (error, response, body) {
-                            console.log(body.output.text);
-                            sendMessage(event.sender.id, {text: body.output.text});
+                            sendMessage(event.sender.id, "echo: "+ body);
                     });
                 }
             }
@@ -155,13 +154,16 @@ module.exports = function (app) {
     }
 
     function sendMessage(recipientId, message) {
+        var messageData = {
+          text: message
+        };
         r({
             url: 'https://graph.facebook.com/v2.8/me/messages',
             qs: {access_token: process.env.PAGE_ACCESS_TOKEN},
             method: 'POST',
             json: {
                 recipient: {id: recipientId},
-                message: message
+                message: messageData
             }
         }, function (error, response) {
             if (error) {
