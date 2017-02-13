@@ -62,7 +62,7 @@ module.exports = function(app){
             if(event.message &&event.message.text){
                  if(event.message && event.message.text){
                    var response = askWatson(req,res);
-                    sendMessage(event.sender.id,response.body.text);
+                    sendMessage(event.sender.id,response.output.text[1]);
                 }
             }
         }
