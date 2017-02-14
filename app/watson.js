@@ -5,6 +5,7 @@ const fbRequest = require('request');
 const MongoClient = require('mongodb').MongoClient;
 var db = null;
 
+
 // Create the service wrapper
 const conversation = new watson({
     // If unspecified here, the CONVERSATION_USERNAME and CONVERSATION_PASSWORD env properties will be checked
@@ -26,12 +27,6 @@ const getWatsonPayload = (workspace) => {
     return payload;
 };
 
-const connectToDb = (uri) => {
-    MongoClient.connect(uri, (err, database) => {
-        if (err) return console.log(err);
-        db = database;
-    });
-};
 
 var logs = null;
 
@@ -74,36 +69,39 @@ function askWatsonFb(recipientId, message) {
             text: message
         };
     }
-    connectToDb(process.env.MONGODB_URI);
-    var resultItem = null;
-    db.collection('payloads').find({"id": recipientId}).sort({"date": -1}).limit(1)
-        .toArray((err, result) => {
-            if (err) {
-                console.log(err);
-            }else if(result&& result.length>0){
+    MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
+        if (err) return console.log(err);
+        db = database;
+        var resultItem = null;
+        db.collection('payloads').find({"id": recipientId}).sort({"date": -1}).limit(1)
+            .toArray((err, result) => {
+                if (err) {
+                    console.log(err);
+                }else if(result&& result.length>0){
                     console.log(result[0]);
                     resultItem = result[0];
-            }
-            if (resultItem) {
-                payload.context = resultItem.context;
-            } else {
-                payload.context = {};
-            }
-            // Send the input to the conversation service
-            conversation.message(payload, (err, response) => {
-                if (err) {
-                    sendMessage(recipientId, err);
                 }
-                if (response && response.output) {
-                    if (response.output.text) {
-                        logPayload(recipientId, payload);
-                        sendMessage(recipientId, response.output.text[0]);
-                    }
+                if (resultItem) {
+                    payload.context = resultItem.context;
                 } else {
-                    sendMessage(recipientId, 'no reply from watson');
+                    payload.context = {};
                 }
+                // Send the input to the conversation service
+                conversation.message(payload, (err, response) => {
+                    if (err) {
+                        sendMessage(recipientId, err);
+                    }
+                    if (response && response.output) {
+                        if (response.output.text) {
+                            logPayload(recipientId, payload);
+                            sendMessage(recipientId, response.output.text[0]);
+                        }
+                    } else {
+                        sendMessage(recipientId, 'no reply from watson');
+                    }
+                });
             });
-        });
+    });
 }
 
 function notConfigureAppResponse() {
@@ -182,7 +180,6 @@ function sendMessage(recipientId, message) {
 }
 
 function logPayload(recipientId, payload) {
-    connectToDb(process.env.MONGODB_URI);
     var toStore = {
         id: recipientId,
         payload: payload,
@@ -195,21 +192,6 @@ function logPayload(recipientId, payload) {
         console.log('saved to database');
     });
 };
-
-//get the context of the most recent payload
-function popPayload(id) {
-    connectToDb(process.env.MONGODB_URI);
-    var resultItem = null;
-    db.collection('payloads').find({"id": id}).sort({"date": -1}).limit(1)
-        .toArray((err, result) => {
-            if (err) {
-                console.log(err);
-            }
-            console.log(result[0]);
-            resultItem = result[0];
-        });
-    return {resultItem: resultItem};
-}
 
 function readPayload(res) {
     connectToDb(process.env.MONGODB_URI);
