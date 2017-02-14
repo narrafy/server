@@ -115,6 +115,7 @@ module.exports = function (app) {
             }
             if(response && response.output){
                 if(response.output.text){
+                    console.log(response.output);
                     sendMessage(recipientId, response.output.text[0]);
                 }
             }else{
