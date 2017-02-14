@@ -14,7 +14,7 @@ module.exports = function (app) {
     });
     app.get('/chat', function (req, res) {
         res.render('chat.ejs');
-    })
+    });
 
     //free ssl encryption
     app.get('/.well-known/acme-challenge/:content', function (req, res) {
@@ -115,7 +115,6 @@ module.exports = function (app) {
             }
             if(response && response.output){
                 if(response.output.text){
-                    console.log(response.output);
                     sendMessage(recipientId, response.output.text[0]);
                 }
             }else{
