@@ -114,7 +114,7 @@ module.exports = function (app) {
                 sendMessage(recipientId, err);
             }
             if(response && response.output){
-                console.log(response.output.text);
+                console.log(response.output.text[0]);
                 sendMessage(recipientId, "it got till here");
             }else{
                 sendMessage(recipientId, 'no reply from watson');
