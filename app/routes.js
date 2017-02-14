@@ -104,7 +104,7 @@ module.exports = function (app) {
         var payload = getWatsonPayload(workspace);
         if(message){
             payload.input = {
-                text:message
+                text: message
             };
         }
         payload.context = {};
@@ -114,7 +114,7 @@ module.exports = function (app) {
                 sendMessage(recipientId, err);
             }
             if(response && response.output){
-                sendMessage(recipientId, response);
+                sendMessage(recipientId, response.output);
             }else{
                 sendMessage(recipientId, 'no reply from watson');
             }
