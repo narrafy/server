@@ -4,10 +4,6 @@ const watson = require('watson-developer-cloud/conversation/v1');
 const fbRequest = require('request');
 const MongoClient = require('mongodb').MongoClient;
 var db = null;
-MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
-    if (err) return console.log(err);
-    db = database;
-});
 
 // Create the service wrapper
 const conversation = new watson({
@@ -20,10 +16,26 @@ const conversation = new watson({
     version: 'v1'
 });
 
+
+const getWatsonPayload = (workspace) => {
+    var payload = {
+        workspace_id: workspace,
+        context: {},
+        input: {}
+    };
+    return payload;
+};
+
+const connectToDb = (uri) => {
+    MongoClient.connect(uri, (err, database) => {
+        if (err) return console.log(err);
+        db = database;
+    });
+};
+
 var logs = null;
 
-
-const askWatson = (req, res) => {
+function askWatson (req, res) {
     var workspace = process.env.WORKSPACE_ID;
     if (!workspace) {
         return res.json(notConfigureAppResponse());
@@ -43,13 +55,15 @@ const askWatson = (req, res) => {
         if (err) {
             return res.status(err.code || 500).json(err);
         }
-        logPayload('localhost', payload);
+        if(payload&&payload.input){
+            logPayload('localhost', payload);
+        }
         return res.json(updateMessage(payload, data));
     });
 }
 
 // Endpoint to be call from the client side
-const askWatsonFb = (recipientId, message) => {
+function askWatsonFb (recipientId, message) {
     var workspace = process.env.WORKSPACE_ID;
     if (!workspace) {
         return res.json(notConfigureAppResponse());
@@ -60,7 +74,13 @@ const askWatsonFb = (recipientId, message) => {
             text: message
         };
     }
-    payload.context = {};
+    var popPayload = popPayload(recipientId);
+    if(popPayload){
+        payload.context = popPayload.context;
+    }else{
+        payload.context = {};
+    }
+
     // Send the input to the conversation service
     conversation.message(payload, (err, response) => {
         if (err) {
@@ -77,16 +97,7 @@ const askWatsonFb = (recipientId, message) => {
     });
 }
 
-const getWatsonPayload = (workspace) => {
-    var payload = {
-        workspace_id: workspace,
-        context: {},
-        input: {}
-    };
-    return payload;
-}
-
-function notConfigureAppResponse(){
+function notConfigureAppResponse() {
     return {
         'output': {
             'text': 'The app has not been configured with a <b>WORKSPACE_ID</b> environment variable. Please refer to the ' +
@@ -103,7 +114,7 @@ function notConfigureAppResponse(){
  * @param  {Object} response The response from the Conversation service
  * @return {Object}          The response with the updated message
  */
-const updateMessage = (input, response) => {
+function updateMessage  (input, response) {
     var responseText = null;
     var id = null;
     if (!response.output) {
@@ -140,7 +151,7 @@ const updateMessage = (input, response) => {
     return response;
 }
 
-const sendMessage = (recipientId, message) => {
+function sendMessage  (recipientId, message) {
     var messageData = {
         text: message
     };
@@ -161,10 +172,12 @@ const sendMessage = (recipientId, message) => {
     });
 }
 
-const logPayload = (recipientId, payload) => {
+function logPayload (recipientId, payload) {
+    connectToDb(process.env.MONGODB_URI);
     var toStore = {
         id : recipientId,
-        payload: payload
+        payload: payload,
+        date: new Date()
     };
 
     db.collection('payloads').save(toStore, (err) => {
@@ -173,6 +186,21 @@ const logPayload = (recipientId, payload) => {
         console.log('saved to database');
     });
 };
+
+function readPayload(res){
+    connectToDb(process.env.MONGODB_URI);
+    db.collection('payloads').find({id: 'localhost'}).toArray((err, result) => {
+        if (err) return console.log(err)
+        // renders index.ejs
+        res.render('archive.ejs', {payloads: result})
+    });
+}
+
+//get the context of the most recent payload
+function popPayload(id){
+    connectToDb(process.env.MONGODB_URI);
+    db.collection('payloads').find({id: id}).sort({"date":-1}).limit(1);
+}
 
 module.exports = (app) => {
     app.post('/api/message', function (req, res) {
@@ -199,6 +227,10 @@ module.exports = (app) => {
             }
         }
         res.sendStatus(200);
+    });
+
+    app.get('/archive', (req, res) => {
+       readPayload(res);
     });
 }
 

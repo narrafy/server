@@ -10,10 +10,6 @@ module.exports =  (app) => {
         res.render('chat.ejs');
     });
 
-    app.get('/archive', (req,res) =>{
-
-    });
-
     //free ssl encryption
     app.get('/.well-known/acme-challenge/:content', (req, res) => {
         res.send(process.env.SSL_SECRET);
