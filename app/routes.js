@@ -78,8 +78,7 @@ module.exports = function (app) {
                         if (err) {
                             sendMessage(event.sender.id, err);
                         }
-                        var response = updateMessage(payload, data);
-                        sendMessage(event.sender.id, response.output.text );
+                        sendMessage(event.sender.id, data.output.text );
                     });
                 }
             }
