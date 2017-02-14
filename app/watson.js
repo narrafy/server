@@ -35,7 +35,7 @@ const connectToDb = (uri) => {
 
 var logs = null;
 
-function askWatson (req, res) {
+function askWatson(req, res) {
     var workspace = process.env.WORKSPACE_ID;
     if (!workspace) {
         return res.json(notConfigureAppResponse());
@@ -55,7 +55,7 @@ function askWatson (req, res) {
         if (err) {
             return res.status(err.code || 500).json(err);
         }
-        if(payload&&payload.input){
+        if (payload && payload.input) {
             logPayload('localhost', payload);
         }
         return res.json(updateMessage(payload, data));
@@ -63,38 +63,47 @@ function askWatson (req, res) {
 }
 
 // Endpoint to be call from the client side
-function askWatsonFb (recipientId, message) {
+function askWatsonFb(recipientId, message) {
     var workspace = process.env.WORKSPACE_ID;
     if (!workspace) {
         return res.json(notConfigureAppResponse());
     }
     var payload = getWatsonPayload(workspace);
-    if(message){
+    if (message) {
         payload.input = {
             text: message
         };
     }
-    var popPayload = popPayload(recipientId);
-    if(popPayload){
-        payload.context = popPayload.context;
-    }else{
-        payload.context = {};
-    }
-
-    // Send the input to the conversation service
-    conversation.message(payload, (err, response) => {
-        if (err) {
-            sendMessage(recipientId, err);
-        }
-        if(response && response.output){
-            if(response.output.text){
-                logPayload(recipientId, payload);
-                sendMessage(recipientId, response.output.text[0]);
+    connectToDb(process.env.MONGODB_URI);
+    var resultItem = null;
+    db.collection('payloads').find({"id": recipientId}).sort({"date": -1}).limit(1)
+        .toArray((err, result) => {
+            if (err) {
+                console.log(err);
+            }else if(result&& result.length>0){
+                    console.log(result[0]);
+                    resultItem = result[0];
             }
-        }else{
-            sendMessage(recipientId, 'no reply from watson');
-        }
-    });
+            if (resultItem) {
+                payload.context = resultItem.context;
+            } else {
+                payload.context = {};
+            }
+            // Send the input to the conversation service
+            conversation.message(payload, (err, response) => {
+                if (err) {
+                    sendMessage(recipientId, err);
+                }
+                if (response && response.output) {
+                    if (response.output.text) {
+                        logPayload(recipientId, payload);
+                        sendMessage(recipientId, response.output.text[0]);
+                    }
+                } else {
+                    sendMessage(recipientId, 'no reply from watson');
+                }
+            });
+        });
 }
 
 function notConfigureAppResponse() {
@@ -114,7 +123,7 @@ function notConfigureAppResponse() {
  * @param  {Object} response The response from the Conversation service
  * @return {Object}          The response with the updated message
  */
-function updateMessage  (input, response) {
+function updateMessage(input, response) {
     var responseText = null;
     var id = null;
     if (!response.output) {
@@ -151,7 +160,7 @@ function updateMessage  (input, response) {
     return response;
 }
 
-function sendMessage  (recipientId, message) {
+function sendMessage(recipientId, message) {
     var messageData = {
         text: message
     };
@@ -172,10 +181,10 @@ function sendMessage  (recipientId, message) {
     });
 }
 
-function logPayload (recipientId, payload) {
+function logPayload(recipientId, payload) {
     connectToDb(process.env.MONGODB_URI);
     var toStore = {
-        id : recipientId,
+        id: recipientId,
         payload: payload,
         date: new Date()
     };
@@ -188,21 +197,21 @@ function logPayload (recipientId, payload) {
 };
 
 //get the context of the most recent payload
-function popPayload (id) {
+function popPayload(id) {
     connectToDb(process.env.MONGODB_URI);
     var resultItem = null;
-    db.collection('payloads').find({"id": id}).sort({"date":-1}).limit(1)
-        .toArray((err,result) => {
-            if(err){
+    db.collection('payloads').find({"id": id}).sort({"date": -1}).limit(1)
+        .toArray((err, result) => {
+            if (err) {
                 console.log(err);
             }
             console.log(result[0]);
             resultItem = result[0];
         });
-    return {resultItem:resultItem};
+    return {resultItem: resultItem};
 }
 
-function readPayload(res){
+function readPayload(res) {
     connectToDb(process.env.MONGODB_URI);
     db.collection('payloads').find({id: 'localhost'}).toArray((err, result) => {
         if (err) return console.log(err)
@@ -228,8 +237,7 @@ module.exports = (app) => {
 
     app.post('/webhook', (req, res) => {
         var events = req.body.entry[0].messaging;
-        for (i = 0; i < events.length; i++)
-        {
+        for (i = 0; i < events.length; i++) {
             var event = events[i];
             var sender = event.sender.id;
             if (event.message && event.message.text) {
@@ -240,7 +248,7 @@ module.exports = (app) => {
     });
 
     app.get('/archive', (req, res) => {
-       readPayload(res);
+        readPayload(res);
     });
 }
 
