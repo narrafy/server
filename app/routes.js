@@ -102,9 +102,13 @@ module.exports = function (app) {
             return res.json(notConfigureAppResponse());
         }
         var payload = getWatsonPayload(workspace);
-        if(message)
-            payload.input = message;
-        var context = '';
+        if(message){
+            payload.input = {
+                text:text
+            };
+        }
+            
+        var context = {};
         if(context)
             payload.context = context;
         // Send the input to the conversation service
