@@ -112,9 +112,9 @@ module.exports = function (app) {
             if (err) {
                 sendMessage(recipientId, err);
             }
-            if(response.output){
+            if(response && response.output){
                 sendMessage(recipientId, response);
-            }else {
+            }else{
                 sendMessage(recipientId, 'no reply from watson');
             }
         });
