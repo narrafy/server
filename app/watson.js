@@ -50,7 +50,7 @@ function askWatson(req, res) {
         if (err) {
             return res.status(err.code || 500).json(err);
         }
-        if (payload && payload.input) {
+        if (payload && payload.input && payload.input.text) {
             logPayload('localhost', payload);
         }
         return res.json(updateMessage(payload, data));
@@ -78,11 +78,11 @@ function askWatsonFb(recipientId, message) {
                 if (err) {
                     console.log(err);
                 }else if(result&& result.length>0){
-                    console.log(result[0]);
                     resultItem = result[0];
                 }
                 if (resultItem) {
                     payload.context = resultItem.context;
+                    console.log('conversation context' + payload.context);
                 } else {
                     payload.context = {};
                 }
@@ -185,20 +185,26 @@ function logPayload(recipientId, payload) {
         payload: payload,
         date: new Date()
     };
-
-    db.collection('payloads').save(toStore, (err) => {
-        if (err)
-            return console.log(err);
-        console.log('saved to database');
+    MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
+        database.collection('payloads').save(toStore, (err) => {
+            if (err)
+                return console.log(err);
+            console.log('saved to database');
+        });
     });
 };
 
 function readPayload(res) {
-    connectToDb(process.env.MONGODB_URI);
-    db.collection('payloads').find({id: 'localhost'}).toArray((err, result) => {
-        if (err) return console.log(err)
-        // renders index.ejs
-        res.render('archive.ejs', {payloads: result});
+    MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
+        if (err) return console.log(err);
+         database.collection('payloads')
+             .find({id: 'localhost'})
+             .toArray((err, result) => {
+             if (err){
+                 return console.log(err);
+             }
+             res.render('archive.ejs', {payloads: result});
+         });
     });
 }
 
