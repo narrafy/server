@@ -58,29 +58,9 @@ module.exports = function (app) {
         for (i = 0; i < events.length; i++)
         {
             var event = events[i];
+            var sender = event.sender.id;
             if (event.message && event.message.text) {
-                if (event.message && event.message.text) {
-                    var workspace = process.env.WORKSPACE_ID;
-                    if (!workspace) {
-                        return res.json(notConfigureAppResponse());
-                    }
-                    var payload = getWatsonPayload(workspace);
-                    payload.input = event.message.text;
-                    payload.context = '';
-                   /* if (req.body) {
-                        if (req.body.context) {
-                            // The client must maintain context/state
-                            payload.context = req.body.context;
-                        }
-                    }*/
-                    // Send the input to the conversation service
-                    conversation.message(payload, function (err, data) {
-                        if (err) {
-                            sendMessage(event.sender.id, err);
-                        }
-                        sendMessage(event.sender.id, data.output.text );
-                    });
-                }
+                askWatsonFb(sender, event.message.text);
             }
         }
         res.sendStatus(200);
@@ -107,13 +87,38 @@ module.exports = function (app) {
             }
         }
         // Send the input to the conversation service
-        conversation.message(payload, function (err, data) {
+        conversation.message(payload, function(err, data){
             if (err) {
                 return res.status(err.code || 500).json(err);
             }
             return res.json(updateMessage(payload, data));
         });
-    };
+    }
+
+    // Endpoint to be call from the client side
+    function askWatsonFb(recipientId, message) {
+        var workspace = process.env.WORKSPACE_ID;
+        if (!workspace) {
+            return res.json(notConfigureAppResponse());
+        }
+        var payload = getWatsonPayload(workspace);
+        if(message)
+            payload.input = message;
+        var context = '';
+        if(context)
+            payload.context = context;
+        // Send the input to the conversation service
+        conversation.message(payload, function(err, response){
+            if (err) {
+                sendMessage(recipientId, err);
+            }
+            if(response.output){
+                sendMessage(recipientId, response);
+            }else {
+                sendMessage(recipientId, 'no reply from watson');
+            }
+        });
+    }
 
     function getWatsonPayload(workspace){
         var payload = {
