@@ -82,7 +82,7 @@ function askWatsonFb(recipientId, message) {
                 }
                 if (resultItem) {
                     payload.context = resultItem.context;
-                    console.log('conversation context' + payload.context);
+                    console.log('conversation context' + resultItem);
                 } else {
                     payload.context = {};
                 }
