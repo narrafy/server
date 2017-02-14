@@ -104,13 +104,10 @@ module.exports = function (app) {
         var payload = getWatsonPayload(workspace);
         if(message){
             payload.input = {
-                text:text
+                text:message
             };
         }
-            
-        var context = {};
-        if(context)
-            payload.context = context;
+        payload.context = {};
         // Send the input to the conversation service
         conversation.message(payload, function(err, response){
             if (err) {
