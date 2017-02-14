@@ -187,20 +187,30 @@ function logPayload (recipientId, payload) {
     });
 };
 
+//get the context of the most recent payload
+function popPayload (id) {
+    connectToDb(process.env.MONGODB_URI);
+    var resultItem = null;
+    db.collection('payloads').find({"id": id}).sort({"date":-1}).limit(1)
+        .toArray((err,result) => {
+            if(err){
+                console.log(err);
+            }
+            console.log(result[0]);
+            resultItem = result[0];
+        });
+    return {resultItem:resultItem};
+}
+
 function readPayload(res){
     connectToDb(process.env.MONGODB_URI);
     db.collection('payloads').find({id: 'localhost'}).toArray((err, result) => {
         if (err) return console.log(err)
         // renders index.ejs
-        res.render('archive.ejs', {payloads: result})
+        res.render('archive.ejs', {payloads: result});
     });
 }
 
-//get the context of the most recent payload
-function popPayload(id){
-    connectToDb(process.env.MONGODB_URI);
-    db.collection('payloads').find({id: id}).sort({"date":-1}).limit(1);
-}
 
 module.exports = (app) => {
     app.post('/api/message', function (req, res) {

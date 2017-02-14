@@ -8,15 +8,18 @@
 
 <section id="chatbox">
     <div class="container">
-        <ul class="payloads">
-            <% for(var i=0; i<payloads.length; i++) {%>
-            <li class="quote">
+        <div class="col-md-6">
+            <span> latest inserted messages</span>
+            <ul class="payloads">
+                <% for(var i=0; i<payloads.length; i++) {%>
+                <li class="quote">
                 <span> <%if (payloads[i].payload.input && payloads[i].payload.input.text) { %>
                     <%= payloads[i].payload.input.text %>
                     <% } %> </span>
-            </li>
-            <% } %>
-        </ul>
+                </li>
+                <% } %>
+            </ul>
+        </div>
     </div>
 </section>
 </body>
