@@ -51,7 +51,7 @@ function askWatson(req, res) {
             return res.status(err.code || 500).json(err);
         }
         if (payload && payload.input && payload.input.text) {
-            logPayload('localhost', payload);
+            logPayload(req.headers.host, data);
         }
         return res.json(updateMessage(payload, data));
     });
@@ -72,29 +72,29 @@ function askWatsonFb(recipientId, message) {
     MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
         if (err) return console.log(err);
         db = database;
-        var resultItem = null;
+        var loggedPayload = null;
         db.collection('payloads').find({"id": recipientId}).sort({"date": -1}).limit(1)
             .toArray((err, result) => {
                 if (err) {
                     console.log(err);
                 }else if(result&& result.length>0){
-                    resultItem = result[0];
+                    loggedPayload = result[0];
                 }
-                if (resultItem) {
-                    payload.context = resultItem.context;
-                    console.log('conversation context' + resultItem);
+                if (loggedPayload && loggedPayload.payload.context) {
+                    payload.context = loggedPayload.payload.context;
+                    console.log('conversation context' +  payload.context);
                 } else {
                     payload.context = {};
                 }
                 // Send the input to the conversation service
-                conversation.message(payload, (err, response) => {
+                conversation.message(payload, (err, data) => {
                     if (err) {
                         sendMessage(recipientId, err);
                     }
-                    if (response && response.output) {
-                        if (response.output.text) {
-                            logPayload(recipientId, payload);
-                            sendMessage(recipientId, response.output.text[0]);
+                    if (data && data.output) {
+                        if (data.output.text) {
+                            logPayload(recipientId, data);
+                            sendMessage(recipientId, data.output.text[0]);
                         }
                     } else {
                         sendMessage(recipientId, 'no reply from watson');
@@ -194,11 +194,11 @@ function logPayload(recipientId, payload) {
     });
 };
 
-function readPayload(res) {
+function readPayload(req, res) {
     MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
         if (err) return console.log(err);
          database.collection('payloads')
-             .find({id: 'localhost'})
+             .find({id: req.headers.host})
              .toArray((err, result) => {
              if (err){
                  return console.log(err);
@@ -207,7 +207,6 @@ function readPayload(res) {
          });
     });
 }
-
 
 module.exports = (app) => {
     app.post('/api/message', function (req, res) {
@@ -236,7 +235,7 @@ module.exports = (app) => {
     });
 
     app.get('/archive', (req, res) => {
-        readPayload(res);
+        readPayload(req,res);
     });
 }
 
