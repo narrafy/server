@@ -93,7 +93,13 @@ function askWatsonFb(recipientId, message) {
                     if (data && data.output) {
                         if (data.output.text) {
                             logPayload(recipientId, data);
-                            sendMessage(recipientId, data.output.text[0]);
+                            //watson have an answer
+                            if(data.output.text[0]){
+                                sendMessage(recipientId, data.output.text[0]);
+                            }else if(data.output.text.length>=1)
+                            {
+                                sendMessage(recipientId, data.output.text[1]);
+                            }
                         }
                     } else {
                         sendMessage(recipientId, 'Dronic is busy. Probably drinking ' +

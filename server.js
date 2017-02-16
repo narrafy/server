@@ -32,8 +32,6 @@ require('./app/watson.js')(app);
 app.use(express.static(__dirname + "/public"));
 var port = process.env.PORT || 3000;
 
-var facebookToken = 'EAAPS7lPxGP4BAGoOfhkc9FVCPZCx695ygh3HekZACFRhNnZCqM3KtL2yNwpQnnsGLHbRJDQzZCdJfjnaEOwD3c5gOcQZB7yOgQcZCzbZBAVHElNqHkbEC0MdZC1PlcEtBKLfxwtLmnDZC38dDEZAZAKOL2DHre1KnI3X7XlFwoTYlAEwgZDZD';
-
 //launch =========
 app.listen(port);
 console.log('Dronic happens on port '+ port);
