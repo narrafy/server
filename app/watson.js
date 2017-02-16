@@ -82,7 +82,6 @@ function askWatsonFb(recipientId, message) {
                 }
                 if (loggedPayload && loggedPayload.payload.context) {
                     payload.context = loggedPayload.payload.context;
-                    console.log('conversation context' +  payload.context);
                 } else {
                     payload.context = {};
                 }
@@ -97,7 +96,8 @@ function askWatsonFb(recipientId, message) {
                             sendMessage(recipientId, data.output.text[0]);
                         }
                     } else {
-                        sendMessage(recipientId, 'no reply from watson');
+                        sendMessage(recipientId, 'Dronic is busy. Probably drinking ' +
+                            'or something. Joking. Seriously, please write me later!');
                     }
                 });
             });
