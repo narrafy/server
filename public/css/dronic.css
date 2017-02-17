@@ -80,7 +80,7 @@ div {
   margin: 0.75rem;
   overflow-y: auto;
   overflow-x: hidden;
-  height: calc(100% - 4rem);
+  height: calc(100% - 10rem);
 }
 
 .message-inner {
@@ -171,6 +171,9 @@ div {
 }
 
 .from-watson p {
+  font-size: 18px;
+  line-height: 1.5;
+  margin-bottom: 20px;
   margin: 0.3125rem;
   padding: 0 1.25rem;
 }

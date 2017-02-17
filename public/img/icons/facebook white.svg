@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="Landing" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.5">
+        <g id="Desktop" transform="translate(-497.000000, -3547.000000)" fill="#FFFFFF">
+            <g id="Footer" transform="translate(0.000000, 3460.000000)">
+                <g id="Social-icons" transform="translate(447.000000, 87.000000)">
+                    <g id="facebook-white" transform="translate(50.000000, 0.000000)">
+                        <g id="Facebook_White">
+                            <g id="Page-1">
+                                <g id="Social_icons">
+                                    <g id="White">
+                                        <g id="Facebook">
+                                            <path d="M0,14.7540984 C0,6.60563444 6.71572835,0 15,0 C23.2842717,0 30,6.60563444 30,14.7540984 C30,22.9025623 23.2842717,29.5081967 15,29.5081967 C6.71572835,29.5081967 0,22.9025623 0,14.7540984 Z M16.063472,22.9373832 L16.063472,14.9103748 L18.3162074,14.9103748 L18.6147435,12.1442232 L16.063472,12.1442232 L16.0672993,10.7597377 C16.0672993,10.0382828 16.1369897,9.65171075 17.1904776,9.65171075 L18.5987961,9.65171075 L18.5987961,6.8852459 L16.3457417,6.8852459 C13.639461,6.8852459 12.6869203,8.22712702 12.6869203,10.4837491 L12.6869203,12.1445365 L11,12.1445365 L11,14.910688 L12.6869203,14.910688 L12.6869203,22.9373832 L16.063472,22.9373832 Z" id="Combined-Shape"></path>
+                                        </g>
+                                    </g>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

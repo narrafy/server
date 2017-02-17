@@ -1,7 +1,7 @@
 <html>
 <head>
     <% include ./partials/head %>
-    <link href="/css/app.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/dronic.css">
 </head>
 <body id="page-top" data-gr-c-s-loaded="true">
 <% include ./partials/navbar %>
@@ -9,10 +9,10 @@
 <section id="chatbox">
     <div class="container">
         <div class="row" style="padding-top: 50px">
-            <div id="view-change-button" class="button" onclick="PayloadPanel.togglePanel(event, this)">
+           <!-- <div id="view-change-button" class="button" onclick="PayloadPanel.togglePanel(event, this)">
                 <img class="option full" src="../img/Chat Button.png">
                 <img class="option not-full" src="../img/Code Button.png">
-            </div>
+            </div>-->
             <div id="contentParent" class="responsive-columns-wrapper">
                 <div id="chat-column-holder" class="responsive-column content-column">
                     <div class="chat-column">
@@ -24,7 +24,7 @@
                         </label>
                     </div>
                 </div>
-                <div id="payload-column" class="fixed-column content-column">
+                <div style="display: none" id="payload-column" class="fixed-column content-column">
                     <div id="payload-initial-message">
                         Type something to see the output
                     </div>
