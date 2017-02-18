@@ -1,9 +1,12 @@
+'use strict';
+
 require('dotenv').config({silent: true});
 
 const watson = require('watson-developer-cloud/conversation/v1');
 const fbRequest = require('request');
 const MongoClient = require('mongodb').MongoClient;
 var db = null;
+var sendmail = require('sendmail')({silent:true});
 
 
 // Create the service wrapper
@@ -200,6 +203,34 @@ function logPayload(recipientId, payload) {
     });
 };
 
+function subscribe(email){
+    var data = {email: email};
+    MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
+       database.collection('users').save(data, (err)=>{
+           if(err)
+               return console.log(err);
+           console.log('user: ' + email+ ' was added to the collection.');
+       })
+    });
+}
+
+
+
+function notifyAdmin(email){
+
+
+    let admin = process.env.ADMIN;
+    sendmail({
+        from: 'contact@dronic.io',
+        to: admin,
+        subject: 'test sendmail',
+        html: 'Dronic.io have a new subscriber ' + email,
+    }, function(err, reply) {
+        console.log(err && err.stack);
+        console.dir(reply);
+    });
+}
+
 function readPayload(req, res) {
     MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
         if (err) return console.log(err);
@@ -217,6 +248,13 @@ function readPayload(req, res) {
 module.exports = (app) => {
     app.post('/api/message', function (req, res) {
         askWatson(req, res);
+    });
+
+    app.post('/api/subscribe',  (req, res) => {
+        var email =  req.body.email;
+        notifyAdmin(email);
+        subscribe(email);
+        res.sendStatus(200);
     });
 
     app.get('/webhook', function (req, res) {
