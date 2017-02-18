@@ -46,6 +46,7 @@
     "passport-local": "1.0.0",
     "pg": "^4.5.6",
     "request": "^2.79.0",
+    "sendgrid": "^4.7.1",
     "watson-developer-cloud": "^2.18.0"
   },
   "devDependencies": {

@@ -5,6 +5,9 @@ require('dotenv').config({silent: true});
 const watson = require('watson-developer-cloud/conversation/v1');
 const fbRequest = require('request');
 const MongoClient = require('mongodb').MongoClient;
+const SendGrid = require('sendgrid')(process.env.SENDGRID_API_KEY);
+const MailHelper = require('sendgrid').mail;
+
 
 // Create the service wrapper
 const conversation = new watson({
@@ -205,17 +208,31 @@ function subscribe(email){
        database.collection('users').save(data, (err)=>{
            if(err)
                return console.log(err);
-           console.log('user: ' + email+ ' was added to the collection.');
+           notifyAdmin(email);
        })
     });
 }
 
-
-
 function notifyAdmin(email) {
-    let admin = process.env.ADMIN;
-    
+    var fromEmail = new MailHelper.Email('noreply@dronic.io');
+    var toEmail = new MailHelper.Email('contact@dronic.io');
+    var subject = 'A new user subscribed';
+    var content = new MailHelper.Content('text/plain', 'User: ' + email + ' decided that dronic is awesome');
+    var mail = new MailHelper.Mail(fromEmail, subject, toEmail, content);
+    var request = SendGrid.emptyRequest({
+        method: 'POST',
+        path: '/v3/mail/send',
+        body: mail.toJSON(),
+    });
+    SendGrid.API(request,(error, response) => {
+        if(error)
+            return console.log(error);
+        console.log(response.statusCode);
+        console.log(response.body);
+        console.log(response.headers);
+    });
 }
+
 function readPayload(req, res) {
     MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
         if (err) return console.log(err);
@@ -237,7 +254,6 @@ module.exports = (app) => {
 
     app.post('/api/subscribe',  (req, res) => {
         var email =  req.body.email;
-        notifyAdmin(email);
         subscribe(email);
         res.sendStatus(200);
     });
