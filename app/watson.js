@@ -5,9 +5,6 @@ require('dotenv').config({silent: true});
 const watson = require('watson-developer-cloud/conversation/v1');
 const fbRequest = require('request');
 const MongoClient = require('mongodb').MongoClient;
-var db = null;
-var sendmail = require('sendmail')({silent:true});
-
 
 // Create the service wrapper
 const conversation = new watson({
@@ -74,9 +71,8 @@ function askWatsonFb(recipientId, message) {
     }
     MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
         if (err) return console.log(err);
-        db = database;
         var loggedPayload = null;
-        db.collection('payloads').find({"id": recipientId}).sort({"date": -1}).limit(1)
+        database.collection('payloads').find({"id": recipientId}).sort({"date": -1}).limit(1)
             .toArray((err, result) => {
                 if (err) {
                     console.log(err);
@@ -216,21 +212,10 @@ function subscribe(email){
 
 
 
-function notifyAdmin(email){
-
-
+function notifyAdmin(email) {
     let admin = process.env.ADMIN;
-    sendmail({
-        from: 'contact@dronic.io',
-        to: admin,
-        subject: 'test sendmail',
-        html: 'Dronic.io have a new subscriber ' + email,
-    }, function(err, reply) {
-        console.log(err && err.stack);
-        console.dir(reply);
-    });
+    
 }
-
 function readPayload(req, res) {
     MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
         if (err) return console.log(err);
