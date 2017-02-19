@@ -268,9 +268,9 @@ module.exports = (app) => {
 
     app.post('/webhook', (req, res) => {
         var events = req.body.entry[0].messaging;
-        for (let i = 0; i < events.length; i++) {
-            let event = events[i];
-            let sender = event.sender.id;
+        for (var i = 0; i < events.length; i++) {
+            var event = events[i];
+            var sender = event.sender.id;
             if (event.message && event.message.text) {
                 askWatsonFb(sender, event.message.text);
             }
