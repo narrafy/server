@@ -7,7 +7,6 @@ const MongoClient = require('mongodb').MongoClient;
 const SendGrid = require('sendgrid')(process.env.SENDGRID_API_KEY);
 const MailHelper = require('sendgrid').mail;
 
-
 // Create the service wrapper
 const conversation = new watson({
     // If unspecified here, the CONVERSATION_USERNAME and CONVERSATION_PASSWORD env properties will be checked
@@ -19,7 +18,6 @@ const conversation = new watson({
     version: 'v1'
 });
 
-
 const getWatsonPayload = (workspace) => {
     var payload = {
         workspace_id: workspace,
@@ -29,10 +27,8 @@ const getWatsonPayload = (workspace) => {
     return payload;
 };
 
-
-var logs = null;
-
 function askWatson(req, res) {
+    var sessionId = req.sessionID;
     var workspace = process.env.WORKSPACE_ID;
     if (!workspace) {
         return res.json(notConfigureAppResponse());
@@ -52,10 +48,7 @@ function askWatson(req, res) {
         if (err) {
             return res.status(err.code || 500).json(err);
         }
-        if (payload && payload.input && payload.input.text) {
-            logPayload(req.headers.host, data);
-        }
-        return res.json(updateMessage(payload, data));
+        return res.json(updateMessage(sessionId, payload, data));
     });
 }
 
@@ -93,7 +86,7 @@ function askWatsonFb(recipientId, message) {
                     }
                     if (data && data.output) {
                         if (data.output.text) {
-                            logPayload(recipientId, data);
+                            logConversation(recipientId, payload, data);
                             //watson have an answer
                             if(data.output.text[0]){
                                 sendMessage(recipientId, data.output.text[0]);
@@ -128,17 +121,12 @@ function notConfigureAppResponse() {
  * @param  {Object} response The response from the Conversation service
  * @return {Object}          The response with the updated message
  */
-function updateMessage(input, response) {
+function updateMessage(sessionId, payload, response) {
     var responseText = null;
-    var id = null;
     if (!response.output) {
         response.output = {};
-    } else {
-        if (logs) {
-            // If the logs db is set, then we want to record all input and responses
-            id = uuid.v4();
-            logs.insert({'_id': id, 'request': input, 'response': response, 'time': new Date()});
-        }
+    } else if(MongoClient) {
+        logConversation(sessionId,payload, response);
         return response;
     }
     if (response.intents && response.intents[0]) {
@@ -151,16 +139,15 @@ function updateMessage(input, response) {
         if (intent.confidence >= 0.75) {
             responseText = 'I understood your intent was ' + intent.intent;
         } else if (intent.confidence >= 0.5) {
-            responseText = 'I think your intent was ' + intent.intent;
+            responseText = 'Im not 100% sure, but I think your intent was ' + intent.intent;
         } else {
-            responseText = 'I did not understand your intent';
+            responseText = 'I didn t get that. Perhaps I need more training. And sometimes only a human can help';
         }
     }
     response.output.text = responseText;
-    if (logs) {
-        // If the logs db is set, then we want to record all input and responses
-        id = uuid.v4();
-        logs.insert({'_id': id, 'request': input, 'response': response, 'time': new Date()});
+
+    if (MongoClient) {
+        logConversation(sessionId,payload,response);
     }
     return response;
 }
@@ -186,14 +173,15 @@ function sendMessage(recipientId, message) {
     });
 }
 
-function logPayload(recipientId, payload) {
+var logConversation = (sessionId, payload, response) => {
     var toStore = {
-        id: recipientId,
-        payload: payload,
+        id: sessionId,
+        request: payload,
+        response: response,
         date: new Date()
     };
     MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
-        database.collection('payloads').save(toStore, (err) => {
+        database.collection('conversations').save(toStore, (err) => {
             if (err)
                 return console.log(err);
             console.log('saved to database');
@@ -201,22 +189,22 @@ function logPayload(recipientId, payload) {
     });
 };
 
-function subscribe(email){
-    var data = {email: email};
+function subscribe(email, message){
+    var data = {email: email, message:message};
     MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
        database.collection('users').save(data, (err)=>{
            if(err)
                return console.log(err);
-           notifyAdmin(email);
+           notifyAdmin(email, message);
        })
     });
 }
 
-function notifyAdmin(email) {
+function notifyAdmin(email, message) {
     var fromEmail = new MailHelper.Email('noreply@dronic.io');
     var toEmail = new MailHelper.Email('contact@dronic.io');
     var subject = 'A new user subscribed';
-    var content = new MailHelper.Content('text/plain', 'User: ' + email + ' decided that dronic is awesome');
+    var content = new MailHelper.Content('text/plain', 'User: ' + email + '. Said: '+ message);
     var mail = new MailHelper.Mail(fromEmail, subject, toEmail, content);
     var request = SendGrid.emptyRequest({
         method: 'POST',
@@ -253,7 +241,8 @@ module.exports = (app) => {
 
     app.post('/api/subscribe',  (req, res) => {
         var email =  req.body.email;
-        subscribe(email);
+        var message = req.body.message;
+        subscribe(email, message);
         res.sendStatus(200);
     });
 

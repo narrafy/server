@@ -271,6 +271,30 @@ body {
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.50);
 }
 
+#contact textarea {
+  margin-bottom: 40px;
+  width: 100%;
+  height: 250px;
+  font-size: 18px;
+  color: #9b9b9b;
+  letter-spacing: 0.99px;
+  padding: 20px;
+  font-weight: 200;
+  background: #ffffff;
+  border: 1px solid #ffffff;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.50);
+}
+
+.slider {
+  overflow-y: hidden;
+  max-height: 500px; /* approximate max height */
+
+  transition-property: all;
+  transition-duration: .5s;
+  transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+}
+
+
 #contact button {
   width: 260px;
   height: 50px;
