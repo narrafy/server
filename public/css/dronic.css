@@ -31,13 +31,14 @@
   text-align: left;
   max-width: 25rem;
   min-width: 9.375rem;
+  min-height: 25rem;
 }
 
 #scrollingChat {
   margin: 0.75rem;
   overflow-y: auto;
   overflow-x: hidden;
-  /* height: calc(100% - rem);*/
+  height: calc(100% - 10rem);
 }
 
 .message-inner {
