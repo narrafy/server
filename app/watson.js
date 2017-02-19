@@ -96,7 +96,7 @@ function askWatsonFb(recipientId, message) {
                             }
                         }
                     } else {
-                        sendMessage(recipientId, 'Dronic is busy. Probably drinking ' +
+                        sendMessage(recipientId, 'Dronic probably is busy training. or drinking ' +
                             'or something. Joking. Seriously, please write me later!');
                     }
                 });
@@ -145,7 +145,6 @@ function updateMessage(sessionId, payload, response) {
         }
     }
     response.output.text = responseText;
-
     if (MongoClient) {
         logConversation(sessionId,payload,response);
     }
