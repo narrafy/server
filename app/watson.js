@@ -67,15 +67,15 @@ function askWatsonFb(recipientId, message) {
     MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
         if (err) return console.log(err);
         var loggedPayload = null;
-        database.collection('payloads').find({"id": recipientId}).sort({"date": -1}).limit(1)
+        database.collection('conversations').find({"id": recipientId}).sort({"date": -1}).limit(1)
             .toArray((err, result) => {
                 if (err) {
                     console.log(err);
                 }else if(result&& result.length>0){
                     loggedPayload = result[0];
                 }
-                if (loggedPayload && loggedPayload.payload.context) {
-                    payload.context = loggedPayload.payload.context;
+                if (loggedPayload && loggedPayload.request.payload.context) {
+                    payload.context = loggedPayload.request.payload.context;
                 } else {
                     payload.context = {};
                 }
@@ -222,7 +222,7 @@ function notifyAdmin(email, message) {
 function readPayload(req, res) {
     MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
         if (err) return console.log(err);
-         database.collection('payloads')
+         database.collection('conversations')
              .find({id: req.headers.host})
              .toArray((err, result) => {
              if (err){
