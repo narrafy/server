@@ -75,8 +75,8 @@ function askWatsonFb(recipientId, message) {
                 }else if(result&& result.length>0){
                     loggedPayload = result[0];
                 }
-                if (loggedPayload && loggedPayload.request.context) {
-                    payload.context = loggedPayload.request.context;
+                if (loggedPayload && loggedPayload.response.context) {
+                    payload.context = loggedPayload.response.context;
                     console.log(payload.context);
                 } else {
                     payload.context = {};
