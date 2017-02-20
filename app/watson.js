@@ -67,6 +67,7 @@ function askWatsonFb(recipientId, message) {
     MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
         if (err) return console.log(err);
         var loggedPayload = null;
+        console.log(recipientId);
         database.collection('conversations').find({"id": recipientId}).sort({"date": -1}).limit(1)
             .toArray((err, result) => {
                 if (err) {
@@ -76,6 +77,7 @@ function askWatsonFb(recipientId, message) {
                 }
                 if (loggedPayload && loggedPayload.request.context) {
                     payload.context = loggedPayload.request.context;
+                    console.log(payload.context);
                 } else {
                     payload.context = {};
                 }
