@@ -94,7 +94,7 @@ function askWatsonFb(recipientId, message) {
                                 sendMessage(recipientId, data.output.text[0]);
                             }else if(data.output.text.length>=1)
                             {
-                                sendMessage(recipientId, data.output.text[1]);
+                                sendMessage(recipientId,data.output.text[0] +' '+ data.output.text[1]);
                             }
                         }
                     } else {
