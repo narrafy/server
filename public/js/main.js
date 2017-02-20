@@ -62,6 +62,7 @@ $(function() {
   }
 
   function offsetTop ($item) {
+    if(!$item.offset()) return;
     return $item.offset().top - 85;
   }
 
