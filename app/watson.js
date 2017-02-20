@@ -48,7 +48,7 @@ function askWatson(req, res) {
         if (err) {
             return res.status(err.code || 500).json(err);
         }
-        return res.json(updateMessage(sessionId, payload, data));
+        return res.json(updateMessage(sessionId, data));
     });
 }
 
@@ -88,7 +88,7 @@ function askWatsonFb(recipientId, message) {
                     }
                     if (data && data.output) {
                         if (data.output.text) {
-                            logConversation(recipientId, payload, data);
+                            logConversation(recipientId, data);
                             //watson have an answer
                             if(data.output.text[0]){
                                 sendMessage(recipientId, data.output.text[0]);
@@ -123,12 +123,12 @@ function notConfigureAppResponse() {
  * @param  {Object} response The response from the Conversation service
  * @return {Object}          The response with the updated message
  */
-function updateMessage(sessionId, payload, response) {
+function updateMessage(sessionId, response) {
     var responseText = null;
     if (!response.output) {
         response.output = {};
     } else if(MongoClient) {
-        logConversation(sessionId,payload, response);
+        logConversation(sessionId, response);
         return response;
     }
     if (response.intents && response.intents[0]) {
@@ -148,7 +148,7 @@ function updateMessage(sessionId, payload, response) {
     }
     response.output.text = responseText;
     if (MongoClient) {
-        logConversation(sessionId,payload,response);
+        logConversation(sessionId,response);
     }
     return response;
 }
@@ -174,10 +174,9 @@ function sendMessage(recipientId, message) {
     });
 }
 
-var logConversation = (sessionId, payload, response) => {
+var logConversation = (sessionId, response) => {
     var toStore = {
         id: sessionId,
-        request: payload,
         response: response,
         date: new Date()
     };
