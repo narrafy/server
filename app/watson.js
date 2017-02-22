@@ -187,24 +187,34 @@ var logConversation = (sessionId, response) => {
             console.log('saved to database');
         });
     });
+    if(response.intents && response.intents[0]){
+        var intent = response.intents[0];
+        if(intent.intent === "email"){
+            var data = {
+                email: response.input.text,
+                message: 'an email from Dronic'
+            };
+            subscribe(data);
+        }
+    }
 };
 
-function subscribe(email, message){
-    var data = {email: email, message:message};
+
+function subscribe(data){
     MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
        database.collection('users').save(data, (err)=>{
            if(err)
                return console.log(err);
-           notifyAdmin(email, message);
+           notifyAdmin(data);
        })
     });
 }
 
-function notifyAdmin(email, message) {
+function notifyAdmin(data) {
     var fromEmail = new MailHelper.Email('noreply@dronic.io');
     var toEmail = new MailHelper.Email('contact@dronic.io');
     var subject = 'A new user subscribed';
-    var content = new MailHelper.Content('text/plain', 'User: ' + email + '. Said: '+ message);
+    var content = new MailHelper.Content('text/plain', 'User: ' + data.email + '. Said: '+ data.message);
     var mail = new MailHelper.Mail(fromEmail, subject, toEmail, content);
     var request = SendGrid.emptyRequest({
         method: 'POST',
@@ -240,9 +250,11 @@ module.exports = (app) => {
     });
 
     app.post('/api/subscribe',  (req, res) => {
-        var email =  req.body.email;
-        var message = req.body.message;
-        subscribe(email, message);
+        var data = {
+            email: req.body.email,
+            message:req.body.message
+        };
+        subscribe(data);
         res.sendStatus(200);
     });
 
