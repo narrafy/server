@@ -97,14 +97,15 @@ function facebookRequest(facebook, err, result){
             if (data.output.text) {
                 facebook.log(facebook.data.id, data);
                 //watson have an answer
-                if(data.output.text[0]){
-                    if(facebook){
-                        facebook.message(facebook.data.id, data.output.text[0]);
-                    }
-                }else if(data.output.text.length>=1)
-                {
+                if( data.output.text.length>=1){
                     if(facebook){
                         facebook.message(facebook.data.id, data.output.text[0] +' '+ data.output.text[1]);
+
+                    }
+                }else if(data.output.text[0])
+                {
+                    if(facebook){
+                        facebook.message(facebook.data.id, data.output.text[0]);
                     }
                 }
             }
