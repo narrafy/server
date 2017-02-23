@@ -68,7 +68,7 @@ function logConversation(sessionId, response){
     if(response.entities && response.entities[0])
     {
         var entity = response.entities[0];
-        if(entity.entity==="email"){
+        if(entity.entity === "email"){
             console.log(sessionId + '  ' + intent.intent);
             var data = {
                 email: response.input.text,
