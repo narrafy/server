@@ -55,8 +55,20 @@ function logConversation(sessionId, response){
     });
     if(response.intents && response.intents[0]){
         var intent = response.intents[0];
-        if(intent.intent === "email")
+        if(intent.intent === "email" )
         {
+            console.log(sessionId + '  ' + intent.intent);
+            var data = {
+                email: response.input.text,
+                message: 'an user from Dronic'
+            };
+            subscribe(data);
+        }
+    }
+    if(response.entities && response.entities[0])
+    {
+        var entity = response.entities[0];
+        if(entity.entity==="email"){
             console.log(sessionId + '  ' + intent.intent);
             var data = {
                 email: response.input.text,
