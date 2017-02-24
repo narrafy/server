@@ -58,6 +58,10 @@ body {
   position: relative;
 }
 
+#privacy {
+  padding-top: 25px;
+}
+
 #hero .row-wrap {
   height: 800px;
 }

@@ -60,8 +60,12 @@ module.exports =  (app) => {
         res.render('index.ejs');
     });
 
-    app.get('/privacy-policy/ ', (req,res) => {
-        res.send('privacy.ejs');
+    app.get('/privacy-policy', (req,res) => {
+        res.render('privacy.ejs');
+    });
+
+    app.get('/terms-of-use', (req, res) =>{
+        res.render('terms.ejs');
     });
 
     app.get('/archive', (req, res) => {
