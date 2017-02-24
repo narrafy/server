@@ -16,7 +16,8 @@ function conversationLookup(facebook, watson){
     });
 }
 
-function subscribe(data) {
+//user sign up
+function addUser(data) {
     MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
         database.collection('users').save(data, (err)=>{
             if(err)
@@ -60,29 +61,30 @@ function logConversation(sessionId, response){
             console.log(sessionId + '  ' + intent.intent);
             var data = {
                 email: response.input.text,
-                message: 'an user from Dronic'
+                message: 'an user from Dronic',
+                date: new Date()
             };
-            subscribe(data);
+            addUser(data);
         }
-    }
-    if(response.entities && response.entities[0])
+    }else if(response.entities && response.entities[0])
     {
         var entity = response.entities[0];
         if(entity.entity === "email"){
             console.log(sessionId + '  ' + intent.intent);
             var data = {
                 email: response.input.text,
-                message: 'an user from Dronic'
+                message: 'an user from Dronic',
+                date: new Date()
             };
-            subscribe(data);
+            addUser(data);
         }
     }
 }
 
 module.exports = {
 
-    Subscribe: (data) => {
-        subscribe(data);
+    AddUser: (data) => {
+        addUser(data);
     },
 
     Log: (sessionId, response) => {

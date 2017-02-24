@@ -44,9 +44,10 @@ module.exports =  (app) => {
     app.post('/api/subscribe',  (req, res) => {
         var data = {
             email: req.body.email,
-            message:req.body.message
+            message:req.body.message,
+            date: new Date()
         };
-        Mongo.Subscribe(data);
+        Mongo.AddUser(data);
         res.sendStatus(200);
     });
 
