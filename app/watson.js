@@ -77,13 +77,12 @@ function facebookRequest(facebook, err, result){
     }
 
     if (err) {
-        console.log(err);
+        console.log("Facebook Request Error: " + err);
     }else if(result&& result.length>0){
         loggedContext = result[0];
     }
     if (loggedContext && loggedContext.response.context) {
         payload.context = loggedContext.response.context;
-        console.log(payload.context);
     } else {
         payload.context = {};
     }
@@ -95,7 +94,7 @@ function facebookRequest(facebook, err, result){
         }
         if (data && data.output) {
             if (data.output.text) {
-                facebook.log(facebook.data.id, data);
+                facebook.log(facebook.data.id, data, "facebook page");
                 //watson have an answer
                 if( data.output.text.length>0 && data.output.text[1]){
                     if(facebook){
@@ -110,10 +109,8 @@ function facebookRequest(facebook, err, result){
             }
         } else {
             if(facebook){
-                facebook.message(facebook.data.id, 'I am probably busy. This guy that is training me' +
-                    ' is seriously killing me' +
-                    'with all this information. God bless him. ' +
-                    'Seriously, please write me later!');
+                facebook.message(facebook.data.id, 'I am probably busy. Probably training.' +
+                    'Please write me later!');
             }
         }
     });
@@ -150,7 +147,7 @@ function updateMessage(sessionId, response, log) {
     }
     response.output.text = responseText;
     if(log)
-        log(sessionId,response);
+        log(sessionId,response, "dronic.io");
     return response;
 }
 

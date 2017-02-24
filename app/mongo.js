@@ -23,6 +23,7 @@ function addUser(data) {
             if(err)
                 return console.log(err);
             Sendgrid.NotifyAdmin(data);
+            console.log("An user: " + data.email + ' from : ' + data.source + ' was added');
         })
     });
 }
@@ -41,10 +42,11 @@ function readConversation(req, res) {
     });
 }
 
-function logConversation(sessionId, response){
+function logConversation(sessionId, response, source){
     var toStore = {
         id: sessionId,
         response: response,
+        source: source,
         date: new Date()
     };
     MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
@@ -58,27 +60,25 @@ function logConversation(sessionId, response){
         var intent = response.intents[0];
         if(intent.intent === "email" )
         {
-            console.log(sessionId + '  ' + intent.intent);
-            var data = {
-                email: response.input.text,
-                message: 'an user from Dronic',
-                date: new Date()
-            };
-            addUser(data);
+            logUserEmail(response.input.text, sessionId, intent.intent, source);
         }
     }else if(response.entities && response.entities[0])
     {
         var entity = response.entities[0];
         if(entity.entity === "email"){
-            console.log(sessionId + '  ' + intent.intent);
-            var data = {
-                email: response.input.text,
-                message: 'an user from Dronic',
-                date: new Date()
-            };
-            addUser(data);
+            logUserEmail(response.input.text, sessionId, entity.entity, source);
         }
     }
+}
+
+function logUserEmail(email, source){
+    var data = {
+        email: email,
+        message: 'an user from Dronic',
+        source: source,
+        date: new Date()
+    };
+    addUser(data);
 }
 
 module.exports = {
@@ -87,8 +87,8 @@ module.exports = {
         addUser(data);
     },
 
-    Log: (sessionId, response) => {
-        logConversation(sessionId, response);
+    Log: (sessionId, response, source) => {
+        logConversation(sessionId, response, source);
     },
 
     ReadConversation: (req,res) =>{
