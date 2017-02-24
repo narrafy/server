@@ -7,24 +7,10 @@ function conversationLookup(facebook, watson){
 
     MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
         if (err) return console.log(err);
-
-        console.log(facebook.data.id);
         database.collection('conversations').find({"id": facebook.data.id}).sort({"date": -1}).limit(1)
             .toArray((err, result) => {
                 watson(facebook, err, result);
             });
-    });
-}
-
-//user sign up
-function addUser(data) {
-    MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
-        database.collection('users').save(data, (err)=>{
-            if(err)
-                return console.log(err);
-            Sendgrid.NotifyAdmin(data);
-            console.log("An user: " + data.email + ' from : ' + data.source + ' was added');
-        })
     });
 }
 
@@ -42,6 +28,28 @@ function readConversation(req, res) {
     });
 }
 
+//user sign up
+function addUser(data) {
+    MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
+        database.collection('users').save(data, (err)=>{
+            if(err)
+                return console.log(err);
+            Sendgrid.NotifyAdmin(data);
+            console.log("An user: " + data.email + ' from : ' + data.source + ' was added');
+        })
+    });
+}
+
+function logUserEmail(email, source){
+    var data = {
+        email: email,
+        message: 'an user from Dronic',
+        source: source,
+        date: new Date()
+    };
+    addUser(data);
+}
+
 function logConversation(sessionId, response, source){
     var toStore = {
         id: sessionId,
@@ -53,32 +61,11 @@ function logConversation(sessionId, response, source){
         database.collection('conversations').save(toStore, (err) => {
             if (err)
                 return console.log(err);
-            console.log('saved to database');
         });
     });
-    if(response.intents && response.intents[0]){
-        var intent = response.intents[0];
-        if(intent.intent === "email" )
-        {
-            logUserEmail(response.input.text, sessionId, intent.intent, source);
-        }
-    }else if(response.entities && response.entities[0])
-    {
-        var entity = response.entities[0];
-        if(entity.entity === "email"){
-            logUserEmail(response.input.text, sessionId, entity.entity, source);
-        }
+    if(response.entities && response.entities[0] && response.entities[0].entity ==="email"){
+        logUserEmail(response.input.text, source);
     }
-}
-
-function logUserEmail(email, source){
-    var data = {
-        email: email,
-        message: 'an user from Dronic',
-        source: source,
-        date: new Date()
-    };
-    addUser(data);
 }
 
 module.exports = {

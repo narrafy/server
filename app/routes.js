@@ -28,7 +28,7 @@ module.exports =  (app) => {
                         text: event.message.text
                     },
                     message: Facebook.SendMessage,
-                    log: Mongo.Log
+                    mongo: Mongo.Log
                 };
                 Mongo.ConversationLookup(facebook, Watson.FacebookRequest);
             }
@@ -45,6 +45,7 @@ module.exports =  (app) => {
         var data = {
             email: req.body.email,
             message:req.body.message,
+            source: "subscribe form",
             date: new Date()
         };
         Mongo.AddUser(data);

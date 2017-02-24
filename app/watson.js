@@ -94,7 +94,7 @@ function facebookRequest(facebook, err, result){
         }
         if (data && data.output) {
             if (data.output.text) {
-                facebook.log(facebook.data.id, data, "facebook page");
+                facebook.mongo(facebook.data.id, data, "facebook page");
                 //watson have an answer
                 if( data.output.text.length>0 && data.output.text[1]){
                     if(facebook){
@@ -127,7 +127,7 @@ function updateMessage(sessionId, response, log) {
     if (!response.output) {
         response.output = {};
     } else if(log) {
-        log(sessionId, response);
+        log(sessionId, response, "dronic.io chat");
         return response;
     }
     if (response.intents && response.intents[0]) {
@@ -147,7 +147,7 @@ function updateMessage(sessionId, response, log) {
     }
     response.output.text = responseText;
     if(log)
-        log(sessionId,response, "dronic.io");
+        log(sessionId,response, "dronic.io chat");
     return response;
 }
 
