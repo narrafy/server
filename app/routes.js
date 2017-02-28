@@ -28,9 +28,9 @@ module.exports =  (app) => {
                         text: event.message.text
                     },
                     message: Facebook.SendMessage,
-                    mongo: Mongo.Log
+                    mongo: Mongo.PushConversation
                 };
-                Mongo.ConversationLookup(facebook, Watson.FacebookRequest);
+                Mongo.PullLastConversation(facebook, Watson.FacebookRequest);
             }
         }
         res.sendStatus(200);
@@ -38,7 +38,7 @@ module.exports =  (app) => {
 
     app.post('/api/message', function (req, res) {
 
-        Watson.DronicRequest(req, res, Mongo.Log);
+        Watson.DronicRequest(req, res, Mongo.PushConversation);
     });
 
     app.post('/api/subscribe',  (req, res) => {

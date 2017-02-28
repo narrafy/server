@@ -4,10 +4,10 @@ const SendGrid = require('sendgrid')(process.env.SENDGRID_API_KEY);
 const MailHelper = require('sendgrid').mail;
 
 function notifyAdmin(data) {
-    var fromEmail = new MailHelper.Email(process.env.DRONIC_IO_ADMIN);
+    var fromEmail = new MailHelper.Email(data.email);
     var toEmail = new MailHelper.Email(process.env.DRONIC_IO_ADMIN);
     var subject = 'A new user subscribed';
-    var content = new MailHelper.Content('text/plain', 'User: ' + data.email + '. Said: '+ data.message);
+    var content = new MailHelper.Content('text/plain', 'My email: ' + data.email + '.I think your service is awesome and I think: '+ data.message);
     var mail = new MailHelper.Mail(fromEmail, subject, toEmail, content);
     var request = SendGrid.emptyRequest({
         method: 'POST',
@@ -20,7 +20,6 @@ function notifyAdmin(data) {
         console.log(response.statusCode);
     });
 }
-
 
 module.exports = {
     NotifyAdmin: (data) => {

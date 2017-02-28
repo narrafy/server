@@ -74,6 +74,7 @@ function facebookRequest(facebook, err, result){
         payload.input = {
             text: facebook.data.text
         };
+        payload.context.facebook=true;
     }
 
     if (err) {
@@ -83,8 +84,11 @@ function facebookRequest(facebook, err, result){
     }
     if (loggedContext && loggedContext.response.context) {
         payload.context = loggedContext.response.context;
+        payload.context.facebook = true;
     } else {
-        payload.context = {};
+        payload.context = {
+            facebook: true
+        };
     }
 
     // Send the input to the conversation service
@@ -109,7 +113,7 @@ function facebookRequest(facebook, err, result){
             }
         } else {
             if(facebook){
-                facebook.message(facebook.data.id, 'I am probably busy. Probably training.' +
+                facebook.message(facebook.data.id, 'I am busy. Probably training.' +
                     'Please write me later!');
             }
         }

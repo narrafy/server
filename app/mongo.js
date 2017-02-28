@@ -3,7 +3,7 @@ require('dotenv').config({silent: true});
 const MongoClient = require('mongodb').MongoClient;
 var Sendgrid = require('./sendgrid');
 
-function conversationLookup(facebook, watson){
+function pullLastConversation(facebook, watson){
 
     MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
         if (err) return console.log(err);
@@ -42,15 +42,15 @@ function addUser(data) {
 
 function logUserEmail(email, source){
     var data = {
-        email: email,
-        message: 'an user from Dronic',
-        source: source,
-        date: new Date()
+            email: email,
+            message: 'an user from Dronic',
+            source: source,
+            date: new Date()
     };
     addUser(data);
 }
 
-function logConversation(sessionId, response, source){
+function pushConversation(sessionId, response, source){
     var toStore = {
         id: sessionId,
         response: response,
@@ -74,15 +74,15 @@ module.exports = {
         addUser(data);
     },
 
-    Log: (sessionId, response, source) => {
-        logConversation(sessionId, response, source);
+    PushConversation: (sessionId, response, source) => {
+        pushConversation(sessionId, response, source);
     },
 
     ReadConversation: (req,res) =>{
         readConversation(req,res);
     },
 
-    ConversationLookup: (facebook, watson) => {
-        conversationLookup(facebook, watson);
+    PullLastConversation: (facebook, watson) => {
+        pullLastConversation(facebook, watson);
     }
 }
