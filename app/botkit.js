@@ -8,8 +8,8 @@ var db = require('../config/db')({mongoUri: mongoUri});
 
 var controller = Botkit.facebookbot({
     debug: true,
-    access_token: process.env.FACEBOOK_PAGE_TOKEN,
-    verify_token: process.env.FACEBOOK_VERIFY_TOKEN,
+    access_token: process.env.FACEBOOK_PAGE_ACCESS_TOKEN,
+    verify_token: process.env.FACEBOOK_PAGE_VERIFY_TOKEN,
     storage: db,
     stats_optout: true
 })
