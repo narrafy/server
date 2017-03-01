@@ -4,44 +4,24 @@ require('dotenv').config({silent: true});
 var Mongo = require('./mongo');
 var Watson = require('./watson');
 var Facebook = require('./facebook');
+var facebook_handler = require('./botkit').handler
+
 
 module.exports =  (app) => {
 
     app.get('/webhook', function (req, res) {
 
-        if (req.query['hub.verify_token'] === 'testbot_verify_token') {
+        if (req.query['hub.verify_token'] === process.env.FACEBOOK_VERIFY_TOKEN) {
             res.send(req.query['hub.challenge']);
         } else {
             res.send('Invalid verify token!');
         }
     });
 
-    app.post('/webhook', (req, res) => {
+    app.post('/webhook', function (req, res) {
+        facebook_handler(req.body)
 
-        var events = req.body.entry[0].messaging;
-        for (var i = 0; i < events.length; i++) {
-            var event = events[i];
-            var sender = event.sender.id;
-            if (event.message && event.message.text) {
-                var facebook = {
-                    data: {
-                        id: sender,
-                        text: event.message.text
-                    },
-                    message: Facebook.SendMessage,
-                    mongo: Mongo.PushConversation
-                };
-                Mongo.PullLastConversation(facebook, Watson.FacebookRequest);
-            }
-            else if(event.optin ||
-                (event.postback &&
-                event.postback.payload === 'optin')){
-                Facebook.SendMessage(sender, 'Nice, nice. Dronic is happy you are' +
-                    'visiting him! Mrrrr....');
-            }
-
-        }
-        res.sendStatus(200);
+        res.send('ok')
     });
 
     app.post('/api/message', function (req, res) {
