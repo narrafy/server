@@ -17,6 +17,7 @@ module.exports =  (app) => {
     });
 
     app.post('/webhook', (req, res) => {
+
         var events = req.body.entry[0].messaging;
         for (var i = 0; i < events.length; i++) {
             var event = events[i];
@@ -32,6 +33,13 @@ module.exports =  (app) => {
                 };
                 Mongo.PullLastConversation(facebook, Watson.FacebookRequest);
             }
+            else if(event.optin ||
+                (event.postback &&
+                event.postback.payload === 'optin')){
+                Facebook.SendMessage(sender, 'Nice, nice. Dronic is happy you are' +
+                    'visiting him! Mrrrr....');
+            }
+
         }
         res.sendStatus(200);
     });

@@ -40,6 +40,10 @@ function addUser(data) {
     });
 }
 
+function getUser(userid) {
+
+}
+
 function logUserEmail(email, source){
     var data = {
             email: email,
