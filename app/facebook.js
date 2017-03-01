@@ -11,7 +11,7 @@ function sendMessage(recipientId, message) {
     };
     Request({
         url: process.env.FB_GRAPH_MSG_URL,
-        qs: {access_token: process.env.PAGE_ACCESS_TOKEN},
+        qs: {access_token: process.env.FACEBOOK_PAGE_ACCESS_TOKEN},
         method: 'POST',
         json: {
             recipient: {id: recipientId},
