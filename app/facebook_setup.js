@@ -47,12 +47,12 @@ module.exports = function (controller) {
         'call_to_actions': [
             {
                 'type': 'postback',
-                'title': 'Item 1',
+                'title': 'Website',
                 'payload': 'Item 1'
             },
             {
                 'type': 'postback',
-                'title': 'Item 2',
+                'title': 'Blog',
                 'payload': 'Item 2'
             }
         ]
