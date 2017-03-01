@@ -118,7 +118,13 @@ module.exports = {
     SendMessage: (id, message) => {
         sendMessage(id, message);
     },
-
+    VerifyToken: (req,res) => {
+        if (req.query['hub.verify_token'] === process.env.FACEBOOK_PAGE_VERIFY_TOKEN) {
+            res.send(req.query['hub.challenge']);
+        } else {
+            res.send('Invalid verify token!');
+        }
+    },
     SubscribePageEvents: (controller) => {
         subscribePageEvents(controller)
     },
