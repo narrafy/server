@@ -11,7 +11,7 @@ module.exports =  (app) => {
 
     app.get('/webhook', function (req, res) {
 
-        if (req.query['hub.verify_token'] === process.env.FACEBOOK_VERIFY_TOKEN) {
+        if (req.query['hub.verify_token'] === process.env.FACEBOOK_PAGE_VERIFY_TOKEN) {
             res.send(req.query['hub.challenge']);
         } else {
             res.send('Invalid verify token!');

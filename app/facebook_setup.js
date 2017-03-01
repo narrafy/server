@@ -18,7 +18,7 @@ module.exports = function (controller) {
             }
         })
 
-    var url = 'https://graph.facebook.com/v2.6/me/thread_settings?access_token=' + process.env.FACEBOOK_PAGE_ACCESS_TOKEN
+    var url = 'https://graph.facebook.com/v2.8/me/thread_settings?access_token=' + process.env.FACEBOOK_PAGE_ACCESS_TOKEN
 
     // set up CTA for FB page
     var form1 = {
