@@ -3,6 +3,8 @@ require('dotenv').config({silent: true});
 
 const watson = require('watson-developer-cloud/conversation/v1');
 
+const Mongo = require('./mongo');
+
 // Create the service wrapper
 const conversation = new watson({
     // If unspecified here, the CONVERSATION_USERNAME and CONVERSATION_PASSWORD env properties will be checked
@@ -42,11 +44,11 @@ function getPayload(data){
     return payload;
 }
 
-function dronicRequest(sessionid, body, res, log) {
+function dronicRequest(sessionid, body, res) {
     var data = {};
     if(body){
         if(body.input){
-            data.text = body.input;
+            data.text = body.input.text;
         }
         if(body.context){
             data.context = body.context;
@@ -58,13 +60,13 @@ function dronicRequest(sessionid, body, res, log) {
         if (err) {
             return res.status(err.code || 500).json(err);
         }
-        return res.json(updateMessage(sessionid, data, log));
+        return res.json(updateMessage(sessionid, data));
     });
 }
 
 function facebookRequest(facebook, err, result){
     if (err) {
-        return console.log("Facebook Request Error: " + err);
+        return console.log("Error facebookRequest function: " + err);
     }
     var body = {};
     if(facebook.data)
@@ -77,14 +79,13 @@ function facebookRequest(facebook, err, result){
     // Send the input to the conversation service
     conversation.message(payload, (err, data) => {
         if (err) {
-            console.log(err);
-            facebook.stop_typing;
+            console.log("Error in conversation.message function: " + err);
             facebook.message(facebook.data.id, err);
         }
         if (data && data.output) {
             if (data.output.text) {
                 facebook.mongo(facebook.data.id, data, "facebook page");
-                console.log(data.output.text);
+                console.log("Watson replies with: " + data.output.text);
                 //watson have an answer
                 if( data.output.text.length > 0 && data.output.text[1]){
                     facebook.message(facebook.data.id, data.output.text[0] +' '+ data.output.text[1]);
@@ -105,12 +106,12 @@ function facebookRequest(facebook, err, result){
  * @param  {Object} response The response from the Conversation service
  * @return {Object}          The response with the updated message
  */
-function updateMessage(sessionId, data, log) {
+function updateMessage(sessionId, data) {
     var responseText = null;
     if (!data.output) {
         data.output = {};
-    } else if(log) {
-        log(sessionId, data, "dronic.io chat");
+    } else {
+        Mongo.PushContext(sessionId, data, "dronic.io chat");
         if(data.output.text && data.output.text[0])
             return data;
     }
@@ -129,21 +130,15 @@ function updateMessage(sessionId, data, log) {
         }
     }
     data.output.text = responseText;
-    if(log)
-        log(sessionId,data, "dronic.io chat");
+    Mongo.PushContext(sessionId,data, "dronic.io chat");
     return data;
 }
 
 module.exports = {
 
-    DronicRequest: (req, res, log) =>
+    DronicRequest: (req, res) =>
     {
-        dronicRequest(req.sessionID,req.body, res, log);
-    },
-
-    FacebookRequest: (facebook, err, result) =>
-    {
-        facebookRequest(facebook, err, result);
+        dronicRequest(req.sessionID, req.body, res);
     },
 }
 
