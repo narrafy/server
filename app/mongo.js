@@ -2,10 +2,14 @@ require('dotenv').config({silent: true});
 
 var MongoClient = require('mongodb').MongoClient;
 var Sendgrid = require('./sendgrid');
-var mongoUri = process.env.MONGODB_URI;
+
+function Connect(callback){
+    MongoClient.connect(process.env.MONGODB_URI, callback);
+}
 
 function popConversation(facebook, watson){
-    MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
+    Connect((err, database) =>
+    {
         if (err) return console.log(err);
         database.collection('conversations').find({"id": facebook.data.id}).sort({"date": -1}).limit(1)
             .toArray((err, result) => {
@@ -21,7 +25,7 @@ function pushConversation(sessionId, response, source){
         source: source,
         date: new Date()
     };
-    MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
+    Connect((err, database) => {
         database.collection('conversations').save(toStore, (err) => {
             if (err)
                 return console.log(err);
@@ -45,7 +49,7 @@ function pushConversation(sessionId, response, source){
 }
 
 function saveEmail(data, callback) {
-    MongoClient.connect(mongoUri, (err, database) => {
+    Connect((err, database) => {
         database.collection('emails').save(data, (err)=>{
             if(callback)
                 callback(data, err);
@@ -54,7 +58,7 @@ function saveEmail(data, callback) {
 }
 
 function getUser(userid) {
-    MongoClient.connect(mongoUri, (err, db) =>{
+    Connect((err, db) =>{
         if (err) return null;
         db.collection('users').findOne({"id": userid});
     });
@@ -62,7 +66,7 @@ function getUser(userid) {
 
 function saveUser(data) {
     if(getUser(data.id)) return console.log(data.id + ' user already in db');
-    MongoClient.connect(mongoUri, (err, db) => {
+    Connect((err, db) => {
        if(err) return console.log(err);
         db.collection('users').save(data, (err) => {
             if (err)
@@ -93,5 +97,9 @@ module.exports = {
 
     PopConversation: (facebook, watson) => {
         popConversation(facebook, watson);
+    },
+    Connect: (callback) =>
+    {
+        Connect(callback);
     }
 }

@@ -1,5 +1,34 @@
 
 var Watson = require('./watson');
+var Mongo = require('./mongo');
+
+function getPayload(data){
+    var workspace = process.env.WORKSPACE_ID;
+    if (!workspace) {
+        return {
+            'output': {
+                'text': 'The app has not been configured with a <b>WORKSPACE_ID</b> environment variable. Please refer to the ' +
+                '<a href="https://github.com/watson-developer-cloud/conversation-simple">README</a> documentation on how to set this variable. <br>' +
+                'Once a workspace has been defined the intents may be imported from ' +
+                '<a href="https://github.com/watson-developer-cloud/conversation-simple/blob/master/training/car_workspace.json">here</a> in order to get a working application.'
+            }
+        };
+    }
+    var payload = {
+        workspace_id: workspace,
+        context: {},
+        input: {}
+    };
+
+    if (data.input) {
+        payload.input = data.input;
+    }
+    if (data.context) {
+        // The client must maintain context/state
+        payload.context = data.context;
+    }
+    return payload;
+}
 
 module.exports = function (controller) {
     // this is triggered when a user clicks the send-to-messenger plugin
@@ -16,6 +45,47 @@ module.exports = function (controller) {
     // user says anything else
     controller.hears('(.*)', 'message_received', function (bot, message) {
         console.log(message);
-        bot.reply(message, 'you said ' + message.match[1])
+        var input = message.match[1];
+
+        Mongo.Connect((err, database) => {
+            if (err) return console.log(err);
+            database.collection('conversations').find({"id": facebook.data.id}).sort({"date": -1}).limit(1)
+                .toArray((err, result) => {
+
+                    if (err) {
+                        return console.log("Facebook Request Error: " + err);
+                    }
+                    var body = {};
+                    if(input)
+                        body.input = input;
+                    if (result[0] && result[0].response.context) {
+                        body.context = result[0].response.context;
+                    }
+                    var payload = getPayload({input: body.input, context: body.context});
+                    payload.context.facebook = true;
+
+                    // Send the input to the conversation service
+                    Watson.Message(payload, (err, data) => {
+                        if (err) {
+                            bot.reply(message, err);
+                        }
+                        if (data && data.output) {
+                            if (data.output.text) {
+                                Mongo.PushConversation(message.event.id,data,"facebook page");
+                                console.log(data.output.text);
+                                //watson have an answer
+                                if( data.output.text.length > 0 && data.output.text[1]){
+                                    bot.reply(message, data.output.text[0] +' '+ data.output.text[1]);
+                                } else if(data.output.text[0]) {
+                                    bot.reply(facebook.data.id, data.output.text[0]);
+                                }
+                            }
+                        } else {
+                            bot.reply(facebook.data.id, 'I am busy. Probably training.' +
+                                    'Please write me later!');
+                        }
+                    });
+                });
+        });
     })
 }

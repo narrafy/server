@@ -32,10 +32,10 @@ function getPayload(data){
         input: {}
     };
 
-    if (input) {
+    if (data.input) {
         payload.input = data.input;
     }
-    if (context) {
+    if (data.context) {
         // The client must maintain context/state
         payload.context = data.context;
     }
@@ -43,8 +43,16 @@ function getPayload(data){
 }
 
 function dronicRequest(sessionid, body, res, log) {
-
-    var payload = getPayload(body.input, body.context);
+    var data = {};
+    if(body){
+        if(body.input){
+            data.input = body.input;
+        }
+        if(body.context){
+            data.context = body.context;
+        }
+    }
+    var payload = getPayload(data);
     // Send the input to the conversation service
     conversation.message(payload, (err, data) => {
         if (err) {
@@ -64,12 +72,12 @@ function facebookRequest(facebook, err, result){
     if (result[0] && result[0].response.context) {
         body.context = result[0].response.context;
     }
-    var payload = getPayload({input: body.text,context: body.context});
+    var payload = getPayload({input: body.text, context: body.context});
     payload.context.facebook = true;
 
     // Send the input to the conversation service
     conversation.message(payload, (err, data) => {
-        if (err && facebook) {
+        if (err) {
             facebook.message(facebook.data.id, err);
         }
         if (data && data.output) {
@@ -78,16 +86,9 @@ function facebookRequest(facebook, err, result){
                 console.log(data.output.text);
                 //watson have an answer
                 if( data.output.text.length > 0 && data.output.text[1]){
-                    if(facebook){
-                        facebook.message(facebook.data.id, data.output.text[0] +' '+ data.output.text[1]);
-                    } else {
-                        facebook.message(facebook.data.id, data.output.text[0]);
-                    }
-                }else if(data.output.text[0])
-                {
-                    if(facebook){
-                        facebook.message(facebook.data.id, data.output.text[0]);
-                    }
+                    facebook.message(facebook.data.id, data.output.text[0] +' '+ data.output.text[1]);
+                } else if(data.output.text[0]) {
+                    facebook.message(facebook.data.id, data.output.text[0]);
                 }
             }
         } else {
@@ -111,7 +112,8 @@ function updateMessage(sessionId, data, log) {
         data.output = {};
     } else if(log) {
         log(sessionId, data, "dronic.io chat");
-        return data;
+        if(data.output.text && data.output.text[0])
+            return data;
     }
     if (data.intents && data.intents[0]) {
         var intent = data.intents[0];
@@ -121,11 +123,10 @@ function updateMessage(sessionId, data, log) {
         // user's intent . In these cases it is usually best to return a disambiguation message
         // ('I did not understand your intent, please rephrase your question', etc..)
         if (intent.confidence >= 0.75) {
-            responseText = 'I understood your intent was ' + intent.intent;
-        } else if (intent.confidence >= 0.5) {
-            responseText = 'Im not 100% sure, but I think your intent was ' + intent.intent;
+            responseText = "I understood you but I don't have an answer yet. Could you rephrase your question? ";
         } else {
-            responseText = 'I didn t get that. Perhaps I need more training. And sometimes only a human can help';
+            responseText = 'I didn t get that. Sometimes only a human can help. Wanna see one ?';
+            data.context.app_request = true;
         }
     }
     data.output.text = responseText;
@@ -144,6 +145,9 @@ module.exports = {
     FacebookRequest: (facebook, err, result) =>
     {
         facebookRequest(facebook, err, result);
+    },
+    Message: (params, callback) =>{
+      conversation.message(params, callback);
     }
 }
 

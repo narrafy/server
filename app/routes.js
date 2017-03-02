@@ -4,7 +4,7 @@ require('dotenv').config({silent: true});
 var Mongo = require('./mongo');
 var Watson = require('./watson');
 var Facebook = require('./facebook');
-//var facebook_handler = require('./botkit').handler;
+var facebook_handler = require('./botkit').handler;
 
 
 module.exports =  (app) => {
@@ -15,11 +15,11 @@ module.exports =  (app) => {
 
     app.post('/webhook', function (req, res) {
 
-        Facebook.WatsonReply(req.body);
-        res.sendStatus(200);
+    //    Facebook.WatsonReply(req.body);
+    //    res.sendStatus(200);
 
-     //   facebook_handler(req.body)
-     //   res.send('ok')
+        facebook_handler(req.body)
+        res.send('ok')
     });
 
     app.post('/api/message', function (req, res) {
