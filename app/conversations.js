@@ -52,7 +52,7 @@ module.exports = function (controller) {
                         return console.log("Facebook Request Error: " + err);
                     }
                     var body = {};
-                    if(input)
+                    if(message.text)
                         body.input = message.text;
                     if (result[0] && result[0].response.context) {
                         body.context = result[0].response.context;
