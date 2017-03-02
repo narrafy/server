@@ -77,6 +77,8 @@ function facebookRequest(facebook, err, result){
     // Send the input to the conversation service
     conversation.message(payload, (err, data) => {
         if (err) {
+            console.log(err);
+            facebook.stop_typing;
             facebook.message(facebook.data.id, err);
         }
         if (data && data.output) {
@@ -143,9 +145,6 @@ module.exports = {
     {
         facebookRequest(facebook, err, result);
     },
-    Message: (params, callback) =>{
-      conversation.message(params, callback);
-    }
 }
 
 

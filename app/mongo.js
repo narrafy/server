@@ -8,6 +8,7 @@ function Connect(callback){
 }
 
 function popConversation(facebook, watson){
+    facebook.start_typing;
     Connect((err, database) =>
     {
         if (err) return console.log(err);
@@ -87,10 +88,6 @@ module.exports = {
         saveEmail(data, callback);
     },
 
-    SaveUser: (data) => {
-        saveUser(data);
-    },
-
     PushConversation: (sessionId, response, source) => {
         pushConversation(sessionId, response, source);
     },
@@ -98,8 +95,4 @@ module.exports = {
     PopConversation: (facebook, watson) => {
         popConversation(facebook, watson);
     },
-    Connect: (callback) =>
-    {
-        Connect(callback);
-    }
 }
