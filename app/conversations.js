@@ -33,7 +33,7 @@ function getPayload(data){
     };
 
     if (data.input) {
-        payload.input = data.input;
+        payload.input.text = data.input;
     }
     if (data.context) {
         // The client must maintain context/state

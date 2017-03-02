@@ -32,8 +32,8 @@ function getPayload(data){
         input: {}
     };
 
-    if (data.input) {
-        payload.input = data.input;
+    if (data.text) {
+        payload.input.text = data.text;
     }
     if (data.context) {
         // The client must maintain context/state
@@ -46,7 +46,7 @@ function dronicRequest(sessionid, body, res, log) {
     var data = {};
     if(body){
         if(body.input){
-            data.input = body.input;
+            data.text = body.input;
         }
         if(body.context){
             data.context = body.context;
@@ -72,7 +72,7 @@ function facebookRequest(facebook, err, result){
     if (result[0] && result[0].response.context) {
         body.context = result[0].response.context;
     }
-    var payload = getPayload({input: body.text, context: body.context});
+    var payload = getPayload({text: body.text, context: body.context});
 
     // Send the input to the conversation service
     conversation.message(payload, (err, data) => {
