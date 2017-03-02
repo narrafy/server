@@ -58,14 +58,14 @@ module.exports = function (controller) {
                         body.context = result[0].response.context;
                     }
                     var payload = getPayload({input: body.input, context: body.context});
-                    payload.context.facebook = true;
 
                     // Send the input to the conversation service
                     Watson.Message(payload, (err, data) => {
                         if (err) {
                             bot.reply(message, err);
                         }
-                        console.log(data);
+                        console.log("============================================");
+                        console.log("THE DATA : "+ data);
                         if (data && data.output) {
                             if (data.output.text) {
                                 Mongo.PushConversation(message.user, data, "facebook page");
