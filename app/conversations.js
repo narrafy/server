@@ -44,9 +44,6 @@ module.exports = function (controller) {
 
     // user says anything else
     controller.hears('(.*)', 'message_received', function (bot, message) {
-        console.log(message);
-        var input = message.match[1];
-
         Mongo.Connect((err, db) => {
             if (err) return console.log(err);
             db.collection('conversations').find({"id": message.user}).sort({"date": -1}).limit(1)
@@ -56,19 +53,19 @@ module.exports = function (controller) {
                     }
                     var body = {};
                     if(input)
-                        body.input = input;
+                        body.input = message.text;
                     if (result[0] && result[0].response.context) {
                         body.context = result[0].response.context;
                     }
                     var payload = getPayload({input: body.input, context: body.context});
                     payload.context.facebook = true;
-                    console.log(payload);
 
                     // Send the input to the conversation service
                     Watson.Message(payload, (err, data) => {
                         if (err) {
                             bot.reply(message, err);
                         }
+                        console.log(data);
                         if (data && data.output) {
                             if (data.output.text) {
                                 Mongo.PushConversation(message.user, data, "facebook page");
