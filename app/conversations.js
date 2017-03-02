@@ -56,47 +56,45 @@ module.exports = function (controller) {
 
     // user says anything else
     controller.hears('(.*)', 'message_received', function (bot, message) {
-        Mongo.Connect((err, db) => {
-            if (err) return console.log(err);
-            db.collection('conversations').find({"id": message.user}).sort({"date": -1}).limit(1)
-                .toArray((err, result) => {
-                    if (err) {
-                        return console.log("Facebook Request Error: " + err);
-                    }
-                    var body = {};
-                    if(message.text)
-                        body.input = message.text;
-                    if (result[0] && result[0].response.context) {
-                        body.context = result[0].response.context;
-                    }
-                    var payload = getPayload({input: body.input, context: body.context});
-                    console.log("================Payload to Send======================");
-                    console.log(payload);
-                    console.log("================End Payload to Send==================");
-
-                    // Send the input to the conversation service
-                    conversation.message(payload, (err, data) => {
+        bot.startTyping(message, function () {
+            Mongo.Connect((err, db) => {
+                if (err) return console.log(err);
+                db.collection('conversations').find({"id": message.user}).sort({"date": -1}).limit(1)
+                    .toArray((err, result) => {
                         if (err) {
-                            bot.reply(message, err);
+                            return console.log("Facebook Request Error: " + err);
                         }
-                        console.log("============================================");
-                        console.log("THE DATA : "+ data);
-                        if (data && data.output) {
-                            if (data.output.text) {
-                                Mongo.PushConversation(message.user, data, "facebook page");
-                                //watson have an answer
-                                if( data.output.text.length > 0 && data.output.text[1]){
-                                    bot.reply(message, data.output.text[0] +' '+ data.output.text[1]);
-                                } else if(data.output.text[0]) {
-                                    bot.reply(message, data.output.text[0]);
-                                }
+                        var body = {};
+                        if(message.text)
+                            body.input = message.text;
+                        if (result[0] && result[0].response.context) {
+                            body.context = result[0].response.context;
+                        }
+                        var payload = getPayload({input: body.input, context: body.context});
+
+
+                        // Send the input to the conversation service
+                        conversation.message(payload, (err, data) => {
+                            if (err) {
+                                bot.reply(message, err);
                             }
-                        } else {
-                            bot.reply(message, 'I am busy. Probably training. ' +
+                            if (data && data.output) {
+                                if (data.output.text) {
+                                    Mongo.PushConversation(message.user, data, "facebook page");
+                                    //watson have an answer
+                                    if( data.output.text.length > 0 && data.output.text[1]){
+                                        bot.replyWithTyping(message, data.output.text[0] +' '+ data.output.text[1]);
+                                    } else if(data.output.text[0]) {
+                                        bot.replyWithTyping(message, data.output.text[0]);
+                                    }
+                                }
+                            } else {
+                                bot.replyWithTyping(message, 'I am busy. Probably training. ' +
                                     'Please write me later!');
-                        }
+                            }
+                        });
                     });
-                });
+            });
         });
     })
 }
