@@ -49,9 +49,8 @@ module.exports = function (controller) {
 
         Mongo.Connect((err, database) => {
             if (err) return console.log(err);
-            database.collection('conversations').find({"id": facebook.data.id}).sort({"date": -1}).limit(1)
+            database.collection('conversations').find({"id": message.user}).sort({"date": -1}).limit(1)
                 .toArray((err, result) => {
-
                     if (err) {
                         return console.log("Facebook Request Error: " + err);
                     }
@@ -71,17 +70,17 @@ module.exports = function (controller) {
                         }
                         if (data && data.output) {
                             if (data.output.text) {
-                                Mongo.PushConversation(message.event.id,data,"facebook page");
+                                Mongo.PushConversation(message.user, data, "facebook page");
                                 console.log(data.output.text);
                                 //watson have an answer
                                 if( data.output.text.length > 0 && data.output.text[1]){
                                     bot.reply(message, data.output.text[0] +' '+ data.output.text[1]);
                                 } else if(data.output.text[0]) {
-                                    bot.reply(facebook.data.id, data.output.text[0]);
+                                    bot.reply(message, data.output.text[0]);
                                 }
                             }
                         } else {
-                            bot.reply(facebook.data.id, 'I am busy. Probably training.' +
+                            bot.reply(message, 'I am busy. Probably training.' +
                                     'Please write me later!');
                         }
                     });
