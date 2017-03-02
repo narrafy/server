@@ -15,33 +15,10 @@ module.exports =  (app) => {
 
     app.post('/webhook', function (req, res) {
 
-        var events = req.body.entry[0].messaging;
-        for (var i = 0; i < events.length; i++) {
-            var event = events[i];
-            var sender = event.sender.id;
-            if (event.message && event.message.text) {
-                var facebook = {
-                    data: {
-                        id: sender,
-                        text: event.message.text
-                    },
-                    message: Facebook.SendMessage,
-                    mongo: Mongo.PushConversation
-                };
-                Mongo.PullLastConversation(facebook, Watson.FacebookRequest);
-            }
-            else if(event.optin ||
-                (event.postback &&
-                event.postback.payload === 'optin')){
-                Facebook.SendMessage(sender, 'Nice, nice. Dronic is happy you are' +
-                    'visiting him! Mrrrr....');
-            }
-
-        }
+        Facebook.WatsonReply(req.body);
         res.sendStatus(200);
 
      //   facebook_handler(req.body)
-
      //   res.send('ok')
     });
 
@@ -57,7 +34,7 @@ module.exports =  (app) => {
             source: "subscribe form",
             date: new Date()
         };
-        Mongo.AddUser(data);
+        Mongo.AddEmail(data);
         res.sendStatus(200);
     });
 
@@ -76,9 +53,5 @@ module.exports =  (app) => {
 
     app.get('/terms-of-use', (req, res) =>{
         res.render('terms.ejs');
-    });
-
-    app.get('/archive', (req, res) => {
-        Mongo.ReadConversation(req,res);
     });
 }

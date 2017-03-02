@@ -1,10 +1,10 @@
 require('dotenv').config({silent: true});
 
-const MongoClient = require('mongodb').MongoClient;
+var MongoClient = require('mongodb').MongoClient;
 var Sendgrid = require('./sendgrid');
+var mongoUri = process.env.MONGODB_URI;
 
-function pullLastConversation(facebook, watson){
-
+function popConversation(facebook, watson){
     MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
         if (err) return console.log(err);
         database.collection('conversations').find({"id": facebook.data.id}).sort({"date": -1}).limit(1)
@@ -12,46 +12,6 @@ function pullLastConversation(facebook, watson){
                 watson(facebook, err, result);
             });
     });
-}
-
-function readConversation(req, res) {
-    MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
-        if (err) return console.log(err);
-        database.collection('conversations')
-            .find({id: req.headers.host})
-            .toArray((err, result) => {
-                if (err){
-                    return console.log(err);
-                }
-                res.render('archive.ejs', {payloads: result});
-            });
-    });
-}
-
-//user sign up
-function addUser(data) {
-    MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
-        database.collection('users').save(data, (err)=>{
-            if(err)
-                return console.log(err);
-            Sendgrid.NotifyAdmin(data);
-            console.log("An user: " + data.email + ' from : ' + data.source + ' was added');
-        })
-    });
-}
-
-function getUser(userid) {
-
-}
-
-function logUserEmail(email, source){
-    var data = {
-            email: email,
-            message: 'an user from Dronic',
-            source: source,
-            date: new Date()
-    };
-    addUser(data);
 }
 
 function pushConversation(sessionId, response, source){
@@ -68,25 +28,69 @@ function pushConversation(sessionId, response, source){
         });
     });
     if(response.entities && response.entities[0] && response.entities[0].entity ==="email"){
-        logUserEmail(response.input.text, source);
+        var data = {
+            email: response.input.text,
+            message: 'an user from Dronic',
+            source: source,
+            date: new Date()
+        };
+        var callback = (data ,err) => {
+            if(err)
+                return console.log(err);
+            Sendgrid.NotifyAdmin(data);
+        };
+        saveEmail(data, callback);
     }
+}
+
+//user sign up
+function saveEmail(data, callback) {
+    MongoClient.connect(mongoUri, (err, database) => {
+        database.collection('emails').save(data, (err)=>{
+            if(callback)
+                callback(data, err);
+        })
+    });
+}
+
+function getUser(userid) {
+    MongoClient.connect(mongoUri, (err, db) =>{
+        if (err) return null;
+        db.collection('users').findOne({"id": userid});
+    });
+}
+
+function saveUser(data) {
+    if(getUser(data.id)) return console.log(data.id + ' user already in db');
+    MongoClient.connect(mongoUri, (err, db) => {
+       if(err) return console.log(err);
+        db.collection('users').save(data, (err) => {
+            if (err)
+                return console.log(err);
+        });
+    });
 }
 
 module.exports = {
 
-    AddUser: (data) => {
-        addUser(data);
+    AddEmail: (data) => {
+        var callback = (data ,err) => {
+            if(err)
+                return console.log(err);
+            Sendgrid.NotifyAdmin(data);
+        };
+        saveEmail(data, callback);
+    },
+
+    SaveUser: (data) => {
+        saveUser(data);
     },
 
     PushConversation: (sessionId, response, source) => {
         pushConversation(sessionId, response, source);
     },
 
-    ReadConversation: (req,res) =>{
-        readConversation(req,res);
-    },
-
-    PullLastConversation: (facebook, watson) => {
-        pullLastConversation(facebook, watson);
+    PopConversation: (facebook, watson) => {
+        popConversation(facebook, watson);
     }
 }

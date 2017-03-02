@@ -1,9 +1,8 @@
 require('dotenv').config({silent: true});
 
-
-
 var Request = require('request');
-
+var Mongo = require('./mongo');
+var Watson = require('./watson');
 
 function sendMessage(recipientId, message) {
     var messageData = {
@@ -113,8 +112,8 @@ function setUpGreeting(controller){
     })
 }
 
-
 module.exports = {
+
     SendMessage: (id, message) => {
         sendMessage(id, message);
     },
@@ -125,6 +124,32 @@ module.exports = {
             res.send('Invalid verify token!');
         }
     },
+
+    WatsonReply: (body) => {
+        var events = body.entry[0].messaging;
+        for (var i = 0; i < events.length; i++) {
+            var event = events[i];
+            var sender = event.sender.id;
+            if (event.message && event.message.text) {
+                var facebook = {
+                    data: {
+                        id: sender,
+                        text: event.message.text
+                    },
+                    message: sendMessage,
+                    mongo: Mongo.PushConversation
+                };
+                Mongo.PopConversation(facebook, Watson.FacebookRequest);
+            }
+            else if(event.optin ||
+                (event.postback &&
+                event.postback.payload === 'optin')){
+                sendMessage(sender, 'Nice, nice. Dronic is happy you are' +
+                    'visiting him! Mrrrr....');
+            }
+        }
+    },
+
     SubscribePageEvents: (controller) => {
         subscribePageEvents(controller)
     },

@@ -14,9 +14,7 @@ const conversation = new watson({
     version: 'v1'
 });
 
-
-function dronicRequest(req, res, log) {
-    var sessionId = req.sessionID;
+function getPayload(data){
     var workspace = process.env.WORKSPACE_ID;
     if (!workspace) {
         return {
@@ -33,63 +31,41 @@ function dronicRequest(req, res, log) {
         context: {},
         input: {}
     };
-    if (req.body) {
-        if (req.body.input) {
-            payload.input = req.body.input;
-        }
-        if (req.body.context) {
-            // The client must maintain context/state
-            payload.context = req.body.context;
-        }
+
+    if (input) {
+        payload.input = data.input;
     }
+    if (context) {
+        // The client must maintain context/state
+        payload.context = data.context;
+    }
+    return payload;
+}
+
+function dronicRequest(sessionid, body, res, log) {
+
+    var payload = getPayload(body.input, body.context);
     // Send the input to the conversation service
     conversation.message(payload, (err, data) => {
         if (err) {
             return res.status(err.code || 500).json(err);
         }
-        return res.json(updateMessage(sessionId, data, log));
+        return res.json(updateMessage(sessionid, data, log));
     });
 }
 
 function facebookRequest(facebook, err, result){
-    var loggedContext = null;
-    var workspace = process.env.WORKSPACE_ID;
-    if (!workspace) {
-        return {
-            'output': {
-                'text': 'The app has not been configured with a <b>WORKSPACE_ID</b> environment variable. Please refer to the ' +
-                '<a href="https://github.com/watson-developer-cloud/conversation-simple">README</a> documentation on how to set this variable. <br>' +
-                'Once a workspace has been defined the intents may be imported from ' +
-                '<a href="https://github.com/watson-developer-cloud/conversation-simple/blob/master/training/car_workspace.json">here</a> in order to get a working application.'
-            }
-        };
-    }
-
-    var payload = {
-        workspace_id: workspace,
-        context: {},
-        input: {}
-    };
-    if (facebook.data.text) {
-        payload.input = {
-            text: facebook.data.text
-        };
-        payload.context.facebook=true;
-    }
-
     if (err) {
-        console.log("Facebook Request Error: " + err);
-    }else if(result&& result.length>0){
-        loggedContext = result[0];
+        return console.log("Facebook Request Error: " + err);
     }
-    if (loggedContext && loggedContext.response.context) {
-        payload.context = loggedContext.response.context;
-        payload.context.facebook = true;
-    } else {
-        payload.context = {
-            facebook: true
-        };
+    var body = {};
+    if(facebook.data)
+        body.text = facebook.data.text;
+    if (result[0] && result[0].response.context) {
+        body.context = result[0].response.context;
     }
+    var payload = getPayload({input: body.text,context: body.context});
+    payload.context.facebook = true;
 
     // Send the input to the conversation service
     conversation.message(payload, (err, data) => {
@@ -128,16 +104,16 @@ function facebookRequest(facebook, err, result){
  * @param  {Object} response The response from the Conversation service
  * @return {Object}          The response with the updated message
  */
-function updateMessage(sessionId, response, log) {
+function updateMessage(sessionId, data, log) {
     var responseText = null;
-    if (!response.output) {
-        response.output = {};
+    if (!data.output) {
+        data.output = {};
     } else if(log) {
-        log(sessionId, response, "dronic.io chat");
-        return response;
+        log(sessionId, data, "dronic.io chat");
+        return data;
     }
-    if (response.intents && response.intents[0]) {
-        var intent = response.intents[0];
+    if (data.intents && data.intents[0]) {
+        var intent = data.intents[0];
         // Depending on the confidence of the response the app can return different messages.
         // The confidence will vary depending on how well the system is trained. The service will always try to assign
         // a class/intent to the input. If the confidence is low, then it suggests the service is unsure of the
@@ -151,18 +127,17 @@ function updateMessage(sessionId, response, log) {
             responseText = 'I didn t get that. Perhaps I need more training. And sometimes only a human can help';
         }
     }
-    response.output.text = responseText;
+    data.output.text = responseText;
     if(log)
-        log(sessionId,response, "dronic.io chat");
-    return response;
+        log(sessionId,data, "dronic.io chat");
+    return data;
 }
-
 
 module.exports = {
 
-    DronicRequest: (req,res, log) =>
+    DronicRequest: (req, res, log) =>
     {
-        dronicRequest(req, res, log);
+        dronicRequest(req.sessionID,req.body, res, log);
     },
 
     FacebookRequest: (facebook, err, result) =>

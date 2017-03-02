@@ -3,29 +3,27 @@
 // CONFIG===============================================
 /* Uses the slack button feature to offer a real time bot to multiple teams */
 var Botkit = require('botkit');
-var mongoUri = process.env.MONGODB_URI;
-var db = require('../config/db')({mongoUri: mongoUri});
+var Mongo = require('./mongo');
 
 var controller = Botkit.facebookbot({
     debug: true,
     access_token: process.env.FACEBOOK_PAGE_ACCESS_TOKEN,
     verify_token: process.env.FACEBOOK_PAGE_VERIFY_TOKEN,
-    storage: db,
     stats_optout: true
 })
 
 var bot = controller.spawn({});
 
 // SETUP
-var facebook = require('./facebook_setup')(controller);
+require('./facebook_setup')(controller);
 
 // Conversation logic
 require('./conversations')(controller);
 
 // this function processes the POST request to the webhook
-var handler = function (obj) {
+var handler =  (obj) => {
     controller.debug('Message received from FB')
-    var message
+    var message;
     if (obj.entry) {
         for (var e = 0; e < obj.entry.length; e++) {
             for (var m = 0; m < obj.entry[e].messaging.length; m++) {
@@ -107,15 +105,8 @@ var handler = function (obj) {
     }
 }
 
-var create_user_if_new = function (id, ts) {
-    controller.storage.users.get(id, function (err, user) {
-        if (err) {
-            console.log(err)
-        }
-        else if (!user) {
-            controller.storage.users.save({id: id, created_at: ts})
-        }
-    })
+var create_user_if_new = (id, ts) => {
+    Mongo.SaveUser({id: id, created_at: ts});
 }
 
 exports.handler = handler

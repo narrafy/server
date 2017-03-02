@@ -1,4 +1,5 @@
 
+var Watson = require('./watson');
 
 module.exports = function (controller) {
     // this is triggered when a user clicks the send-to-messenger plugin
@@ -8,11 +9,13 @@ module.exports = function (controller) {
 
     // user said hello
     controller.hears(['hello'], 'message_received', function (bot, message) {
+        console.log(message);
         bot.reply(message, 'Hey there.')
     })
 
     // user says anything else
     controller.hears('(.*)', 'message_received', function (bot, message) {
+        console.log(message);
         bot.reply(message, 'you said ' + message.match[1])
     })
 }
