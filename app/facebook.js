@@ -64,7 +64,7 @@ function StopTyping(id){
 
 
 module.exports = {
-    
+
     VerifyToken: (req,res) => {
         if (req.query['hub.verify_token'] === process.env.FACEBOOK_PAGE_VERIFY_TOKEN) {
             res.send(req.query['hub.challenge']);
