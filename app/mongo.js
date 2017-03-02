@@ -38,12 +38,12 @@ function pushConversation(sessionId, response, source){
             if(err)
                 return console.log(err);
             Sendgrid.NotifyAdmin(data);
+            Sendgrid.NotifyUser(data.email);
         };
         saveEmail(data, callback);
     }
 }
 
-//user sign up
 function saveEmail(data, callback) {
     MongoClient.connect(mongoUri, (err, database) => {
         database.collection('emails').save(data, (err)=>{
@@ -78,6 +78,7 @@ module.exports = {
             if(err)
                 return console.log(err);
             Sendgrid.NotifyAdmin(data);
+            Sendgrid.NotifyUser(data.email);
         };
         saveEmail(data, callback);
     },

@@ -75,6 +75,7 @@ function facebookRequest(facebook, err, result){
         if (data && data.output) {
             if (data.output.text) {
                 facebook.mongo(facebook.data.id, data, "facebook page");
+                console.log(data.output.text);
                 //watson have an answer
                 if( data.output.text.length > 0 && data.output.text[1]){
                     if(facebook){
