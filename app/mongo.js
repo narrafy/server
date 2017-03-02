@@ -21,7 +21,7 @@ function popConversation(facebook, watson){
 function pushConversation(sessionId, response, source){
     var toStore = {
         id: sessionId,
-        response: response,
+        context: response,
         source: source,
         date: new Date()
     };

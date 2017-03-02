@@ -47,9 +47,9 @@ module.exports = function (controller) {
         console.log(message);
         var input = message.match[1];
 
-        Mongo.Connect((err, database) => {
+        Mongo.Connect((err, db) => {
             if (err) return console.log(err);
-            database.collection('conversations').find({"id": message.user}).sort({"date": -1}).limit(1)
+            db.collection('conversations').find({"id": message.user}).sort({"date": -1}).limit(1)
                 .toArray((err, result) => {
                     if (err) {
                         return console.log("Facebook Request Error: " + err);
@@ -62,6 +62,7 @@ module.exports = function (controller) {
                     }
                     var payload = getPayload({input: body.input, context: body.context});
                     payload.context.facebook = true;
+                    console.log(payload);
 
                     // Send the input to the conversation service
                     Watson.Message(payload, (err, data) => {
@@ -71,7 +72,6 @@ module.exports = function (controller) {
                         if (data && data.output) {
                             if (data.output.text) {
                                 Mongo.PushConversation(message.user, data, "facebook page");
-                                console.log(data.output.text);
                                 //watson have an answer
                                 if( data.output.text.length > 0 && data.output.text[1]){
                                     bot.reply(message, data.output.text[0] +' '+ data.output.text[1]);
@@ -80,7 +80,7 @@ module.exports = function (controller) {
                                 }
                             }
                         } else {
-                            bot.reply(message, 'I am busy. Probably training.' +
+                            bot.reply(message, 'I am busy. Probably training. ' +
                                     'Please write me later!');
                         }
                     });
