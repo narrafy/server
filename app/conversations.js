@@ -1,6 +1,18 @@
 
-var Watson = require('./watson');
 var Mongo = require('./mongo');
+
+const watson = require('watson-developer-cloud/conversation/v1');
+
+// Create the service wrapper
+const conversation = new watson({
+    // If unspecified here, the CONVERSATION_USERNAME and CONVERSATION_PASSWORD env properties will be checked
+    // After that, the SDK will fall back to the bluemix-provided VCAP_SERVICES environment property
+    username: process.env.CONVERSATION_USERNAME,
+    password: process.env.CONVERSATION_PASSWORD,
+    url: process.env.CONVERSATION_URL,
+    version_date: '2016-09-20',
+    version: 'v1'
+});
 
 function getPayload(data){
     var workspace = process.env.WORKSPACE_ID;
@@ -63,7 +75,7 @@ module.exports = function (controller) {
                     console.log("================End Payload to Send==================");
 
                     // Send the input to the conversation service
-                    Watson.Message(payload, (err, data) => {
+                    conversation.message(payload, (err, data) => {
                         if (err) {
                             bot.reply(message, err);
                         }

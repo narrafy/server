@@ -73,7 +73,6 @@ function facebookRequest(facebook, err, result){
         body.context = result[0].response.context;
     }
     var payload = getPayload({input: body.text, context: body.context});
-    payload.context.facebook = true;
 
     // Send the input to the conversation service
     conversation.message(payload, (err, data) => {
@@ -92,10 +91,8 @@ function facebookRequest(facebook, err, result){
                 }
             }
         } else {
-            if(facebook){
                 facebook.message(facebook.data.id, 'I am busy. Probably training.' +
                     'Please write me later!');
-            }
         }
     });
 }
