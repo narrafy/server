@@ -24,7 +24,7 @@ function popContext(input){
     Connect((err, database) =>
     {
         if (err) return console.log(err);
-        database.collection('conversations').find({"id": input.conversation_id}).sort({"date": -1}).limit(1)
+        database.collection('conversations').find({"id": input.id}).sort({"date": -1}).limit(1)
             .toArray((err, result) => {
                 if (err) {
                     return console.log("Error popConversation function: " + err);
@@ -55,8 +55,8 @@ function popContext(input){
                             }
                             if(text) {
                                 fb.SendMessage(body.id, text);
-                                console.log("Watson replies with: " + text + " " + input.conversation_id);
-                                pushContext(input.conversation_id, data, "facebook page");
+                                console.log("Watson replies with: " + text + " " + input.id);
+                                pushContext(input.id, data, "facebook page");
                             }
                         }
                     } else {
@@ -163,7 +163,6 @@ function webRequest(id, body, res) {
 
 function facebookRequest(body) {
     var events = body.entry[0].messaging;
-    var conversation_id = body.entry[0].id;
     for (var i = 0; i < events.length; i++) {
         var event = events[i];
         //we don't reply to our own process
@@ -171,8 +170,7 @@ function facebookRequest(body) {
             console.log("user: " + event.sender.id + " says  " + event.message.text);
             var data = {
                 id: event.sender.id,
-                text: event.message.text,
-                conversation_id: conversation_id
+                text: event.message.text
             };
             fb.StartTyping(data.id);
             popContext(data);
