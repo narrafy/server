@@ -1,9 +1,9 @@
 require('dotenv').config({silent: true});
 
-var MongoDb = require('mongodb').MongoClient;
-var Sendgrid = require('./sendgrid');
+var md = require('mongodb').MongoClient;
+var sg = require('./sendgrid');
+var fb = require('./facebook');
 const watson = require('watson-developer-cloud/conversation/v1');
-var Facebook = require('./facebook');
 
 // Create the service wrapper
 const conversation = new watson({
@@ -15,6 +15,99 @@ const conversation = new watson({
     version_date: '2016-09-20',
     version: 'v1'
 });
+
+function Connect(callback){
+    md.connect(process.env.MONGODB_URI, callback);
+}
+
+function popContext(input){
+    Connect((err, database) =>
+    {
+        if (err) return console.log(err);
+        database.collection('conversations').find({"id": input.conversation_id}).sort({"date": -1}).limit(1)
+            .toArray((err, result) => {
+                if (err) {
+                    return console.log("Error popConversation function: " + err);
+                }
+                var body = {};
+                if(input){
+                    body.text = input.text;
+                    body.id = input.id;
+                }
+
+                if (result[0] && result[0].response.context) {
+                    body.context = result[0].response.context;
+                }
+                // Send the input to the conversation service
+                SendMessage(body, (err, data) => {
+                    if (err) {
+                        console.log("Error in conversation.message function: " + err);
+                        fb.SendMessage(body.id, err);
+                    }
+                    if (data && data.output) {
+                        if (data.output.text && data.output.text) {
+                            //watson have an answer
+                            var text = '';
+                            if( data.output.text.length > 0 && data.output.text[1]){
+                                text = data.output.text[0] + ' ' + data.output.text[1];
+                            } else if(data.output.text[0]) {
+                                text = data.output.text[0];
+                            }
+                            if(text) {
+                                fb.SendMessage(body.id, text);
+                                console.log("Watson replies with: " + text + " " + input.conversation_id);
+                                pushContext(input.conversation_id, data, "facebook page");
+                            }
+                        }
+                    } else {
+                        fb.SendMessage(input.id, 'I am busy. Probably training.' +
+                            'Please write me later!');
+                    }
+                });
+            });
+    });
+}
+
+function pushContext(id, response, source){
+    var toStore = {
+        id: id,
+        response: response,
+        source: source,
+        date: new Date()
+    };
+    Connect((err, database) => {
+        database.collection('conversations').save(toStore, (err) => {
+            if (err)
+                return console.log(err);
+        });
+    });
+    if(response.entities &&
+        response.entities[0] &&
+        response.entities[0].entity ==="email"){
+        var data = {
+            email: response.input.text,
+            message: 'an user from Dronic',
+            source: source,
+            date: new Date()
+        };
+        var callback = (data ,err) => {
+            if(err)
+                return console.log(err);
+            sg.NotifyAdmin(data);
+            sg.NotifyUser(data.email);
+        };
+        saveEmail(data, callback);
+    }
+}
+
+function saveEmail(data, callback) {
+    Connect((err, database) => {
+        database.collection('emails').save(data, (err)=>{
+            if(callback)
+                callback(data, err);
+        })
+    });
+}
 
 function getPayload(data){
     var workspace = process.env.WORKSPACE_ID;
@@ -44,129 +137,101 @@ function getPayload(data){
     return payload;
 }
 
-function Connect(callback){
-    MongoDb.connect(process.env.MONGODB_URI, callback);
+function SendMessage(data, cb){
+    var payload = getPayload(data);
+    conversation.message(payload, cb);
 }
 
-function popContext(input){
-    Connect((err, database) =>
-    {
-        if (err) return console.log(err);
-        database.collection('conversations').find({"id": input.id}).sort({"date": -1}).limit(1)
-            .toArray((err, result) => {
-                if (err) {
-                    return console.log("Error popConversation function: " + err);
-                }
-                var body = {};
-                if(input)
-                    body.text = input.text;
-                if (result[0] && result[0].response.context) {
-                    body.context = result[0].response.context;
-                }
-                var payload = getPayload({text: body.text, context: body.context});
-
-                // Send the input to the conversation service
-                conversation.message(payload, (err, data) => {
-                    if (err) {
-                        console.log("Error in conversation.message function: " + err);
-                        Facebook.SendMessage(input.id, err);
-                    }
-                    if (data && data.output) {
-                        if (data.output.text && data.output.text) {
-                            //watson have an answer
-                            if( data.output.text.length > 0 && data.output.text[1]){
-                                pushContext(input.id, data, "facebook page");
-                                console.log("Watson replies with: " + data.output.text);
-                                Facebook.SendMessage(input.id, data.output.text[0] + ' ' + data.output.text[1]);
-                            } else if(data.output.text[0]) {
-                                console.log("Watson replies with: " + data.output.text);
-                                pushContext(input.id, data, "facebook page");
-                                Facebook.SendMessage(input.id, data.output.text[0]);
-                            }
-                        }
-                    } else {
-                        Facebook.SendMessage(input.id, 'I am busy. Probably training.' +
-                            'Please write me later!');
-                    }
-                });
-            });
+function webRequest(id, body, res) {
+    var data = {};
+    if(body){
+        if(body.input){
+            data.text = body.input.text;
+        }
+        if(body.context){
+            data.context = body.context;
+        }
+    }
+    // Send the input to the conversation service
+    SendMessage(data, (err, data) => {
+        if (err) {
+            return res.status(err.code || 500).json(err);
+        }
+        return res.json(updateMessage(id, data));
     });
 }
 
-function pushContext(sessionId, response, source){
-    var toStore = {
-        id: sessionId,
-        response: response,
-        source: source,
-        date: new Date()
-    };
-    Connect((err, database) => {
-        database.collection('conversations').save(toStore, (err) => {
-            if (err)
-                return console.log(err);
-        });
-    });
-    if(response.entities && response.entities[0] && response.entities[0].entity ==="email"){
-        var data = {
-            email: response.input.text,
-            message: 'an user from Dronic',
-            source: source,
-            date: new Date()
-        };
-        var callback = (data ,err) => {
-            if(err)
-                return console.log(err);
-            Sendgrid.NotifyAdmin(data);
-            Sendgrid.NotifyUser(data.email);
-        };
-        saveEmail(data, callback);
+function facebookRequest(body) {
+    var events = body.entry[0].messaging;
+    var conversation_id = body.entry[0].id;
+    for (var i = 0; i < events.length; i++) {
+        var event = events[i];
+        //we don't reply to our own process
+        if (event.message && event.message.text && event.sender.id!== process.env.DRONIC_CHATBOT_ID) {
+            console.log("user: " + event.sender.id + " says  " + event.message.text);
+            var data = {
+                id: event.sender.id,
+                text: event.message.text,
+                conversation_id: conversation_id
+            };
+            fb.StartTyping(data.id);
+            popContext(data);
+        }
+        else if(event.optin ||
+            (event.postback &&
+            event.postback.payload === 'optin')){
+            fb.SendMessage(sender, 'Nice, nice. Dronic is happy you are' +
+                'visiting him! Mrrrr....');
+        }
     }
 }
 
-function saveEmail(data, callback) {
-    Connect((err, database) => {
-        database.collection('emails').save(data, (err)=>{
-            if(callback)
-                callback(data, err);
-        })
-    });
-}
-
-function getUser(userid) {
-    Connect((err, db) =>{
-        if (err) return null;
-        db.collection('users').findOne({"id": userid});
-    });
-}
-
-function saveUser(data) {
-    if(getUser(data.id)) return console.log(data.id + ' user already in db');
-    Connect((err, db) => {
-       if(err) return console.log(err);
-        db.collection('users').save(data, (err) => {
-            if (err)
-                return console.log(err);
-        });
-    });
+function updateMessage(id, data) {
+    var responseText = null;
+    if (!data.output) {
+        data.output = {};
+    } else {
+        pushContext(id, data, "dronic.io chat");
+        if(data.output.text && data.output.text[0])
+            return data;
+    }
+    if (data.intents && data.intents[0]) {
+        var intent = data.intents[0];
+        // Depending on the confidence of the response the app can return different messages.
+        // The confidence will vary depending on how well the system is trained. The service will always try to assign
+        // a class/intent to the input. If the confidence is low, then it suggests the service is unsure of the
+        // user's intent . In these cases it is usually best to return a disambiguation message
+        // ('I did not understand your intent, please rephrase your question', etc..)
+        if (intent.confidence >= 0.75) {
+            responseText = "I understood you but I don't have an answer yet. Could you rephrase your question? ";
+        } else {
+            responseText = 'I didn t get that. Sometimes only a human can help. Wanna see one ?';
+            data.context.app_request = true;
+        }
+    }
+    data.output.text = responseText;
+    pushContext(id, data, "dronic.io chat");
+    return data;
 }
 
 module.exports = {
 
     AddEmail: (data) => {
-        var callback = (data ,err) => {
-            if(err)
+        var callback = (data, err) => {
+            if (err)
                 return console.log(err);
-            Sendgrid.NotifyAdmin(data);
-            Sendgrid.NotifyUser(data.email);
+            sg.NotifyAdmin(data);
+            sg.NotifyUser(data.email);
         };
         saveEmail(data, callback);
     },
 
-    PushContext: (sessionId, response, source) => {
-        pushContext(sessionId, response, source);
+    WebRequest: (req, res) =>{
+        webRequest(req.sessionID, req.body, res);
     },
 
-    PopContext: (data) => {
-        popContext(data);
-    },
+    FacebookRequest: (req, res) => {
+      facebookRequest(req.body);
+    }
+
 }

@@ -1,44 +1,26 @@
 // app/routes.js
 require('dotenv').config({silent: true});
 
-const M = require('./mongo');
-const Watson = require('./watson');
+const Mongo = require('./mongo');
 const Facebook = require('./facebook');
 
 
 module.exports =  (app) => {
+
+    Facebook.RemovePersistentMenu;
+    Facebook.AddPeristentMenu;
 
     app.get('/webhook', function (req, res) {
         Facebook.VerifyToken(req,res);
     });
 
     app.post('/webhook', function (req, res) {
-
-        var events = req.body.entry[0].messaging;
-        for (var i = 0; i < events.length; i++) {
-            var event = events[i];
-            var sender = event.sender.id;
-            if (event.message && event.message.text) {
-                var data = {
-                    id: sender,
-                    text: event.message.text
-                };
-                Facebook.StartTyping(sender);
-                M.PopContext(data);
-            }
-            else if(event.optin ||
-                (event.postback &&
-                event.postback.payload === 'optin')){
-                Facebook.SendMessage(sender, 'Nice, nice. Dronic is happy you are' +
-                    'visiting him! Mrrrr....');
-            }
-        }
+        Mongo.FacebookRequest(req, res);
         res.sendStatus(200);
     });
 
     app.post('/api/message', function (req, res) {
-
-        Watson.DronicRequest(req, res);
+        Mongo.WebRequest(req, res);
     });
 
     app.post('/api/subscribe',  (req, res) => {
@@ -48,7 +30,7 @@ module.exports =  (app) => {
             source: "subscribe form",
             date: new Date()
         };
-        M.AddEmail(data);
+        Mongo.AddEmail(data);
         res.sendStatus(200);
     });
 

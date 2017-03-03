@@ -28,6 +28,7 @@ app.use(flash()); //use connect-flash for flash messages stored in session
 
 require('./app/routes.js')(app);
 
+
 app.use(express.static(__dirname + "/public"));
 var port = process.env.PORT || 3000;
 

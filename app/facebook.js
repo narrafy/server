@@ -48,6 +48,64 @@ function StartTyping(id){
     }
 }
 
+function addPersistentMenu(){
+    Request({
+        url: 'https://graph.facebook.com/v2.8/me/thread_settings',
+        qs: { access_token: process.env.FACEBOOK_PAGE_ACCESS_TOKEN },
+        method: 'POST',
+        json:{
+            setting_type : "call_to_actions",
+            thread_state : "existing_thread",
+            call_to_actions:[
+                {
+                    type:"postback",
+                    title:"i'm an investor",
+                    payload:"investor"
+                },
+                {
+                    type:"web_url",
+                    title:"our website",
+                    url:"https://www.dronic.io"
+                },
+                {
+                    type:"web_url",
+                    title:"our tech blog",
+                    url:"http://tech.dronic.io"
+                }
+            ]
+        }
+
+    }, function(error, response, body) {
+        console.log(response)
+        if (error) {
+            console.log('Error sending messages: ', error)
+        } else if (response.body.error) {
+            console.log('Error: ', response.body.error)
+        }
+    })
+
+}
+
+function removePersistentMenu(){
+    Request({
+        url: 'https://graph.facebook.com/v2.8/me/thread_settings',
+        qs: {access_token: process.env.FACEBOOK_PAGE_ACCESS_TOKEN },
+        method: 'POST',
+        json:{
+            setting_type : "call_to_actions",
+            thread_state : "existing_thread",
+            call_to_actions:[ ]
+        }
+
+    }, function(error, response, body) {
+        console.log(response)
+        if (error) {
+            console.log('Error sending messages: ', error)
+        } else if (response.body.error) {
+            console.log('Error: ', response.body.error)
+        }
+    })
+}
 
 module.exports = {
 
@@ -64,6 +122,7 @@ module.exports = {
 
     StartTyping: (id) => {
         StartTyping(id);
-    }
-
+    },
+    RemovePersistentMenu: removePersistentMenu(),
+    AddPeristentMenu: addPersistentMenu(),
 };
