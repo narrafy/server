@@ -69,8 +69,8 @@ function addPersistentMenu(){
                 },
                 {
                     type:"web_url",
-                    title:"our tech blog",
-                    url:"http://tech.dronic.io"
+                    title:"our blog",
+                    url:"https://tech.dronic.io"
                 }
             ]
         }

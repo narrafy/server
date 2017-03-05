@@ -231,5 +231,4 @@ module.exports = {
     FacebookRequest: (req, res) => {
       facebookRequest(req.body);
     }
-
 }
