@@ -46,6 +46,7 @@ function popContext(input){
                     }
                     if (data && data.output) {
                         if (data.output.text && data.output.text) {
+                            fb.StopTyping(input.id);
                             //watson have an answer
                             var text = '';
                             if( data.output.text.length > 0 && data.output.text[1]){

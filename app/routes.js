@@ -9,6 +9,7 @@ module.exports =  (app) => {
 
     Facebook.RemovePersistentMenu;
     Facebook.AddPeristentMenu;
+    Facebook.Greet;
 
     app.get('/webhook', function (req, res) {
         Facebook.VerifyToken(req,res);

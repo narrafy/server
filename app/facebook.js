@@ -48,6 +48,50 @@ function StartTyping(id){
     }
 }
 
+function StopTyping(id){
+    if(id && id!=='378327679207724'){
+        Request({
+            url: process.env.FB_GRAPH_MSG_URL,
+            qs: {access_token: process.env.FACEBOOK_PAGE_ACCESS_TOKEN},
+            method: 'POST',
+            json: {
+                recipient: {id: id},
+                sender_action: "typing_off"
+            }
+        }, function (error, response) {
+            if (error) {
+                console.log('Error sending message: ', error);
+            } else if (response.body.error) {
+                console.log('Error: ', response.body.error);
+            }
+        });
+    }
+}
+
+function Greet(){
+    Request({
+        url: 'https://graph.facebook.com/v2.8/me/thread_settings',
+        qs: {access_token: process.env.FACEBOOK_PAGE_ACCESS_TOKEN },
+        method: 'POST',
+        json:{
+            setting_type : "greeting",
+            greeting:{
+                text: "hi! I'm Dronic, your narrative assistant! How are you?"
+            },
+            thread_state : "existing_thread"
+        }
+
+    }, function(error, response, body) {
+        console.log(response)
+        if (error) {
+            console.log('Error sending messages: ', error)
+        } else if (response.body.error) {
+            console.log('Error: ', response.body.error)
+        }
+    })
+}
+
+
 function addPersistentMenu(){
     Request({
         url: 'https://graph.facebook.com/v2.8/me/thread_settings',
@@ -123,6 +167,10 @@ module.exports = {
     StartTyping: (id) => {
         StartTyping(id);
     },
+    StopTyping: (id) => {
+        StopTyping(id)
+    },
     RemovePersistentMenu: removePersistentMenu(),
     AddPeristentMenu: addPersistentMenu(),
+    Greet: Greet()
 };

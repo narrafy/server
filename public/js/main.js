@@ -27,8 +27,10 @@ $(function() {
   }
 
   $navItems.each(function() {
-    console.log($(this).find('a').attr('href'));
-    navItems.push($(this).find('a').attr('href'));
+    var itm = $(this).find('a').attr('href');
+    if(!itm.startsWith('https')) {
+      navItems.push($(this).find('a').attr('href'));
+    }
   });
 
   handleToTopVisibility();
@@ -54,7 +56,6 @@ $(function() {
   $toTop.on('click', onNavClick);
 
   function onNavClick(e) {
-    e.preventDefault();
     var $this = $(this);
     var id = $this.prop('tagName') === 'A' ? $this.attr('href') : $this.find('a').attr('href');
     var offset = offsetTop($(id));
