@@ -160,6 +160,7 @@ module.exports = {
             res.send('Invalid verify token!');
         }
     },
+
     SendMessage: (id, message) => {
         sendMessage(id, message);
     },

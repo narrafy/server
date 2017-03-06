@@ -29,7 +29,7 @@ function notifyUser(email) {
     var toEmail = new MailHelper.Email(email);
     var subject = "message received";
     var content = new MailHelper.Content('text/plain', "Hey, I'm Dronic. Your narrative assistant. Just " +
-        "wanted to let you know that you have some good taste! Ok, I'm back to training. Getting smarter and stuff.");
+        "wanted to let you know that you have some good taste! Going back to training, getting smarter and stuff.");
     var mail = new MailHelper.Mail(fromEmail, subject, toEmail, content);
     sendEmail(mail);
 }
