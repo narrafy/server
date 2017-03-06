@@ -3,7 +3,7 @@ require('dotenv').config({silent: true});
 const Request = require('request');
 
 function sendMessage(id, message) {
-    if(id && id!=='378327679207724'){
+    if(id && id !== process.env.DRONIC_CHATBOT_ID){
         var messageData = {
             text: message
         };
@@ -49,7 +49,7 @@ function StartTyping(id){
 }
 
 function StopTyping(id){
-    if(id && id!=='378327679207724'){
+    if(id && id !== process.env.DRONIC_CHATBOT_ID){
         Request({
             url: process.env.FB_GRAPH_MSG_URL,
             qs: {access_token: process.env.FACEBOOK_PAGE_ACCESS_TOKEN},
