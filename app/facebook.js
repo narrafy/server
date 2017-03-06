@@ -29,7 +29,7 @@ function sendMessage(id, message) {
 }
 
 function StartTyping(id){
-    if(id && id!=='378327679207724'){
+    if(id && id !== process.env.DRONIC_CHATBOT_ID){
         Request({
             url: process.env.FB_GRAPH_MSG_URL,
             qs: {access_token: process.env.FACEBOOK_PAGE_ACCESS_TOKEN},
