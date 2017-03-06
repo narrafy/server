@@ -1,5 +1,5 @@
-# dronic
-we are building the 911 of broken hearts. a narrative assistant to help people in the first 24 hours after a breakup.
+# Dronic - the 911 of broken hearts.
+A narrative assistant to help people in the first 24 hours after a breakup.
 To make the entire thing work. Clone the repo and add a .env configuration file with the following settings.
 
 CONVERSATION_PASSWORD=(get it from your ibm bluemix console)
