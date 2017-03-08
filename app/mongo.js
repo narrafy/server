@@ -21,52 +21,54 @@ function Connect(callback){
 }
 
 function popContext(input){
-    Connect((err, database) =>
-    {
-        if (err) return console.log(err);
-        database.collection('conversations').find({"id": input.id}).sort({"date": -1}).limit(1)
-            .toArray((err, result) => {
-                if (err) {
-                    return console.log("Error popConversation function: " + err);
-                }
-                var body = {};
-                if(input){
-                    body.text = input.text;
-                    body.id = input.id;
-                }
-
-                if (result[0] && result[0].response.context) {
-                    body.context = result[0].response.context;
-                }
-                // Send the input to the conversation service
-                SendMessage(body, (err, data) => {
+    if(input && input.text){
+        Connect((err, database) =>
+        {
+            if (err) return console.log(err);
+            database.collection('conversations').find({"id": input.id}).sort({"date": -1}).limit(1)
+                .toArray((err, result) => {
                     if (err) {
-                        console.log("Error in conversation.message function: " + err);
-                        fb.SendMessage(body.id, err);
+                        return console.log("Error popConversation function: " + err);
                     }
-                    if (data && data.output) {
-                        if (data.output.text && data.output.text) {
-                            fb.StopTyping(input.id);
-                            //watson have an answer
-                            var text = '';
-                            if( data.output.text.length > 0 && data.output.text[1]){
-                                text = data.output.text[0] + ' ' + data.output.text[1];
-                            } else if(data.output.text[0]) {
-                                text = data.output.text[0];
-                            }
-                            if(text) {
-                                fb.SendMessage(body.id, text);
-                                console.log("Watson replies with: " + text + " " + input.id);
-                                pushContext(input.id, data, "facebook page");
-                            }
+                    var body = {
+                        text: input.text,
+                        id: input.id
+                    };
+
+                    if (result[0] && result[0].response.context) {
+                        body.context = result[0].response.context;
+                    }
+                    // Send the input to the conversation service
+                    SendMessage(body, (err, data) => {
+                        if (err) {
+                            console.log("Error in conversation.message function: " + err);
+                            fb.SendMessage(body.id, err);
                         }
-                    } else {
-                        fb.SendMessage(input.id, 'I am busy. Probably training.' +
-                            'Please write me later!');
-                    }
+                        if (data && data.output) {
+                            if (data.output.text && data.output.text) {
+                                fb.StopTyping(input.id);
+                                //watson have an answer
+                                var text = '';
+                                if( data.output.text.length > 0 && data.output.text[1]){
+                                    text = data.output.text[0] + ' ' + data.output.text[1];
+                                } else if(data.output.text[0]) {
+                                    text = data.output.text[0];
+                                }
+                                if(text) {
+                                    fb.SendMessage(body.id, text);
+                                    console.log("Watson replies with: " + text + " " + input.id);
+                                    pushContext(input.id, data, "facebook page");
+                                }
+                            }
+                        } else {
+                            fb.SendMessage(input.id, 'I am busy. Probably training.' +
+                                'Please write me later!');
+                        }
+                    });
                 });
-            });
-    });
+        });
+    }
+
 }
 
 function pushContext(id, response, source){
