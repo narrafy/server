@@ -7,7 +7,7 @@ const Facebook = require('./facebook');
 
 module.exports =  (app) => {
 
-    Facebook.Greet;
+  //  Facebook.Greet;
     Facebook.RemovePersistentMenu;
     Facebook.AddPeristentMenu;
 
