@@ -19,7 +19,7 @@ function sendMessage(id, message) {
             if (error) {
                 console.log('Error sending message: ', error);
             } else if (response.body.error) {
-                console.log('Error in sendind message with user id: '+ id + 'while this message ' + message
+                console.log('Error in sending message with user id: '+ id + 'while this message ' + message
                     + " was sent.");
                 console.log("======================================");
                 console.log(response.body.error);
@@ -68,7 +68,7 @@ function StopTyping(id){
     }
 }
 
-function Greet(){
+function Greet(text){
     Request({
         url: 'https://graph.facebook.com/v2.8/me/thread_settings',
         qs: {access_token: process.env.FACEBOOK_PAGE_ACCESS_TOKEN },
@@ -76,7 +76,7 @@ function Greet(){
         json:{
             setting_type : "greeting",
             greeting:{
-                text: "hi! I'm Dronic, your narrative assistant! How are you?"
+                text: text
             },
             thread_state : "existing_thread"
         }
@@ -173,5 +173,5 @@ module.exports = {
     },
     RemovePersistentMenu: removePersistentMenu(),
     AddPeristentMenu: addPersistentMenu(),
-    Greet: Greet()
+    Greet: (text) => Greet(text)
 };

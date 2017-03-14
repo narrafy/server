@@ -168,11 +168,12 @@ function facebookRequest(body) {
     var events = body.entry[0].messaging;
     for (var i = 0; i < events.length; i++) {
         var event = events[i];
+        var sender = event.sender.id;
         //we don't reply to our own process
         if (event.message && event.message.text && event.sender.id!== process.env.DRONIC_CHATBOT_ID) {
             console.log("user: " + event.sender.id + " says  " + event.message.text);
             var data = {
-                id: event.sender.id,
+                id: sender,
                 text: event.message.text
             };
             fb.StartTyping(data.id);
@@ -181,8 +182,7 @@ function facebookRequest(body) {
         else if(event.optin ||
             (event.postback &&
             event.postback.payload === 'optin')){
-            fb.SendMessage(sender, 'Nice, nice. Dronic is happy you are' +
-                'visiting him! Mrrrr....');
+            fb.SendMessage(sender, "I'm glad you are paying me a visit! how are you?");
         }
     }
 }
