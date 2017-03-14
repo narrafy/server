@@ -7,9 +7,10 @@ const Facebook = require('./facebook');
 
 module.exports =  (app) => {
 
+    Facebook.Greet;
     Facebook.RemovePersistentMenu;
     Facebook.AddPeristentMenu;
-    Facebook.Greet;
+
 
     app.get('/webhook', function (req, res) {
         Facebook.VerifyToken(req,res);

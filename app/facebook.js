@@ -108,12 +108,12 @@ function addPersistentMenu(){
                 },
                 {
                     type:"web_url",
-                    title:"our website",
+                    title:"my website",
                     url:"https://www.dronic.io"
                 },
                 {
                     type:"web_url",
-                    title:"our blog",
+                    title:"my blog",
                     url:"https://tech.dronic.io"
                 }
             ]
