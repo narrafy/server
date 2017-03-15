@@ -86,7 +86,7 @@ function pushContext(id, response, source){
     });
     if(response.entities &&
         response.entities[0] &&
-        response.entities[0].entity ==="email"){
+        response.entities[0].entity === "email"){
         var data = {
             email: response.input.text,
             message: 'an user from Dronic',
