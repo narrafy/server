@@ -163,12 +163,12 @@ function SendFirstRequest(sender){
                 }
                 if(text) {
                     fb.SendMessage(sender, text);
-                    console.log("Watson replies with: " + text + " " + input.id);
+                    console.log("Watson replies with: " + text + " " + sender);
                     pushContext(sender, data, "facebook page");
                 }
             }
         } else {
-            fb.SendMessage(id, 'I am busy. Probably training.' +
+            fb.SendMessage(sender, 'I am busy. Probably training.' +
                 'Please write me later!');
         }
     }
