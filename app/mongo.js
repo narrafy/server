@@ -39,7 +39,8 @@ function popContext(input){
                         body.context = result[0].response.context;
                     }
                     // Send the input to the conversation service
-                    SendMessage(body, (err, data) => {
+                    SendMessage(body,
+                        (err, data) => {
                         if (err) {
                             console.log("Error in conversation.message function: " + err);
                             fb.SendMessage(body.id, err);
@@ -144,6 +145,35 @@ function SendMessage(data, cb){
     var payload = getPayload(data);
     conversation.message(payload, cb);
 }
+function SendFirstRequest(sender){
+
+    var cb = (err, data) => {
+        if (err) {
+            console.log("Error in conversation.message function: " + err);
+        }
+        if (data && data.output) {
+            if (data.output.text && data.output.text) {
+                fb.StopTyping(sender);
+                //watson have an answer
+                var text = '';
+                if( data.output.text.length > 0 && data.output.text[1]){
+                    text = data.output.text[0] + ' ' + data.output.text[1];
+                } else if(data.output.text[0]) {
+                    text = data.output.text[0];
+                }
+                if(text) {
+                    fb.SendMessage(sender, text);
+                    console.log("Watson replies with: " + text + " " + input.id);
+                    pushContext(sender, data, "facebook page");
+                }
+            }
+        } else {
+            fb.SendMessage(id, 'I am busy. Probably training.' +
+                'Please write me later!');
+        }
+    }
+    SendMessage({text:"", context:""}, cb);
+}
 
 function webRequest(id, body, res) {
     var data = {};
@@ -172,17 +202,19 @@ function facebookRequest(body) {
         //we don't reply to our own process
         if (event.message && event.message.text && event.sender.id!== process.env.DRONIC_CHATBOT_ID) {
             console.log("user: " + event.sender.id + " says  " + event.message.text);
+            fb.StartTyping(sender);
             var data = {
                 id: sender,
                 text: event.message.text
             };
-            fb.StartTyping(data.id);
             popContext(data);
         }
+        //user interacts with the page for the first time
         else if(event.optin ||
             (event.postback &&
             event.postback.payload === 'optin')){
-            fb.SendMessage(sender, "I'm glad you are paying me a visit! how are you?");
+            fb.StartTyping(sender);
+            SendFirstRequest(sender);
         }
     }
 }
@@ -233,5 +265,8 @@ module.exports = {
 
     FacebookRequest: (req, res) => {
       facebookRequest(req.body);
+    },
+    FacebookFirstRequest: (sender) => {
+        SendFirstRequest(sender);
     }
 }
