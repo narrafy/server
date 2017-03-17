@@ -46,11 +46,15 @@ function popContext(input){
                                 } else if(data.output.text[0]) {
                                     text = data.output.text[0];
                                 }
-                                //don't send a reply if there is a human talking with the customer
-                                if(text && !data.context.human_request) {
-                                    fb.SendMessage(input.id, text);
-                                    console.log("Watson replies with: " + text + " " + input.id);
-                                    pushContext(input.id, data, "facebook page");
+                                 if(text) {
+                                     //send a notification if a human is needed to take over
+                                     if(data.context && data.context.human_request){
+                                         fb.SendMessage(process.env.ADMIN_FB_ID, "You are needed to help with Dronic");
+                                     } else {
+                                         fb.SendMessage(input.id, text);
+                                     }
+                                     console.log("Watson replies with: " + text + " " + input.id);
+                                     pushContext(input.id, data, "facebook page");
                                 }
                             }
                         } else {
