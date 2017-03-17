@@ -30,17 +30,8 @@ function popContext(input){
                     if (err) {
                         return console.log("Error popConversation function: " + err);
                     }
-                    var body = {
-                        text: input.text,
-                        id: input.id
-                    };
-
-                    if (result[0] && result[0].response.context) {
-                        body.context = result[0].response.context;
-                    }
-                    // Send the input to the conversation service
-                    SendMessage(body,
-                        (err, data) => {
+                   //send a reply to facebook page
+                    var fbCallback = (err, data) => {
                         if (err) {
                             console.log("Error in conversation.message function: " + err);
                             fb.SendMessage(body.id, err);
@@ -55,17 +46,30 @@ function popContext(input){
                                 } else if(data.output.text[0]) {
                                     text = data.output.text[0];
                                 }
-                                if(text) {
-                                    fb.SendMessage(body.id, text);
+                                //don't send a reply if there is a human talking with the customer
+                                if(text && !data.context.human_request) {
+                                    fb.SendMessage(input.id, text);
                                     console.log("Watson replies with: " + text + " " + input.id);
                                     pushContext(input.id, data, "facebook page");
                                 }
                             }
                         } else {
-                            fb.SendMessage(input.id, 'I am busy. Probably training.' +
+                            fb.SendMessage(input.id, 'I am probably training again.' +
                                 'Please write me later!');
                         }
-                    });
+                    };
+
+                    var body = {
+                        text: input.text,
+                        id: input.id
+                    };
+
+                    if (result[0] && result[0].response.context) {
+                        body.context = result[0].response.context;
+                    };
+
+                    // Send the input to the conversation service
+                    SendMessage(body, fbCallback);
                 });
         });
     }
@@ -145,7 +149,7 @@ function SendMessage(data, cb){
     var payload = getPayload(data);
     conversation.message(payload, cb);
 }
-function SendFirstRequest(sender){
+function SendConversationStarter(sender){
 
     var cb = (err, data) => {
         if (err) {
@@ -200,7 +204,8 @@ function facebookRequest(body) {
         var event = events[i];
         var sender = event.sender.id;
         //we don't reply to our own process
-        if (event.message && event.message.text && event.sender.id!== process.env.DRONIC_CHATBOT_ID) {
+        if (event.message && event.message.text &&
+            event.sender.id!== process.env.DRONIC_CHATBOT_ID) {
             console.log("user: " + event.sender.id + " says  " + event.message.text);
             fb.StartTyping(sender);
             var data = {
@@ -214,7 +219,7 @@ function facebookRequest(body) {
             (event.postback &&
             event.postback.payload === 'optin')){
             fb.StartTyping(sender);
-            SendFirstRequest(sender);
+            SendConversationStarter(sender);
         }
     }
 }
@@ -239,7 +244,6 @@ function updateMessage(id, data) {
             responseText = "I understood you but I don't have an answer yet. Could you rephrase your question? ";
         } else {
             responseText = 'I didn t get that. Sometimes only a human can help. Wanna see one ?';
-            data.context.app_request = true;
         }
     }
     data.output.text = responseText;
@@ -265,8 +269,5 @@ module.exports = {
 
     FacebookRequest: (req, res) => {
       facebookRequest(req.body);
-    },
-    FacebookFirstRequest: (sender) => {
-        SendFirstRequest(sender);
     }
 }
