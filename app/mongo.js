@@ -26,12 +26,19 @@ function popContext(input){
         {
             if (err) return console.log(err);
             database.collection('conversations').find({"id": input.id}).sort({"date": -1}).limit(1)
-                .toArray(
-                    (err, result) => {
+                .toArray((err, result) => {
                     if (err) {
                         return console.log("Error popConversation function: " + err);
                     }
-                   //send a reply to facebook page
+                    var body = {
+                        text: input.text,
+                        id: input.id
+                    };
+                    if (result[0] && result[0].response.context) {
+                        body.context = result[0].response.context;
+                    };
+
+                    //send a reply to facebook page
                     var fbCallback = (err, data) => {
                         if (err) {
                             console.log("Error in conversation.message function: " + err);
@@ -49,7 +56,7 @@ function popContext(input){
                                 }
                                  if(text){
                                     //a counselor started a session no need to send watson reply to the user
-                                    if(!response.context.counseling_session_start===''){
+                                    if(body.context.counseling_session_start == null){
                                         fb.SendMessage(input.id, text);
                                     }
                                     console.log("Watson replies with: " + text + " " + input.id);
@@ -61,16 +68,6 @@ function popContext(input){
                                 'Please write me later!');
                         }
                     };
-
-                    var body = {
-                        text: input.text,
-                        id: input.id
-                    };
-
-                    if (result[0] && result[0].response.context) {
-                        body.context = result[0].response.context;
-                    };
-
                     // Send the input to the conversation service
                     SendMessage(body, fbCallback);
                 });
@@ -208,6 +205,7 @@ function SendConversationStarter(sender){
                 'Please write me later!');
         }
     }
+    fb.StartTyping(sender);
     SendMessage({text:"", context:""}, cb);
 }
 
@@ -236,25 +234,34 @@ function facebookRequest(body) {
         var event = events[i];
         var sender = event.sender.id;
         //we don't reply to our own process
-        if (event.message && event.message.text
-           /* && event.sender.id!== process.env.DRONIC_CHATBOT_ID*/) {
-            console.log("user: " + event.sender.id + " says  " + event.message.text);
-            fb.StartTyping(sender);
-            var data = {
-                id: sender,
-                text: event.message.text
-            };
-            popContext(data);
+        if(event.message && event.message.text){
+            //it's an echo from the facebook page
+            // we catch the message when a counsellor takes over
+            if(event.sender.id === process.env.DRONIC_CHATBOT_ID){
+
+            } else {
+                console.log("user: " + sender + " says  " + event.message.text);
+                fb.StartTyping(sender);
+                var data = {
+                    id: sender,
+                    text: event.message.text
+                };
+                popContext(data);
+            }
         }
         //user interacts with the page for the first time
-        else if(event.optin || (event.postback)){
-            if(event.postback.payload === 'optin'){
-                fb.StartTyping(sender);
-                SendConversationStarter(sender);
-            }else if(event.postback.payload ==='investor'){
-                fb.SendMessage(sender, "Hello there! You are an investor? nice! I looked up 50 most frequent questions investor ask" +
-                    "and answered to them! Test me!");
-            }
+         if(event.optin || event.postback)
+         {
+             switch (event.postback.payload) {
+                 //user interacts with the page for the first time.
+                 case 'optin':
+                     SendConversationStarter(sender);
+                     break;
+                 //investor button was pressed
+                 case 'investor':
+                     fb.SendMessage(sender, "Hi! I'm always glad to talk to investors! You are smart :)");
+                     break;
+             }
         }
     }
 }
