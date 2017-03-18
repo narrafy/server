@@ -1,6 +1,3 @@
-//server.js
-//get the tools we need
-
 var express = require('express');
 var app = express();
 
@@ -17,9 +14,13 @@ var session = require('express-session');
 app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(bodyParser());
-app.use(bodyParser.urlencoded({'extended':'true'}));            // parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({
+  'extended': 'true'
+})); // parse application/x-www-form-urlencoded
 app.use(bodyParser.json());
-app.use(bodyParser.json({type:'application/vnd.api+json'}));
+app.use(bodyParser.json({
+  type: 'application/vnd.api+json'
+}));
 
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
@@ -34,4 +35,4 @@ var port = process.env.PORT || 3000;
 
 //launch =========
 app.listen(port);
-console.log('Dronic happens on port '+ port);
+console.log('Dronic happens on port ' + port);
