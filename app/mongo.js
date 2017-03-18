@@ -247,11 +247,14 @@ function facebookRequest(body) {
             popContext(data);
         }
         //user interacts with the page for the first time
-        else if(event.optin ||
-            (event.postback &&
-            event.postback.payload === 'optin')){
-            fb.StartTyping(sender);
-            SendConversationStarter(sender);
+        else if(event.optin || (event.postback)){
+            if(event.postback.payload === 'optin'){
+                fb.StartTyping(sender);
+                SendConversationStarter(sender);
+            }else if(event.postback.payload ==='investor'){
+                fb.SendMessage(sender, "Hello there! You are an investor? nice! I looked up 50 most frequent questions investor ask" +
+                    "and answered to them! Test me!");
+            }
         }
     }
 }

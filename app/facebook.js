@@ -103,7 +103,7 @@ function addPersistentMenu(){
             call_to_actions:[
                 {
                     type:"postback",
-                    title:"I want to find someone",
+                    title:"I'm an investor",
                     payload:"investor"
                 },
                 {
