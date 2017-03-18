@@ -26,7 +26,8 @@ function popContext(input){
         {
             if (err) return console.log(err);
             database.collection('conversations').find({"id": input.id}).sort({"date": -1}).limit(1)
-                .toArray((err, result) => {
+                .toArray(
+                    (err, result) => {
                     if (err) {
                         return console.log("Error popConversation function: " + err);
                     }
@@ -46,15 +47,13 @@ function popContext(input){
                                 } else if(data.output.text[0]) {
                                     text = data.output.text[0];
                                 }
-                                 if(text) {
-                                     //send a notification if a human is needed to take over
-                                     if(data.context && data.context.human_request){
-                                         fb.SendMessage(process.env.ADMIN_FB_ID, "You are needed to help with Dronic");
-                                     } else {
-                                         fb.SendMessage(input.id, text);
-                                     }
-                                     console.log("Watson replies with: " + text + " " + input.id);
-                                     pushContext(input.id, data, "facebook page");
+                                 if(text){
+                                    //a counselor started a session no need to send watson reply to the user
+                                    if(!response.context.counseling_session_start===''){
+                                        fb.SendMessage(input.id, text);
+                                    }
+                                    console.log("Watson replies with: " + text + " " + input.id);
+                                    pushContext(input.id, data, "facebook page");
                                 }
                             }
                         } else {
@@ -87,15 +86,43 @@ function pushContext(id, response, source){
         source: source,
         date: new Date()
     };
-    Connect((err, database) => {
-        database.collection('conversations').save(toStore, (err) => {
+    Connect((err, db) => {
+        if(response.context.counseling_session_start)
+        {
+            if(response.context.counseling_session_start ==='true')
+            {
+                var counsellingSession = {
+                    conversation_id: response.context.conversation_id,
+                    counselor_id : process.env.ADMIN_FB_ID,
+                    user_id: id,
+                    conversation_start: new Date(),
+                    conversation_end: null
+                };
+                db.collection('counseling_session').save(counsellingSession, (err) => {
+                    if(err)
+                        console.log(err);
+                });
+                fb.SendMessage(process.env.ADMIN_FB_ID, 'You are assigned to help Dronic counselling');
+            }
+        }
+        if(response.context.counseling_session_end === 'true'){
+            db.collection('counseling_session').update(
+                {"conversation_id":response.context.conversation_id},
+                {$set:{conversation_end:new Date()}}, (err)=>
+                {
+                    if(err)
+                        console.log(err);
+                });
+        }
+        db.collection('conversations').save(toStore, (err) => {
             if (err)
                 return console.log(err);
         });
     });
     if(response.entities &&
         response.entities[0] &&
-        response.entities[0].entity === "email"){
+        response.entities[0].entity === "email")
+    {
         var data = {
             email: response.input.text,
             message: 'an user from Dronic',
@@ -153,6 +180,7 @@ function SendMessage(data, cb){
     var payload = getPayload(data);
     conversation.message(payload, cb);
 }
+
 function SendConversationStarter(sender){
 
     var cb = (err, data) => {
@@ -208,8 +236,8 @@ function facebookRequest(body) {
         var event = events[i];
         var sender = event.sender.id;
         //we don't reply to our own process
-        if (event.message && event.message.text &&
-            event.sender.id!== process.env.DRONIC_CHATBOT_ID) {
+        if (event.message && event.message.text
+           /* && event.sender.id!== process.env.DRONIC_CHATBOT_ID*/) {
             console.log("user: " + event.sender.id + " says  " + event.message.text);
             fb.StartTyping(sender);
             var data = {
