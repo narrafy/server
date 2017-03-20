@@ -56,18 +56,29 @@ function processMessage(input){
                                 fb.SendMessage(body.id, err);
                             }
                             if (data && data.output) {
-                                if (data.output.text && data.output.text) {
+                                if (data.output.text) {
                                     fb.StopTyping(body.id);
                                     //watson have an answer
                                     var text = '';
-                                    if( data.output.text.length > 0 && data.output.text[1]){
+
+                                    if(data.output.text.length > 0 && data.output.text[1]){
                                         text = data.output.text[0] + ' ' + data.output.text[1];
                                     } else if(data.output.text[0]) {
                                         text = data.output.text[0];
                                     }
                                     if(text){
-                                        fb.SendMessage(body.id, text);
+                                        if(body.context.counseling_session_start
+                                            && body.context.counseling_session_start === 'true'){
+                                            if(body.context.notifyCounsellor == null){
+                                               fb.SendMessage(process.env.ADMIN_FB_ID, 'Dronic asks for help! Check out the page');
+                                               body.context.notifyCounsellor = 'true';
+                                            }
+                                        } else {
+                                            fb.SendMessage(body.id, text);
+                                        }
+
                                         console.log("Watson replies with: " + text + " " + body.id);
+
                                         pushContext(body.id, data, "facebook page");
                                     }
                                 }
@@ -191,7 +202,7 @@ function SendMessage(data, cb){
     conversation.message(payload, cb);
 }
 
-function ConversationStarter(sender){
+function ConversationStarter(sender, input){
     var cb = (err, data) => {
         if (err) {
             console.log("Error in conversation.message function: " + err);
@@ -218,7 +229,7 @@ function ConversationStarter(sender){
         }
     }
     fb.StartTyping(sender);
-    SendMessage({text:"", context:""}, cb);
+    SendMessage({text:input, context:""}, cb);
 }
 
 function InvestorConversationStarter(sender){
@@ -261,11 +272,14 @@ function facebookRequest(body) {
              switch (event.postback.payload) {
                  //user interacts with the page for the first time.
                  case 'optin':
-                     ConversationStarter(data.sender);
+                     ConversationStarter(data.sender,"");
                      break;
                  //investor button was pressed
                  case 'investor':
                      InvestorConversationStarter(data.sender);
+                     break;
+                 default:
+                     ConversationStarter(data.sender, event.postback.title);
                      break;
              }
         }

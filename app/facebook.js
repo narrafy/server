@@ -91,7 +91,6 @@ function Greet(text){
     })
 }
 
-
 function addPersistentMenu(){
     Request({
         url: 'https://graph.facebook.com/v2.8/me/thread_settings',
@@ -103,18 +102,18 @@ function addPersistentMenu(){
             call_to_actions:[
                 {
                     type:"postback",
-                    title:"I'm an investor",
-                    payload:"investor"
+                    title:"I'm curious",
+                    payload:"test"
+                },
+                {
+                    type:"postback",
+                    title:"my heart was broken",
+                    payload:"heart_event"
                 },
                 {
                     type:"web_url",
-                    title:"my website",
+                    title:"website",
                     url:"https://www.dronic.io"
-                },
-                {
-                    type:"web_url",
-                    title:"my blog",
-                    url:"https://tech.dronic.io"
                 }
             ]
         }
