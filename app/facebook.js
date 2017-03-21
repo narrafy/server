@@ -3,6 +3,8 @@ require('dotenv').config({silent: true});
 const Request = require('request');
 
 function sendMessage(id, message) {
+    //first we stop showing typing icon
+    typingOff(id);
     if(id && id !== process.env.DRONIC_CHATBOT_ID){
         var messageData = {
             text: message
@@ -28,7 +30,46 @@ function sendMessage(id, message) {
     }
 }
 
-function StartTyping(id){
+function sendQuickReplyMessage(id, message) {
+    if(id && id !== process.env.DRONIC_CHATBOT_ID){
+        var messageData = {
+            text: message+ ' 🤗',
+            quick_replies:[
+                {
+                    "content_type" : "text",
+                    "title" : "My heart was 💔",
+                    "payload" : "heart_event"
+                },
+                {
+                    "content_type": "text",
+                    "title": "I'm curious 🤓",
+                    "payload": "test"
+                }
+            ]
+        };
+        Request({
+            url: process.env.FB_GRAPH_MSG_URL,
+            qs: {access_token: process.env.FACEBOOK_PAGE_ACCESS_TOKEN},
+            method: 'POST',
+            json: {
+                recipient: {id: id},
+                message: messageData
+            }
+        }, function (error, response) {
+            if (error) {
+                console.log('Error sending message: ', error);
+            } else if (response.body.error) {
+                console.log('Error in sending message with user id: '+ id + 'while this message ' + message
+                    + " was sent.");
+                console.log("======================================");
+                console.log(response.body.error);
+            }
+        });
+    }
+
+}
+
+function startTyping(id){
     if(id && id !== process.env.DRONIC_CHATBOT_ID){
         Request({
             url: process.env.FB_GRAPH_MSG_URL,
@@ -48,7 +89,7 @@ function StartTyping(id){
     }
 }
 
-function StopTyping(id){
+function typingOff(id){
     if(id && id !== process.env.DRONIC_CHATBOT_ID){
         Request({
             url: process.env.FB_GRAPH_MSG_URL,
@@ -68,14 +109,14 @@ function StopTyping(id){
     }
 }
 
-function Greet(text){
+function greet(text){
     Request({
         url: 'https://graph.facebook.com/v2.8/me/thread_settings',
         qs: {access_token: process.env.FACEBOOK_PAGE_ACCESS_TOKEN },
         method: 'POST',
         json:{
             setting_type : "greeting",
-            greeting:{
+            greeting: {
                 text: text
             },
             thread_state : "existing_thread"
@@ -102,19 +143,20 @@ function addPersistentMenu(){
             call_to_actions:[
                 {
                     type:"postback",
-                    title:"I'm curious",
-                    payload:"test"
-                },
-                {
-                    type:"postback",
-                    title:"my heart was broken",
-                    payload:"heart_event"
+                    title:"I'm an investor",
+                    payload:"investor"
                 },
                 {
                     type:"web_url",
-                    title:"website",
+                    title:"my website",
                     url:"https://www.dronic.io"
-                }
+                },
+                {
+                    type:"web_url",
+                    title:"my blog",
+                    url:"https://tech.dronic.io"
+                },
+
             ]
         }
 
@@ -150,6 +192,12 @@ function removePersistentMenu(){
     })
 }
 
+function investorConversationStarter(sender){
+    sendMessage(sender, "Hi! I'm always glad to talk to investors! You are smart :)");
+}
+
+
+
 module.exports = {
 
     VerifyToken: (req,res) => {
@@ -163,14 +211,28 @@ module.exports = {
     SendMessage: (id, message) => {
         sendMessage(id, message);
     },
+    SendQuickReplyMessage: (id, msg) =>
+    {
+        sendQuickReplyMessage(id, msg)
+    },
 
+    TypingOff: (id) => {
+        typingOff(id)
+    },
     StartTyping: (id) => {
-        StartTyping(id);
+      startTyping(id)
     },
-    StopTyping: (id) => {
-        StopTyping(id)
+    InvestorConversationStarter: (id) => {
+      investorConversationStarter(id)
     },
+
+    ProcessRequest: (req, cb) => {
+        processRequest(req.body, cb);
+    },
+
     RemovePersistentMenu: removePersistentMenu(),
+
     AddPeristentMenu: addPersistentMenu(),
-    Greet: (text) => Greet(text)
+
+    Greet: (text) => greet(text)
 };

@@ -2,7 +2,6 @@ require('dotenv').config({silent: true});
 
 var md = require('mongodb').MongoClient;
 var sg = require('./sendgrid');
-var fb = require('./facebook');
 const watson = require('watson-developer-cloud/conversation/v1');
 
 // Create the service wrapper
@@ -20,11 +19,7 @@ function Connect(callback){
     md.connect(process.env.MONGODB_URI, callback);
 }
 
-function processMessage(input){
-
-    //show typing icon to the user
-    fb.StartTyping(input.sender);
-
+function processMessage(input, fbCb){
     if(input.sender === process.env.DRONIC_CHATBOT_ID){
         //if it's an echo from the facebook page
         // we catch the message when a counsellor takes over
@@ -32,70 +27,59 @@ function processMessage(input){
     } else {
         //it's a text from a user
         console.log("user: " + input.sender + " says  " + input.text);
-        if(input && input.text){
-            Connect((err, database) =>
-            {
-                if (err) return console.log(err);
-                database.collection('conversations').find({"id": input.sender}).sort({"date": -1}).limit(1)
-                    .toArray((err, result) => {
+        Connect((err, database) =>
+        {
+            if (err) return console.log(err);
+            database.collection('conversations').find({"id": input.sender}).sort({"date": -1}).limit(1)
+                .toArray((err, result) => {
                         if (err) {
                             return console.log("Error processMessage function: " + err);
                         }
-                        var body = {
+                        var request = {
                             id: input.sender,
                             text: input.text
                         };
                         if (result[0] && result[0].response.context) {
-                            body.context = result[0].response.context;
+                            request.context = result[0].response.context;
                         };
 
                         //send a reply to facebook page
                         var fbCallback = (err, data) => {
                             if (err) {
                                 console.log("error in the facebook callback function " + err);
-                                fb.SendMessage(body.id, err);
+                                fbCb(request.id, err);
                             }
                             if (data && data.output) {
                                 if (data.output.text) {
-                                    fb.StopTyping(body.id);
                                     //watson have an answer
-                                    var text = '';
-
-                                    if(data.output.text.length > 0 && data.output.text[1]){
-                                        text = data.output.text[0] + ' ' + data.output.text[1];
-                                    } else if(data.output.text[0]) {
-                                        text = data.output.text[0];
-                                    }
+                                    var text = mineWatsonResponse(data);
                                     if(text){
-                                        if(body.context.counseling_session_start
+                                        /*if(body.context.counseling_session_start
                                             && body.context.counseling_session_start === 'true'){
                                             if(body.context.notifyCounsellor == null){
                                                fb.SendMessage(process.env.ADMIN_FB_ID, 'Dronic asks for help! Check out the page');
                                                body.context.notifyCounsellor = 'true';
                                             }
-                                        } else {
-                                            fb.SendMessage(body.id, text);
-                                        }
-
-                                        console.log("Watson replies with: " + text + " " + body.id);
-
-                                        pushContext(body.id, data, "facebook page");
+                                        } else { */
+                                        fbCb(request.id, text);
+                                        //}
+                                        console.log("Watson replies with: " + text + " " + request.id);
+                                        pushContext(request.id, data, "facebook page");
                                     }
                                 }
                             } else {
-                                fb.SendMessage(body.id, 'I am probably training again.' +
+                                fbCb(request.id, 'I am probably training again.' +
                                     'Please write me later!');
                             }
                         };
                         // Send the input to the conversation service
-                        SendMessage(body, fbCallback);
+                        askWatson(request, fbCallback);
                     });
-            });
-        }
+        });
     }
 }
 
-function RecordCounsellingSession(){
+function recordCounsellingSession(){
     /* if(response.context.counseling_session_start) {
      if(response.context.counseling_session_start ==='true')
      {
@@ -134,7 +118,7 @@ function pushContext(id, response, source){
     };
     Connect((err, db) => {
 
-       RecordCounsellingSession(response);
+       recordCounsellingSession(response);
 
         db.collection('conversations').save(toStore, (err) => {
             if (err)
@@ -187,53 +171,19 @@ function getPayload(data, workspace){
         input: {}
     };
 
-    if (data.text) {
+    if (data && data.text) {
         payload.input.text = data.text;
     }
-    if (data.context) {
+    if (data && data.context) {
         // The client must maintain context/state
         payload.context = data.context;
     }
     return payload;
 }
 
-function SendMessage(data, cb){
+function askWatson(data, cb){
     var payload = getPayload(data, process.env.WORKSPACE_ID);
     conversation.message(payload, cb);
-}
-
-function ConversationStarter(sender, input){
-    var cb = (err, data) => {
-        if (err) {
-            console.log("Error in conversation.message function: " + err);
-        }
-        if (data && data.output) {
-            if (data.output.text && data.output.text) {
-                fb.StopTyping(sender);
-                //watson have an answer
-                var text = '';
-                if( data.output.text.length > 0 && data.output.text[1]){
-                    text = data.output.text[0] + ' ' + data.output.text[1];
-                } else if(data.output.text[0]) {
-                    text = data.output.text[0];
-                }
-                if(text) {
-                    fb.SendMessage(sender, text);
-                    console.log("Watson replies with: " + text + " " + sender);
-                    pushContext(sender, data, "facebook page");
-                }
-            }
-        } else {
-            fb.SendMessage(sender, 'I am busy. Probably training.' +
-                'Please write me later!');
-        }
-    }
-    fb.StartTyping(sender);
-    SendMessage({text:input, context:""}, cb);
-}
-
-function InvestorConversationStarter(sender){
-    fb.SendMessage(sender, "Hi! I'm always glad to talk to investors! You are smart :)");
 }
 
 function webRequest(id, body, res) {
@@ -246,44 +196,14 @@ function webRequest(id, body, res) {
             data.context = body.context;
         }
     }
-    // Send the input to the conversation service
-    SendMessage(data, (err, data) => {
+    var cb = (err, data) => {
         if (err) {
             return res.status(err.code || 500).json(err);
         }
         return res.json(updateMessage(id, data));
-    });
-}
-
-function facebookRequest(body) {
-    var events = body.entry[0].messaging;
-    for (var i = 0; i < events.length; i++) {
-        var event = events[i];
-        var data = {
-          sender: event.sender.id
-        };
-        if(event.message && event.message.text){
-            data.text = event.message.text;
-                processMessage(data);
-        }
-        //user interacts with the page for the first time
-         if(event.optin || event.postback)
-         {
-             switch (event.postback.payload) {
-                 //user interacts with the page for the first time.
-                 case 'optin':
-                     ConversationStarter(data.sender,"");
-                     break;
-                 //investor button was pressed
-                 case 'investor':
-                     InvestorConversationStarter(data.sender);
-                     break;
-                 default:
-                     ConversationStarter(data.sender, event.postback.title);
-                     break;
-             }
-        }
-    }
+    };
+    // Send the input to the conversation service
+    askWatson(data, cb);
 }
 
 function updateMessage(id, data) {
@@ -313,6 +233,16 @@ function updateMessage(id, data) {
     return data;
 }
 
+function mineWatsonResponse(data){
+    var text = '';
+    if( data.output.text.length > 0 && data.output.text[1]){
+        text = data.output.text[0] + ' ' + data.output.text[1];
+    } else if(data.output.text[0]) {
+        text = data.output.text[0];
+    }
+    return text;
+}
+
 module.exports = {
 
     AddEmail: (data) => {
@@ -328,8 +258,7 @@ module.exports = {
     WebRequest: (req, res) =>{
         webRequest(req.sessionID, req.body, res);
     },
-
-    FacebookRequest: (req, res) => {
-      facebookRequest(req.body);
+    ProcessMessage: (input, cb) =>{
+        processMessage(input, cb);
     }
 }

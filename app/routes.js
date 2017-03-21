@@ -3,6 +3,7 @@ require('dotenv').config({silent: true});
 
 const Mongo = require('./mongo');
 const Facebook = require('./facebook');
+const Conversation = require('./conversation');
 
 
 module.exports =  (app) => {
@@ -17,7 +18,7 @@ module.exports =  (app) => {
     });
 
     app.post('/webhook', function (req, res) {
-        Mongo.FacebookRequest(req, res);
+        Conversation.ProcessRequest(req.body);
         res.sendStatus(200);
     });
 
