@@ -47,29 +47,37 @@ function processMessage(input, fbCb){
                         var fbCallback = (err, data) => {
                             if (err) {
                                 console.log("error in the facebook callback function " + err);
-                                fbCb(request.id, err);
+                                fbCb(request.id, {text:err});
                             }
                             if (data && data.output) {
-                                if (data.output.text) {
+                               // if (data.output.text) {
                                     //watson have an answer
+                                var currentContext = data.context;
                                     var text = mineWatsonResponse(data);
-                                    if(text){
-                                        /*if(body.context.counseling_session_start
-                                            && body.context.counseling_session_start === 'true'){
-                                            if(body.context.notifyCounsellor == null){
-                                               fb.SendMessage(process.env.ADMIN_FB_ID, 'Dronic asks for help! Check out the page');
-                                               body.context.notifyCounsellor = 'true';
-                                            }
-                                        } else { */
-                                        fbCb(request.id, text);
-                                        //}
+                                   // if(text){
+                                        var message = {
+                                            text: text
+                                        };
+                                        if(text==='' && currentContext && currentContext.cool_experience)
+                                        {
+                                             message.text="🤔";
+                                             message.quick_replies =[
+                                                 {
+                                                     "content_type" : "text",
+                                                     "title" : "done 😎",
+                                                     "payload" : "done"
+                                                 }
+                                             ];
+                                        }
+                                        fbCb(request.id, message);
                                         console.log("Watson replies with: " + text + " " + request.id);
+
                                         pushContext(request.id, data, "facebook page");
-                                    }
-                                }
+                                    //}
+                                //}
                             } else {
-                                fbCb(request.id, 'I am probably training again.' +
-                                    'Please write me later!');
+                                fbCb(request.id, { text: 'I am probably training again.' +
+                                    'Please write me later!'});
                             }
                         };
                         // Send the input to the conversation service

@@ -6,16 +6,13 @@ function sendMessage(id, message) {
     //first we stop showing typing icon
     typingOff(id);
     if(id && id !== process.env.DRONIC_CHATBOT_ID){
-        var messageData = {
-            text: message
-        };
         Request({
             url: process.env.FB_GRAPH_MSG_URL,
             qs: {access_token: process.env.FACEBOOK_PAGE_ACCESS_TOKEN},
             method: 'POST',
             json: {
                 recipient: {id: id},
-                message: messageData
+                message: message
             }
         }, function (error, response) {
             if (error) {
@@ -33,7 +30,7 @@ function sendMessage(id, message) {
 function sendQuickReplyMessage(id, message) {
     if(id && id !== process.env.DRONIC_CHATBOT_ID){
         var messageData = {
-            text: message+ ' 🤗',
+            text: message.text + ' 🤗',
             quick_replies:[
                 {
                     "content_type" : "text",
@@ -193,7 +190,7 @@ function removePersistentMenu(){
 }
 
 function investorConversationStarter(sender){
-    sendMessage(sender, "Hi! I'm always glad to talk to investors! You are smart :)");
+    sendMessage(sender,{text:"Hi! I'm always glad to talk to investors! You are smart :)"});
 }
 
 
