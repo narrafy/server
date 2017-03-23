@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 
 //require our database connection
-var pg = require('pg');
+
 var flash = require('connect-flash');
 
 var morgan = require('morgan');
