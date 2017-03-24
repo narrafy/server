@@ -20,7 +20,7 @@ function processRequest(body) {
                     break;
                 //investor button was pressed
                 case 'training_mode':
-                    Facebook.InvestorConversationStarter(data.sender);
+                    Mongo.ProcessMessage(data, Facebook.SendMessage);
                     break;
                 default:
                     break;
