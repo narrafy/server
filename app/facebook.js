@@ -140,20 +140,14 @@ function addPersistentMenu(){
             call_to_actions:[
                 {
                     type:"postback",
-                    title:"I'm an investor",
-                    payload:"investor"
+                    title:"I want to teach you 📖",
+                    payload:"training_mode"
                 },
                 {
                     type:"web_url",
-                    title:"my website",
+                    title:"my website 🌐",
                     url:"https://www.dronic.io"
                 },
-                {
-                    type:"web_url",
-                    title:"my blog",
-                    url:"https://tech.dronic.io"
-                },
-
             ]
         }
 
@@ -190,10 +184,8 @@ function removePersistentMenu(){
 }
 
 function investorConversationStarter(sender){
-    sendMessage(sender,{text:"Hi! I'm always glad to talk to investors! You are smart :)"});
+    sendMessage(sender,{text:"Great! I need training to become smarter! :)"});
 }
-
-
 
 module.exports = {
 
@@ -211,10 +203,6 @@ module.exports = {
     SendQuickReplyMessage: (id, msg) =>
     {
         sendQuickReplyMessage(id, msg)
-    },
-
-    TypingOff: (id) => {
-        typingOff(id)
     },
     StartTyping: (id) => {
       startTyping(id)

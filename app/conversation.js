@@ -19,7 +19,7 @@ function processRequest(body) {
                     Mongo.ProcessMessage(data, Facebook.SendQuickReplyMessage);
                     break;
                 //investor button was pressed
-                case 'investor':
+                case 'training_mode':
                     Facebook.InvestorConversationStarter(data.sender);
                     break;
                 default:
