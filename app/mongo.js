@@ -58,13 +58,13 @@ function processMessage(input, fbCb){
                                         var message = {
                                             text: text
                                         };
-                                        if(text==='' && currentContext && currentContext.cool_experience)
+                                        if(text ==='' && currentContext && currentContext.cool_experience)
                                         {
-                                             message.text="🤔";
+                                             message.text="listening🤔";
                                              message.quick_replies =[
                                                  {
                                                      "content_type" : "text",
-                                                     "title" : "done 😎",
+                                                     "title" : "done🏁",
                                                      "payload" : "done"
                                                  }
                                              ];
