@@ -43,9 +43,7 @@ function processRequest(body) {
 }
 
 module.exports = {
-
     ProcessRequest: (body) => {
         processRequest(body)
     }
-
 };

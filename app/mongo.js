@@ -6,7 +6,7 @@ const watson = require('watson-developer-cloud/conversation/v1');
 
 // Create the service wrapper
 const conversation = new watson({
-    // If unspecified here, the CONVERSATION_USERNAME and CONVERSATION_PASSWORD env properties will be checked
+    // If unspecified here, the CONVERSATION_USERNAME and CONVERSATION_PASSWORD env properties will be checkedx
     // After that, the SDK will fall back to the bluemix-provided VCAP_SERVICES environment property
     username: process.env.CONVERSATION_USERNAME,
     password: process.env.CONVERSATION_PASSWORD,
@@ -58,10 +58,10 @@ function processMessage(input, fbCb){
                                         var message = {
                                             text: text
                                         };
-                                        if(text ==='' && currentContext && currentContext.cool_experience)
+                                        if(currentContext && currentContext.cool_experience)
                                         {
-                                             message.text="listening🤔";
-                                             message.quick_replies =[
+                                             message.text = text + "🤔";
+                                             message.quick_replies = [
                                                  {
                                                      "content_type" : "text",
                                                      "title" : "done🏁",
@@ -71,7 +71,6 @@ function processMessage(input, fbCb){
                                         }
                                         fbCb(request.id, message);
                                         console.log("Watson replies with: " + text + " " + request.id);
-
                                         pushContext(request.id, data, "facebook page");
                                     //}
                                 //}
@@ -87,36 +86,6 @@ function processMessage(input, fbCb){
     }
 }
 
-function recordCounsellingSession(){
-    /* if(response.context.counseling_session_start) {
-     if(response.context.counseling_session_start ==='true')
-     {
-     var counsellingSession = {
-     conversation_id: response.context.conversation_id,
-     counselor_id : process.env.ADMIN_FB_ID,
-     user_id: id,
-     conversation_start: new Date(),
-     conversation_end: null
-     };
-     db.collection('counseling_session').save(counsellingSession, (err) => {
-     if(err)
-     console.log(err);
-     });
-     fb.SendMessage(process.env.ADMIN_FB_ID, 'You are assigned to help Dronic counselling');
-     }
-     }
-     if(response.context.counseling_session_end === 'true'){
-     db.collection('counseling_session').update(
-     {"conversation_id":response.context.conversation_id},
-     {$set:{conversation_end:new Date()}}, (err)=>
-     {
-     if(err)
-     console.log(err);
-     });
-     }
-     */
-}
-
 function pushContext(id, response, source){
     var toStore = {
         id: id,
@@ -125,8 +94,6 @@ function pushContext(id, response, source){
         date: new Date()
     };
     Connect((err, db) => {
-
-       recordCounsellingSession(response);
 
         db.collection('conversations').save(toStore, (err) => {
             if (err)

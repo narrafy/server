@@ -140,7 +140,7 @@ function addPersistentMenu(){
             call_to_actions:[
                 {
                     type:"postback",
-                    title:"I want to teach you 📖",
+                    title:"I want to train you 📖",
                     payload:"training_mode"
                 },
                 {
@@ -207,6 +207,7 @@ module.exports = {
     StartTyping: (id) => {
       startTyping(id)
     },
+
     InvestorConversationStarter: (id) => {
       investorConversationStarter(id)
     },
