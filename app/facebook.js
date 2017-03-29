@@ -140,7 +140,7 @@ function addPersistentMenu(){
             call_to_actions:[
                 {
                     type:"postback",
-                    title:"I want to train you 📖",
+                    title:"I want to train you 📖(in development)",
                     payload:"training_mode"
                 },
                 {
