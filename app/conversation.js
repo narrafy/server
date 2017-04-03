@@ -16,12 +16,13 @@ function processRequest(body) {
                 //user interacts with the page for the first time.
                 case 'optin':
                     data.text = "";
-                    Mongo.ProcessMessage(data, Facebook.SendQuickReplyMessage);
+                    Mongo.ProcessMessage(data, Facebook.SendMessage);
                     break;
                 //investor button was pressed
                 case 'training_mode':
                     Mongo.ProcessMessage(data, Facebook.SendMessage);
                     break;
+                case 'reset':
                 default:
                     break;
             }

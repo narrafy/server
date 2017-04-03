@@ -1,6 +1,9 @@
 require('dotenv').config({silent: true});
 
+var em = require('./emoji');
+
 const Request = require('request');
+
 
 function sendMessage(id, message) {
     //first we stop showing typing icon
@@ -30,20 +33,21 @@ function sendMessage(id, message) {
 function sendQuickReplyMessage(id, message) {
     if(id && id !== process.env.DRONIC_CHATBOT_ID){
         var messageData = {
-            text: message.text + ' 🤗',
-            quick_replies:[
+            text: em.ReplaceEmojiKey(message.text + ' emoji_hugging_face'),
+            /*quick_replies:[
                 {
                     "content_type" : "text",
-                    "title" : "My heart was 💔",
+                    "title" :  em.ReplaceEmojiKey("My heart was emoji_broken_heart"),
                     "payload" : "heart_event"
                 },
                 {
                     "content_type": "text",
-                    "title": "I'm curious 🤓",
+                    "title": em.ReplaceEmojiKey("I'm curious emoji_curious"),
                     "payload": "test"
                 }
-            ]
+            ]*/
         };
+
         Request({
             url: process.env.FB_GRAPH_MSG_URL,
             qs: {access_token: process.env.FACEBOOK_PAGE_ACCESS_TOKEN},
@@ -56,7 +60,7 @@ function sendQuickReplyMessage(id, message) {
             if (error) {
                 console.log('Error sending message: ', error);
             } else if (response.body.error) {
-                console.log('Error in sending message with user id: '+ id + 'while this message ' + message
+                console.log('Error in sending message with user id: '+ id + 'while this message ' + message.text
                     + " was sent.");
                 console.log("======================================");
                 console.log(response.body.error);
@@ -140,7 +144,7 @@ function addPersistentMenu(){
             call_to_actions:[
                 {
                     type:"postback",
-                    title:"I want to train you 📖(in development)",
+                    title:"I want to train you ",
                     payload:"training_mode"
                 },
                 {
@@ -150,7 +154,6 @@ function addPersistentMenu(){
                 },
             ]
         }
-
     }, function(error, response, body) {
         console.log(response)
         if (error) {
@@ -184,7 +187,7 @@ function removePersistentMenu(){
 }
 
 function investorConversationStarter(sender){
-    sendMessage(sender,{text:"Great! I need training to become smarter! :)"});
+    sendMessage(sender, {text:"Great! I need training to become smarter! :)"});
 }
 
 module.exports = {
@@ -204,12 +207,9 @@ module.exports = {
     {
         sendQuickReplyMessage(id, msg)
     },
+
     StartTyping: (id) => {
       startTyping(id)
-    },
-
-    InvestorConversationStarter: (id) => {
-      investorConversationStarter(id)
     },
 
     ProcessRequest: (req, cb) => {
