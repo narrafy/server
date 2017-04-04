@@ -3,20 +3,23 @@ require('dotenv').config({silent: true});
 
 const Mongo = require('./mongo');
 const Facebook = require('./facebook');
-
+const Conversation = require('./conversation');
+const FbPageAccessToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
+const FbVerifyToken = process.env.FACEBOOK_PAGE_VERIFY_TOKEN;
 
 module.exports =  (app) => {
 
-    Facebook.RemovePersistentMenu;
-    Facebook.AddPeristentMenu;
-    Facebook.Greet;
+    Facebook.Greet("Finally! Someone wants to talk to me!", FbPageAccessToken);
+    Facebook.RemovePersistentMenu(FbPageAccessToken);
+    Facebook.AddPersistentMenu(FbPageAccessToken);
+
 
     app.get('/webhook', function (req, res) {
-        Facebook.VerifyToken(req,res);
+        Facebook.VerifyToken(req,res, FbVerifyToken);
     });
 
     app.post('/webhook', function (req, res) {
-        Mongo.FacebookRequest(req, res);
+        Conversation.ProcessRequest(req.body);
         res.sendStatus(200);
     });
 

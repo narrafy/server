@@ -2,12 +2,13 @@ require('dotenv').config({silent: true});
 
 var md = require('mongodb').MongoClient;
 var sg = require('./sendgrid');
+var em = require('./emoji');
 var fb = require('./facebook');
 const watson = require('watson-developer-cloud/conversation/v1');
 
 // Create the service wrapper
 const conversation = new watson({
-    // If unspecified here, the CONVERSATION_USERNAME and CONVERSATION_PASSWORD env properties will be checked
+    // If unspecified here, the CONVERSATION_USERNAME and CONVERSATION_PASSWORD env properties will be checkedx
     // After that, the SDK will fall back to the bluemix-provided VCAP_SERVICES environment property
     username: process.env.CONVERSATION_USERNAME,
     password: process.env.CONVERSATION_PASSWORD,
@@ -16,83 +17,94 @@ const conversation = new watson({
     version: 'v1'
 });
 
-function Connect(callback){
+function Connect(callback) {
     md.connect(process.env.MONGODB_URI, callback);
 }
 
-function popContext(input){
-    Connect((err, database) =>
-    {
-        if (err) return console.log(err);
-        database.collection('conversations').find({"id": input.id}).sort({"date": -1}).limit(1)
-            .toArray((err, result) => {
-                if (err) {
-                    return console.log("Error popConversation function: " + err);
-                }
-                var body = {};
-                if(input){
-                    body.text = input.text;
-                    body.id = input.id;
-                }
-
-                if (result[0] && result[0].response.context) {
-                    body.context = result[0].response.context;
-                }
-                // Send the input to the conversation service
-                SendMessage(body, (err, data) => {
+function processMessage(input, settings) {
+    var logTable = settings.LogTable;
+    var watsonWorkspace = settings.WatsonWorkspace;
+    var pageToken = settings.FbPageToken;
+    if (input.sender === process.env.DRONIC_CHATBOT_ID) {
+        //if it's an echo from the facebook page
+        // we catch the message when a counsellor takes over
+        console.log("page echo: " + input.sender + " says  " + input.text);
+    } else {
+        //it's a text from a user
+        console.log("user: " + input.sender + " says  " + input.text);
+        Connect((err, database) => {
+            if (err) return console.log(err);
+            database.collection(logTable).find({"id": input.sender}).sort({"date": -1}).limit(1)
+                .toArray((err, result) => {
                     if (err) {
-                        console.log("Error in conversation.message function: " + err);
-                        fb.SendMessage(body.id, err);
+                        return console.log("Error processMessage function: " + err);
                     }
-                    if (data && data.output) {
-                        if (data.output.text && data.output.text) {
-                            fb.StopTyping(input.id);
-                            //watson have an answer
-                            var text = '';
-                            if( data.output.text.length > 0 && data.output.text[1]){
-                                text = data.output.text[0] + ' ' + data.output.text[1];
-                            } else if(data.output.text[0]) {
-                                text = data.output.text[0];
-                            }
-                            if(text) {
-                                fb.SendMessage(body.id, text);
-                                console.log("Watson replies with: " + text + " " + input.id);
-                                pushContext(input.id, data, "facebook page");
-                            }
+                    var request = {
+                        id: input.sender,
+                        text: input.text
+                    };
+                    if (result[0] && result[0].response.context) {
+                        request.context = result[0].response.context;
+                    }
+
+                    //send a reply to facebook page
+                    var fbCallback = (err, data) => {
+                        if (err) {
+                            console.log("error in the facebook callback function " + err);
+                            fb.SendMessage(request.id, {text: err}, pageToken);
                         }
-                    } else {
-                        fb.SendMessage(input.id, 'I am busy. Probably training.' +
-                            'Please write me later!');
-                    }
+                        if (data && data.output) {
+                            //watson have an answer
+                            var currentContext = data.context;
+                            var text = mineWatsonResponse(data);
+                            var message = {
+                                text: em.ReplaceEmojiKey(text)
+                            };
+                            if (currentContext && currentContext.quick_replies) {
+                                message.quick_replies = currentContext.quick_replies;
+                            }
+                            fb.SendMessage(request.id, message, pageToken);
+                            console.log("Watson replies with: " + text + " " + request.id);
+                            pushContext(request.id, data, "facebook page", logTable);
+                        } else {
+                            fb.SendMessage(request.id, {
+                                text: 'I am probably training again.' +
+                                'Please write me later!'
+                            }, pageToken);
+                        }
+                    };
+                    // Send the input to the conversation service
+                    askWatson(request, watsonWorkspace, fbCallback);
                 });
-            });
-    });
+        });
+    }
 }
 
-function pushContext(id, response, source){
+function pushContext(id, response, source, logTable) {
     var toStore = {
         id: id,
         response: response,
         source: source,
         date: new Date()
     };
-    Connect((err, database) => {
-        database.collection('conversations').save(toStore, (err) => {
+    Connect((err, db) => {
+
+        db.collection(logTable).save(toStore, (err) => {
             if (err)
                 return console.log(err);
         });
     });
-    if(response.entities &&
+    if (response.entities &&
         response.entities[0] &&
-        response.entities[0].entity ==="email"){
+        response.entities[0].entity === "email") {
         var data = {
             email: response.input.text,
             message: 'an user from Dronic',
             source: source,
             date: new Date()
         };
-        var callback = (data ,err) => {
-            if(err)
+        var callback = (data, err) => {
+            if (err)
                 return console.log(err);
             sg.NotifyAdmin(data);
             sg.NotifyUser(data.email);
@@ -103,15 +115,14 @@ function pushContext(id, response, source){
 
 function saveEmail(data, callback) {
     Connect((err, database) => {
-        database.collection('emails').save(data, (err)=>{
-            if(callback)
+        database.collection('emails').save(data, (err) => {
+            if (callback)
                 callback(data, err);
         })
     });
 }
 
-function getPayload(data){
-    var workspace = process.env.WORKSPACE_ID;
+function getPayload(data, workspace) {
     if (!workspace) {
         return {
             'output': {
@@ -128,70 +139,48 @@ function getPayload(data){
         input: {}
     };
 
-    if (data.text) {
+    if (data && data.text) {
         payload.input.text = data.text;
     }
-    if (data.context) {
+    if (data && data.context) {
         // The client must maintain context/state
         payload.context = data.context;
     }
     return payload;
 }
 
-function SendMessage(data, cb){
-    var payload = getPayload(data);
+function askWatson(data, workspace, cb) {
+    var payload = getPayload(data, workspace);
     conversation.message(payload, cb);
 }
 
-function webRequest(id, body, res) {
+function webRequest(id, body, res, logTable) {
     var data = {};
-    if(body){
-        if(body.input){
+    if (body) {
+        if (body.input) {
             data.text = body.input.text;
         }
-        if(body.context){
+        if (body.context) {
             data.context = body.context;
         }
     }
-    // Send the input to the conversation service
-    SendMessage(data, (err, data) => {
+    var cb = (err, data) => {
         if (err) {
             return res.status(err.code || 500).json(err);
         }
-        return res.json(updateMessage(id, data));
-    });
+        return res.json(updateMessage(id, data, logTable));
+    };
+    // Send the input to the conversation service
+    askWatson(data, process.env.WORKSPACE_ID, cb);
 }
 
-function facebookRequest(body) {
-    var events = body.entry[0].messaging;
-    for (var i = 0; i < events.length; i++) {
-        var event = events[i];
-        //we don't reply to our own process
-        if (event.message && event.message.text && event.sender.id!== process.env.DRONIC_CHATBOT_ID) {
-            console.log("user: " + event.sender.id + " says  " + event.message.text);
-            var data = {
-                id: event.sender.id,
-                text: event.message.text
-            };
-            fb.StartTyping(data.id);
-            popContext(data);
-        }
-        else if(event.optin ||
-            (event.postback &&
-            event.postback.payload === 'optin')){
-            fb.SendMessage(sender, 'Nice, nice. Dronic is happy you are' +
-                'visiting him! Mrrrr....');
-        }
-    }
-}
-
-function updateMessage(id, data) {
+function updateMessage(id, data, logTable) {
     var responseText = null;
     if (!data.output) {
         data.output = {};
     } else {
-        pushContext(id, data, "dronic.io chat");
-        if(data.output.text && data.output.text[0])
+        pushContext(id, data, "dronic.io chat", logTable);
+        if (data.output.text && data.output.text[0])
             return data;
     }
     if (data.intents && data.intents[0]) {
@@ -205,12 +194,21 @@ function updateMessage(id, data) {
             responseText = "I understood you but I don't have an answer yet. Could you rephrase your question? ";
         } else {
             responseText = 'I didn t get that. Sometimes only a human can help. Wanna see one ?';
-            data.context.app_request = true;
         }
     }
     data.output.text = responseText;
-    pushContext(id, data, "dronic.io chat");
+    pushContext(id, data, "dronic.io chat", logTable);
     return data;
+}
+
+function mineWatsonResponse(data) {
+    var text = '';
+    if (data.output.text.length > 0 && data.output.text[1]) {
+        text = data.output.text[0] + ' ' + data.output.text[1];
+    } else if (data.output.text[0]) {
+        text = data.output.text[0];
+    }
+    return text;
 }
 
 module.exports = {
@@ -225,11 +223,12 @@ module.exports = {
         saveEmail(data, callback);
     },
 
-    WebRequest: (req, res) =>{
-        webRequest(req.sessionID, req.body, res);
+    WebRequest: (req, res) => {
+        webRequest(req.sessionID, req.body, res, 'conversations');
     },
-
-    FacebookRequest: (req, res) => {
-      facebookRequest(req.body);
+    ProcessMessage: (input, settings) => {
+        //show typing icon to the user
+        fb.StartTyping(input.sender, settings.FbPageToken);
+        processMessage(input, settings);
     }
 }

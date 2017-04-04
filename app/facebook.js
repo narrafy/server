@@ -2,24 +2,23 @@ require('dotenv').config({silent: true});
 
 const Request = require('request');
 
-function sendMessage(id, message) {
+function sendMessage(id, message, pageToken) {
+    //first we stop showing typing icon
+    typingOff(id, pageToken);
     if(id && id !== process.env.DRONIC_CHATBOT_ID){
-        var messageData = {
-            text: message
-        };
         Request({
             url: process.env.FB_GRAPH_MSG_URL,
-            qs: {access_token: process.env.FACEBOOK_PAGE_ACCESS_TOKEN},
+            qs: {access_token: pageToken},
             method: 'POST',
             json: {
                 recipient: {id: id},
-                message: messageData
+                message: message
             }
         }, function (error, response) {
             if (error) {
                 console.log('Error sending message: ', error);
             } else if (response.body.error) {
-                console.log('Error in sendind message with user id: '+ id + 'while this message ' + message
+                console.log('Error in sending message with user id: '+ id + 'while this message ' + message
                     + " was sent.");
                 console.log("======================================");
                 console.log(response.body.error);
@@ -28,11 +27,11 @@ function sendMessage(id, message) {
     }
 }
 
-function StartTyping(id){
+function startTyping(id, pageToken){
     if(id && id !== process.env.DRONIC_CHATBOT_ID){
         Request({
             url: process.env.FB_GRAPH_MSG_URL,
-            qs: {access_token: process.env.FACEBOOK_PAGE_ACCESS_TOKEN},
+            qs: {access_token: pageToken},
             method: 'POST',
             json: {
                 recipient: {id: id},
@@ -48,11 +47,11 @@ function StartTyping(id){
     }
 }
 
-function StopTyping(id){
+function typingOff(id, pageToken){
     if(id && id !== process.env.DRONIC_CHATBOT_ID){
         Request({
             url: process.env.FB_GRAPH_MSG_URL,
-            qs: {access_token: process.env.FACEBOOK_PAGE_ACCESS_TOKEN},
+            qs: {access_token: pageToken},
             method: 'POST',
             json: {
                 recipient: {id: id},
@@ -68,15 +67,16 @@ function StopTyping(id){
     }
 }
 
-function Greet(){
+function greet(text, pageToken){
+
     Request({
         url: 'https://graph.facebook.com/v2.8/me/thread_settings',
-        qs: {access_token: process.env.FACEBOOK_PAGE_ACCESS_TOKEN },
+        qs: {access_token: pageToken },
         method: 'POST',
         json:{
             setting_type : "greeting",
-            greeting:{
-                text: "hi! I'm Dronic, your narrative assistant! How are you?"
+            greeting: {
+                text: text
             },
             thread_state : "existing_thread"
         }
@@ -91,11 +91,10 @@ function Greet(){
     })
 }
 
-
-function addPersistentMenu(){
+function addPersistentMenu(pageToken){
     Request({
         url: 'https://graph.facebook.com/v2.8/me/thread_settings',
-        qs: { access_token: process.env.FACEBOOK_PAGE_ACCESS_TOKEN },
+        qs: { access_token: pageToken },
         method: 'POST',
         json:{
             setting_type : "call_to_actions",
@@ -103,22 +102,16 @@ function addPersistentMenu(){
             call_to_actions:[
                 {
                     type:"postback",
-                    title:"i'm an investor",
-                    payload:"investor"
+                    title:"I want to train you ",
+                    payload:"training_mode"
                 },
                 {
                     type:"web_url",
-                    title:"our website",
+                    title:"my website 🌐",
                     url:"https://www.dronic.io"
                 },
-                {
-                    type:"web_url",
-                    title:"our blog",
-                    url:"https://tech.dronic.io"
-                }
             ]
         }
-
     }, function(error, response, body) {
         console.log(response)
         if (error) {
@@ -130,10 +123,10 @@ function addPersistentMenu(){
 
 }
 
-function removePersistentMenu(){
+function removePersistentMenu(pageToken){
     Request({
         url: 'https://graph.facebook.com/v2.8/me/thread_settings',
-        qs: {access_token: process.env.FACEBOOK_PAGE_ACCESS_TOKEN },
+        qs: {access_token: pageToken },
         method: 'POST',
         json:{
             setting_type : "call_to_actions",
@@ -153,25 +146,25 @@ function removePersistentMenu(){
 
 module.exports = {
 
-    VerifyToken: (req,res) => {
-        if (req.query['hub.verify_token'] === process.env.FACEBOOK_PAGE_VERIFY_TOKEN) {
+    VerifyToken: (req,res, token) => {
+        if (req.query['hub.verify_token'] === token) {
             res.send(req.query['hub.challenge']);
         } else {
             res.send('Invalid verify token!');
         }
     },
 
-    SendMessage: (id, message) => {
-        sendMessage(id, message);
+    SendMessage: (id, message, pageToken) => {
+        sendMessage(id, message, pageToken);
     },
 
-    StartTyping: (id) => {
-        StartTyping(id);
+    StartTyping: (id, pageToken) => {
+      startTyping(id, pageToken)
     },
-    StopTyping: (id) => {
-        StopTyping(id)
-    },
-    RemovePersistentMenu: removePersistentMenu(),
-    AddPeristentMenu: addPersistentMenu(),
-    Greet: Greet()
+
+    RemovePersistentMenu: (pageToken) =>  removePersistentMenu(pageToken),
+
+    AddPersistentMenu: (pageToken) => addPersistentMenu(pageToken),
+
+    Greet: (text, pageToken) => greet(text, pageToken)
 };
