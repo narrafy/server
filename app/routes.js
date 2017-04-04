@@ -14,7 +14,11 @@ module.exports =  (app) => {
 
 
     app.get('/webhook', function (req, res) {
-        Facebook.VerifyToken(req,res);
+        Facebook.VerifyToken(req,res, process.env.FACEBOOK_PAGE_VERIFY_TOKEN);
+    });
+
+    app.get('/start-up-grind-webhook', (req, res) => {
+        Facebook.VerifyToken(req,res, process.env.START_UP_GRIND_FB_TOKEN);
     });
 
     app.post('/webhook', function (req, res) {

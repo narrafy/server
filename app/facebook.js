@@ -192,8 +192,8 @@ function investorConversationStarter(sender){
 
 module.exports = {
 
-    VerifyToken: (req,res) => {
-        if (req.query['hub.verify_token'] === process.env.FACEBOOK_PAGE_VERIFY_TOKEN) {
+    VerifyToken: (req,res, token) => {
+        if (req.query['hub.verify_token'] === token) {
             res.send(req.query['hub.challenge']);
         } else {
             res.send('Invalid verify token!');
