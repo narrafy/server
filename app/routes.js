@@ -6,12 +6,13 @@ const Facebook = require('./facebook');
 const Conversation = require('./conversation');
 const FbPageAccessToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
 const FbVerifyToken = process.env.FACEBOOK_PAGE_VERIFY_TOKEN;
+const greetingMessage = "Finally! Someone wants to talk to me!";
 
 module.exports =  (app) => {
 
-    Facebook.Greet("Finally! Someone wants to talk to me!", FbPageAccessToken);
+   // Facebook.Greet(greetingMessage, FbPageAccessToken);
     Facebook.RemovePersistentMenu(FbPageAccessToken);
-    Facebook.AddPersistentMenu(FbPageAccessToken);
+   // Facebook.AddPersistentMenu(FbPageAccessToken);
 
 
     app.get('/webhook', function (req, res) {
