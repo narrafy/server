@@ -7,13 +7,16 @@ const Conversation = require('./conversation');
 const FbPageAccessToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
 const FbVerifyToken = process.env.FACEBOOK_PAGE_VERIFY_TOKEN;
 const greetingMessage = "Finally! Someone wants to talk to me!";
+const appName = process.env.APP_NAME;
 
 module.exports =  (app) => {
 
-   // Facebook.Greet(greetingMessage, FbPageAccessToken);
-    Facebook.RemovePersistentMenu(FbPageAccessToken);
-   // Facebook.AddPersistentMenu(FbPageAccessToken);
 
+    if(appName==='DRONIC'){
+        Facebook.Greet(greetingMessage, FbPageAccessToken);
+        Facebook.RemovePersistentMenu(FbPageAccessToken);
+        Facebook.AddPersistentMenu(FbPageAccessToken);
+    }
 
     app.get('/webhook', function (req, res) {
         Facebook.VerifyToken(req,res, FbVerifyToken);
@@ -45,7 +48,9 @@ module.exports =  (app) => {
     });
 
     app.get('/', (req, res) => {
-        res.render('index.ejs');
+        if(appName ==='DRONIC'){
+            res.render('index.ejs');
+        }
     });
 
     app.get('/privacy-policy', (req,res) => {
