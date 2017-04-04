@@ -3,6 +3,7 @@ require('dotenv').config({silent: true});
 var md = require('mongodb').MongoClient;
 var sg = require('./sendgrid');
 var em = require('./emoji');
+var fb = require('./facebook');
 const watson = require('watson-developer-cloud/conversation/v1');
 
 // Create the service wrapper
@@ -20,7 +21,10 @@ function Connect(callback) {
     md.connect(process.env.MONGODB_URI, callback);
 }
 
-function processMessage(input, fbCb) {
+function processMessage(input, settings) {
+    var logTable = settings.LogTable;
+    var watsonWorkspace = settings.WatsonWorkspace;
+    var pageToken = settings.FbPageToken;
     if (input.sender === process.env.DRONIC_CHATBOT_ID) {
         //if it's an echo from the facebook page
         // we catch the message when a counsellor takes over
@@ -30,7 +34,7 @@ function processMessage(input, fbCb) {
         console.log("user: " + input.sender + " says  " + input.text);
         Connect((err, database) => {
             if (err) return console.log(err);
-            database.collection('conversations').find({"id": input.sender}).sort({"date": -1}).limit(1)
+            database.collection(logTable).find({"id": input.sender}).sort({"date": -1}).limit(1)
                 .toArray((err, result) => {
                     if (err) {
                         return console.log("Error processMessage function: " + err);
@@ -47,7 +51,7 @@ function processMessage(input, fbCb) {
                     var fbCallback = (err, data) => {
                         if (err) {
                             console.log("error in the facebook callback function " + err);
-                            fbCb(request.id, {text: err});
+                            fb.SendMessage(request.id, {text: err}, pageToken);
                         }
                         if (data && data.output) {
                             //watson have an answer
@@ -59,24 +63,24 @@ function processMessage(input, fbCb) {
                             if (currentContext && currentContext.quick_replies) {
                                 message.quick_replies = currentContext.quick_replies;
                             }
-                            fbCb(request.id, message);
+                            fb.SendMessage(request.id, message, pageToken);
                             console.log("Watson replies with: " + text + " " + request.id);
-                            pushContext(request.id, data, "facebook page");
+                            pushContext(request.id, data, "facebook page", logTable);
                         } else {
-                            fbCb(request.id, {
+                            fb.SendMessage(request.id, {
                                 text: 'I am probably training again.' +
                                 'Please write me later!'
-                            });
+                            }, pageToken);
                         }
                     };
                     // Send the input to the conversation service
-                    askWatson(request, fbCallback);
+                    askWatson(request, watsonWorkspace, fbCallback);
                 });
         });
     }
 }
 
-function pushContext(id, response, source) {
+function pushContext(id, response, source, logTable) {
     var toStore = {
         id: id,
         response: response,
@@ -85,7 +89,7 @@ function pushContext(id, response, source) {
     };
     Connect((err, db) => {
 
-        db.collection('conversations').save(toStore, (err) => {
+        db.collection(logTable).save(toStore, (err) => {
             if (err)
                 return console.log(err);
         });
@@ -145,12 +149,12 @@ function getPayload(data, workspace) {
     return payload;
 }
 
-function askWatson(data, cb) {
-    var payload = getPayload(data, process.env.WORKSPACE_ID);
+function askWatson(data, workspace, cb) {
+    var payload = getPayload(data, workspace);
     conversation.message(payload, cb);
 }
 
-function webRequest(id, body, res) {
+function webRequest(id, body, res, logTable) {
     var data = {};
     if (body) {
         if (body.input) {
@@ -164,18 +168,18 @@ function webRequest(id, body, res) {
         if (err) {
             return res.status(err.code || 500).json(err);
         }
-        return res.json(updateMessage(id, data));
+        return res.json(updateMessage(id, data, logTable));
     };
     // Send the input to the conversation service
-    askWatson(data, cb);
+    askWatson(data, process.env.WORKSPACE_ID, cb);
 }
 
-function updateMessage(id, data) {
+function updateMessage(id, data, logTable) {
     var responseText = null;
     if (!data.output) {
         data.output = {};
     } else {
-        pushContext(id, data, "dronic.io chat");
+        pushContext(id, data, "dronic.io chat", logTable);
         if (data.output.text && data.output.text[0])
             return data;
     }
@@ -193,7 +197,7 @@ function updateMessage(id, data) {
         }
     }
     data.output.text = responseText;
-    pushContext(id, data, "dronic.io chat");
+    pushContext(id, data, "dronic.io chat", logTable);
     return data;
 }
 
@@ -220,9 +224,11 @@ module.exports = {
     },
 
     WebRequest: (req, res) => {
-        webRequest(req.sessionID, req.body, res);
+        webRequest(req.sessionID, req.body, res, 'conversations');
     },
-    ProcessMessage: (input, cb) => {
-        processMessage(input, cb);
+    ProcessMessage: (input, settings) => {
+        //show typing icon to the user
+        fb.StartTyping(input.sender, settings.FbPageToken);
+        processMessage(input, settings);
     }
 }

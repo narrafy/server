@@ -1,17 +1,14 @@
 require('dotenv').config({silent: true});
 
-var em = require('./emoji');
-
 const Request = require('request');
 
-
-function sendMessage(id, message) {
+function sendMessage(id, message, pageToken) {
     //first we stop showing typing icon
-    typingOff(id);
+    typingOff(id, pageToken);
     if(id && id !== process.env.DRONIC_CHATBOT_ID){
         Request({
             url: process.env.FB_GRAPH_MSG_URL,
-            qs: {access_token: process.env.FACEBOOK_PAGE_ACCESS_TOKEN},
+            qs: {access_token: pageToken},
             method: 'POST',
             json: {
                 recipient: {id: id},
@@ -30,51 +27,11 @@ function sendMessage(id, message) {
     }
 }
 
-function sendQuickReplyMessage(id, message) {
-    if(id && id !== process.env.DRONIC_CHATBOT_ID){
-        var messageData = {
-            text: em.ReplaceEmojiKey(message.text + ' emoji_hugging_face'),
-            /*quick_replies:[
-                {
-                    "content_type" : "text",
-                    "title" :  em.ReplaceEmojiKey("My heart was emoji_broken_heart"),
-                    "payload" : "heart_event"
-                },
-                {
-                    "content_type": "text",
-                    "title": em.ReplaceEmojiKey("I'm curious emoji_curious"),
-                    "payload": "test"
-                }
-            ]*/
-        };
-
-        Request({
-            url: process.env.FB_GRAPH_MSG_URL,
-            qs: {access_token: process.env.FACEBOOK_PAGE_ACCESS_TOKEN},
-            method: 'POST',
-            json: {
-                recipient: {id: id},
-                message: messageData
-            }
-        }, function (error, response) {
-            if (error) {
-                console.log('Error sending message: ', error);
-            } else if (response.body.error) {
-                console.log('Error in sending message with user id: '+ id + 'while this message ' + message.text
-                    + " was sent.");
-                console.log("======================================");
-                console.log(response.body.error);
-            }
-        });
-    }
-
-}
-
-function startTyping(id){
+function startTyping(id, pageToken){
     if(id && id !== process.env.DRONIC_CHATBOT_ID){
         Request({
             url: process.env.FB_GRAPH_MSG_URL,
-            qs: {access_token: process.env.FACEBOOK_PAGE_ACCESS_TOKEN},
+            qs: {access_token: pageToken},
             method: 'POST',
             json: {
                 recipient: {id: id},
@@ -90,11 +47,11 @@ function startTyping(id){
     }
 }
 
-function typingOff(id){
+function typingOff(id, pageToken){
     if(id && id !== process.env.DRONIC_CHATBOT_ID){
         Request({
             url: process.env.FB_GRAPH_MSG_URL,
-            qs: {access_token: process.env.FACEBOOK_PAGE_ACCESS_TOKEN},
+            qs: {access_token: pageToken},
             method: 'POST',
             json: {
                 recipient: {id: id},
@@ -110,10 +67,11 @@ function typingOff(id){
     }
 }
 
-function greet(text){
+function greet(text, pageToken){
+
     Request({
         url: 'https://graph.facebook.com/v2.8/me/thread_settings',
-        qs: {access_token: process.env.FACEBOOK_PAGE_ACCESS_TOKEN },
+        qs: {access_token: pageToken },
         method: 'POST',
         json:{
             setting_type : "greeting",
@@ -133,10 +91,10 @@ function greet(text){
     })
 }
 
-function addPersistentMenu(){
+function addPersistentMenu(pageToken){
     Request({
         url: 'https://graph.facebook.com/v2.8/me/thread_settings',
-        qs: { access_token: process.env.FACEBOOK_PAGE_ACCESS_TOKEN },
+        qs: { access_token: pageToken },
         method: 'POST',
         json:{
             setting_type : "call_to_actions",
@@ -165,10 +123,10 @@ function addPersistentMenu(){
 
 }
 
-function removePersistentMenu(){
+function removePersistentMenu(pageToken){
     Request({
         url: 'https://graph.facebook.com/v2.8/me/thread_settings',
-        qs: {access_token: process.env.FACEBOOK_PAGE_ACCESS_TOKEN },
+        qs: {access_token: pageToken },
         method: 'POST',
         json:{
             setting_type : "call_to_actions",
@@ -186,10 +144,6 @@ function removePersistentMenu(){
     })
 }
 
-function investorConversationStarter(sender){
-    sendMessage(sender, {text:"Great! I need training to become smarter! :)"});
-}
-
 module.exports = {
 
     VerifyToken: (req,res, token) => {
@@ -200,25 +154,17 @@ module.exports = {
         }
     },
 
-    SendMessage: (id, message) => {
-        sendMessage(id, message);
-    },
-    SendQuickReplyMessage: (id, msg) =>
-    {
-        sendQuickReplyMessage(id, msg)
+    SendMessage: (id, message, pageToken) => {
+        sendMessage(id, message, pageToken);
     },
 
-    StartTyping: (id) => {
-      startTyping(id)
+    StartTyping: (id, pageToken) => {
+      startTyping(id, pageToken)
     },
 
-    ProcessRequest: (req, cb) => {
-        processRequest(req.body, cb);
-    },
+    RemovePersistentMenu: (pageToken) =>  removePersistentMenu(pageToken),
 
-    RemovePersistentMenu: removePersistentMenu(),
+    AddPersistentMenu: (pageToken) => addPersistentMenu(pageToken),
 
-    AddPeristentMenu: addPersistentMenu(),
-
-    Greet: (text) => greet(text)
+    Greet: (text, pageToken) => greet(text, pageToken)
 };
