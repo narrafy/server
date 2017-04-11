@@ -23,18 +23,29 @@ var emojiDictionary = {
 };
 
 function replaceEmojiKey(input){
-    var stringArray = input.split(' ');
-    for(let i=0; i < stringArray.length; i++){
+    if(!input) return null;
+    var outputString = '';
+    for(let j=0; j < input.length ;j++){
+        var parsedString = checkForEmoji(input[j]);
+        outputString += parsedString + ' ';
+    }
+    return (outputString!=null)? outputString: null;
+}
+
+function checkForEmoji(input) {
+    let stringArray = input.split(' ');
+    for(let i=0; i < input.length; i++){
         for(let key in emojiDictionary){
             //we have a emoji key in the string
-           if(stringArray[i]===key){
-               //replace emoji with the emoji key
-               input = input.replace(key, emojiDictionary[key]);
-           }
+            if(stringArray[i]===key){
+                //replace emoji with the emoji key
+                input = input.replace(key, emojiDictionary[key]);
+            }
         }
     }
     return input;
 }
+
 
 module.exports = {
     ReplaceEmojiKey: (input) => {

@@ -13,7 +13,7 @@ const conversation = new watson({
     username: process.env.CONVERSATION_USERNAME,
     password: process.env.CONVERSATION_PASSWORD,
     url: process.env.CONVERSATION_URL,
-    version_date: '2016-09-20',
+    version_date: '2017-02-03',
     version: 'v1'
 });
 
@@ -180,8 +180,11 @@ function updateMessage(id, data, logTable) {
         data.output = {};
     } else {
         pushContext(id, data, "dronic.io chat", logTable);
-        if (data.output.text && data.output.text[0])
+        if (data.output.text && data.output.text[0]){
+            data.output.text = em.ReplaceEmojiKey(data.output.text);
             return data;
+        }
+
     }
     if (data.intents && data.intents[0]) {
         var intent = data.intents[0];
@@ -196,7 +199,7 @@ function updateMessage(id, data, logTable) {
             responseText = 'I didn t get that. Sometimes only a human can help. Wanna see one ?';
         }
     }
-    data.output.text = responseText;
+    data.output.text = em.ReplaceEmojiKey(responseText);
     pushContext(id, data, "dronic.io chat", logTable);
     return data;
 }
