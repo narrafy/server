@@ -24,17 +24,12 @@ var emojiDictionary = {
 
 function replaceEmojiKey(input){
     if(!input) return null;
-    var outputString = '';
-    for(let j=0; j < input.length ;j++){
-        var parsedString = checkForEmoji(input[j]);
-        outputString += parsedString + ' ';
-    }
-    return (outputString!=null)? outputString: null;
+    return checkForEmoji(input);
 }
 
 function checkForEmoji(input) {
     let stringArray = input.split(' ');
-    for(let i=0; i < input.length; i++){
+    for(let i=0; i < stringArray.length; i++){
         for(let key in emojiDictionary){
             //we have a emoji key in the string
             if(stringArray[i]===key){
