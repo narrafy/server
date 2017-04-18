@@ -181,10 +181,9 @@ function updateMessage(id, data, logTable) {
     } else {
         pushContext(id, data, "dronic.io chat", logTable);
         if (data.output.text && data.output.text[0]){
-            data.output.text = em.ReplaceEmojiKey(data.output.text);
+            data.output.text = em.ReplaceEmojiKey(data.output.text[0]);
             return data;
         }
-
     }
     if (data.intents && data.intents[0]) {
         var intent = data.intents[0];
