@@ -102,8 +102,8 @@ function addPersistentMenu(pageToken){
             call_to_actions:[
                 {
                     type:"postback",
-                    title:"I want to train you ",
-                    payload:"training_mode"
+                    title:"I want to talk to a person",
+                    payload:"counselling_mode"
                 },
                 {
                     type:"web_url",
