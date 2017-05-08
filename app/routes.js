@@ -60,4 +60,7 @@ module.exports =  (app) => {
     app.get('/terms-of-use', (req, res) =>{
         res.render('terms.ejs');
     });
+    app.get('/contact', (req,res)=>{
+        res.render('contact.ejs');
+    });
 }
