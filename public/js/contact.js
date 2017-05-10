@@ -6,7 +6,10 @@ var ContactInput = (function(){
             emailBox: '#email-box',
             messageBox: '#contact-box',
             contactForm: '#contact-form',
-            notification: '#email-notification'
+            notification: '#email-notification',
+            subscribeForm: '#subscribe-form',
+            subscribeBox: '#subscribe-box',
+            subscribeNotification: '#subscribe-notification'
         },
         authorTypes: {
             user: 'user',
@@ -16,7 +19,8 @@ var ContactInput = (function(){
 
     return {
         init: init,
-        inputKeyDown: inputKeyDown
+        inputKeyDown: inputKeyDown,
+        subscribeKeyDown: subscribeKeyDown,
     };
 
     //Initialize the module
@@ -200,4 +204,23 @@ var ContactInput = (function(){
             notification.className = 'slider';
         }
     }
+
+    // Handles the submission of input
+    function subscribeKeyDown(event) {
+        // Submit on enter key, dis-allowing blank messages
+        var emailBox = document.querySelector(settings.selectors.subscribeBox);
+        if(emailBox.value){
+            // Send the user message
+            Api.sendSubscribeRequest(emailBox.value);
+
+            // Clear input box for further messages
+            emailBox.value = '';
+            Common.fireEvent(emailBox, 'input');
+            var contactForm = document.querySelector(settings.selectors.subscribeForm);
+            contactForm.className = 'hide';
+            var notification = document.querySelector(settings.selectors.subscribeNotification);
+            notification.className = 'slider';
+        }
+    }
+
 }());

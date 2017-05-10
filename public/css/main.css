@@ -127,7 +127,7 @@ body {
 
 .download-app {
   margin: 50px auto 0;
-  width: 585px;
+  width: 650px;
 }
 
 .download-app img {
@@ -261,6 +261,14 @@ body {
   letter-spacing: 1.33px;
 }
 
+.leave-email-white {
+  margin: 20px auto 30px;
+  font-size: 24px;
+  color: #ffffff;
+  letter-spacing: 1.33px;
+}
+
+
 #contact input {
   margin-bottom: 40px;
   width: 100%;
@@ -273,6 +281,33 @@ body {
   background: #ffffff;
   border: 1px solid #ffffff;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.50);
+}
+
+#subscribe-form input {
+  margin-bottom: 30px;
+  width: 100%;
+  height: 60px;
+  font-size: 18px;
+  color: #9b9b9b;
+  letter-spacing: 0.99px;
+  padding: 20px;
+  border-radius: 100px;
+  font-weight: 200;
+  background: #ffffff;
+  border: 1px solid #ffffff;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.50);
+}
+
+#subscribe-form button {
+  width: 200px;
+  height: 50px;
+  background: #3023ae;
+  border-radius: 100px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.50);
+  border: none;
+  font-size: 20px;
+  color: #ffffff;
+  letter-spacing: 1.11px;
 }
 
 #contact textarea {

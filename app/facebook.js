@@ -101,14 +101,14 @@ function addPersistentMenu(pageToken){
             thread_state : "existing_thread",
             call_to_actions:[
                 {
-                    type:"postback",
-                    title:"I want to talk to a person",
-                    payload:"counselling_mode"
+                    type:"web_url",
+                    title:"our website 🌐",
+                    url:"https://www.narrafy.co"
                 },
                 {
                     type:"web_url",
-                    title:"my website 🌐",
-                    url:"https://www.dronic.io"
+                    title:"our blog 📖",
+                    url:"https://blog.narrafy.co"
                 },
             ]
         }

@@ -28,7 +28,7 @@ function notifyUser(email) {
     var fromEmail = new MailHelper.Email(process.env.DRONIC_IO_ADMIN);
     var toEmail = new MailHelper.Email(email);
     var subject = "message received";
-    var content = new MailHelper.Content('text/plain', "Hey, I'm Dronic. Your narrative assistant. Just " +
+    var content = new MailHelper.Content('text/plain', "Hey, I'm Narrafy. Your narrative assistant. Just " +
         "wanted to let you know that you have some good taste! Going back to training, getting smarter and stuff.");
     var mail = new MailHelper.Mail(fromEmail, subject, toEmail, content);
     sendEmail(mail);

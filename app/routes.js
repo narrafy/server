@@ -31,7 +31,7 @@ module.exports =  (app) => {
         Mongo.WebRequest(req, res);
     });
 
-    app.post('/api/subscribe',  (req, res) => {
+    app.post('/api/contact',  (req, res) => {
         var data = {
             email: req.body.email,
             message:req.body.message,
@@ -39,6 +39,16 @@ module.exports =  (app) => {
             date: new Date()
         };
         Mongo.AddEmail(data);
+        res.sendStatus(200);
+    });
+
+    app.post('/api/subscribe', (req, res)=>{
+
+        var data = {
+          email: req.body.email,
+            date: new Date(),
+        };
+        Mongo.AddSubscriber(data);
         res.sendStatus(200);
     });
 

@@ -122,6 +122,15 @@ function saveEmail(data, callback) {
     });
 }
 
+function saveSubscriber(data){
+    Connect((err, database)=>{
+        database.collection('subscribers').save(data, (err)=>{
+            if(err)
+                return;
+        })
+    });
+}
+
 function getPayload(data, workspace) {
     if (!workspace) {
         return {
@@ -223,6 +232,11 @@ module.exports = {
             sg.NotifyUser(data.email);
         };
         saveEmail(data, callback);
+    },
+
+    AddSubscriber: (data) =>
+    {
+      saveSubscriber(data);
     },
 
     WebRequest: (req, res) => {

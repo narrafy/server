@@ -28,8 +28,9 @@ $(function() {
 
   $navItems.each(function() {
     var itm = $(this).find('a').attr('href');
-    if(!itm.startsWith('https')) {
-      navItems.push($(this).find('a').attr('href'));
+    if(itm.startsWith('/#')) {
+      var href = itm.substring(1);
+      navItems.push(href);
     }
   });
 
