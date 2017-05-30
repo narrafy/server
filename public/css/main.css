@@ -39,7 +39,7 @@ body {
 .navbar-default .navbar-nav > .active > a:focus,
 .navbar-default .navbar-nav > .active > a:hover {
   background: transparent;
-  color: #cd228b;
+  color: #3c763d;
 
 }
 
@@ -51,7 +51,7 @@ body {
 }
 
 #hero {
-  background: linear-gradient(-134deg, rgba(48, 35, 147, 0.7) 0%, rgba(201, 109, 216, 0.7) 100%), url("/img/background.jpg") center no-repeat;
+  background: linear-gradient(-134deg, rgba(57, 146, 130, 0.7) 0%, rgba(137, 174, 181, 0.7) 100%), url("/img/background.jpg") center no-repeat;
   width: 100%;
   height: 800px;
   background-size: cover;
@@ -217,7 +217,7 @@ body {
   margin: 0 auto 20px;
   width: 30px;
   height: 8px;
-  background: #ff2c74;
+  background: #368069;
 }
 
 .underline.wide {
@@ -301,7 +301,7 @@ body {
 #subscribe-form button {
   width: 200px;
   height: 50px;
-  background: #3023ae;
+  background: #31708f;
   border-radius: 100px;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.50);
   border: none;
@@ -337,7 +337,7 @@ body {
 #contact button {
   width: 260px;
   height: 50px;
-  background: #3023ae;
+  background: #31708f;
   border-radius: 100px;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.50);
   border: none;
