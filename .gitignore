@@ -3,4 +3,3 @@ node_modules/
 ssl-cert/
 .env
 npm-debug.log
-public/
