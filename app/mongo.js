@@ -122,11 +122,13 @@ function saveEmail(data, callback) {
     });
 }
 
-function saveSubscriber(data){
+function saveSubscriber(data, cb){
     Connect((err, database)=>{
         database.collection('subscribers').save(data, (err)=>{
             if(err)
                 return;
+            if(cb)
+                cb(data, err);
         })
     });
 }
@@ -236,12 +238,20 @@ module.exports = {
 
     AddSubscriber: (data) =>
     {
-      saveSubscriber(data);
+        var cb = (data, err)=>{
+            if(err)
+                return console.log(err);
+            data.message = "Congrats, another user just subscribed!"
+            sg.NotifyAdmin(data);
+            sg.NotifySubscriber(data.email);
+        }
+      saveSubscriber(data,cb);
     },
 
     WebRequest: (req, res) => {
         webRequest(req.sessionID, req.body, res, 'conversations');
     },
+
     ProcessMessage: (input, settings) => {
         //show typing icon to the user
         fb.StartTyping(input.sender, settings.FbPageToken);

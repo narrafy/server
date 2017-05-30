@@ -16,29 +16,43 @@ function sendEmail(mail){
     });
 }
 
-function notifyAdmin(data) {
-    var fromEmail = new MailHelper.Email(data.email);
+function notifyAdmin(email, message) {
+    var fromEmail = new MailHelper.Email(email);
     var toEmail = new MailHelper.Email(process.env.DRONIC_IO_ADMIN);
-    var subject = 'user subscribed';
-    var content = new MailHelper.Content('text/plain', 'My email: ' + data.email + '. My message: '+ data.message);
+    var subject = 'Narrafy Notification';
+    var content = new MailHelper.Content('text/plain', message);
     var mail = new MailHelper.Mail(fromEmail, subject, toEmail, content);
    sendEmail(mail);
 }
+
+function notifySubscriber(email) {
+    var fromEmail = new MailHelper.Email(process.env.DRONIC_IO_ADMIN);
+    var toEmail = new MailHelper.Email(email);
+    var subject = "Narrafy got your email";
+    var content = new MailHelper.Content('text/plain', "Hey, I'm Narrafy. I got your email." +
+        " I will contact you when I have something cool to share, otherwise I don't bother innocent people!");
+    var mail = new MailHelper.Mail(fromEmail, subject, toEmail, content);
+    sendEmail(mail);
+}
+
 function notifyUser(email) {
     var fromEmail = new MailHelper.Email(process.env.DRONIC_IO_ADMIN);
     var toEmail = new MailHelper.Email(email);
-    var subject = "message received";
-    var content = new MailHelper.Content('text/plain', "Hey, I'm Narrafy. Your narrative assistant. Just " +
-        "wanted to let you know that you have some good taste! Going back to training, getting smarter and stuff.");
+    var subject = "we got your message!";
+    var content = new MailHelper.Content('text/plain', "Hey, I'm Narrafy. I got your email. I will get back to you shortly!");
     var mail = new MailHelper.Mail(fromEmail, subject, toEmail, content);
     sendEmail(mail);
 }
 
 module.exports = {
     NotifyAdmin: (data) => {
-        notifyAdmin(data);
+        notifyAdmin(data.email, data.message);
     },
+
     NotifyUser: (email) =>{
      notifyUser(email);
+    },
+    NotifySubscriber: (email) => {
+        notifySubscriber(email)
     }
 };
