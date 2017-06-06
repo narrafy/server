@@ -62,7 +62,7 @@ function processMessage(input, settings) {
                                 message.quick_replies = currentContext.quick_replies;
                             }
                             fb.SendMessage(request.id, message, pageToken);
-                            console.log("Watson replies with: " + text + " " + request.id);
+                            console.log("Watson replies with: " + message.text + " " + request.id);
                             pushContext(request.id, data, "facebook page", logTable);
                         } else {
                             fb.SendMessage(request.id, {
