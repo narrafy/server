@@ -56,10 +56,8 @@ function processMessage(input, settings) {
                         if (data && data.output) {
                             //watson have an answer
                             var currentContext = data.context;
-                            var text = mineWatsonResponse(data);
-                            var message = {
-                                text: em.ReplaceEmojiKey(text)
-                            };
+                            var message = {};
+                            message.text = mineWatsonResponse(data.output.text);
                             if (currentContext && currentContext.quick_replies) {
                                 message.quick_replies = currentContext.quick_replies;
                             }
@@ -192,7 +190,7 @@ function updateMessage(id, data, logTable) {
     } else {
         pushContext(id, data, "dronic.io chat", logTable);
         if (data.output.text && data.output.text[0]){
-            data.output.text = em.ReplaceEmojiKey(data.output.text[0]);
+            data.output.text = mineWatsonResponse(data.output.text);
             return data;
         }
     }
@@ -206,7 +204,7 @@ function updateMessage(id, data, logTable) {
         if (intent.confidence >= 0.75) {
             responseText = "I understood you but I don't have an answer yet. Could you rephrase your question? ";
         } else {
-            responseText = 'I didn t get that. Sometimes only a human can help. Wanna see one ?';
+            responseText = "I didn't get that. Sometimes only a human can help. Do you want to talk to one?";
         }
     }
     data.output.text = em.ReplaceEmojiKey(responseText);
@@ -216,12 +214,12 @@ function updateMessage(id, data, logTable) {
 
 function mineWatsonResponse(data) {
     var text = '';
-    if (data.output.text.length > 0 && data.output.text[1]) {
-        text = data.output.text[0] + ' ' + data.output.text[1];
-    } else if (data.output.text[0]) {
-        text = data.output.text[0];
+    if (data.length > 0 && data[1]) {
+        text = data[0] + ' ' + data[1];
+    } else if (data[0]) {
+        text = data[0];
     }
-    return text;
+    return em.ReplaceEmojiKey(text);
 }
 
 module.exports = {
