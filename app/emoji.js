@@ -20,7 +20,8 @@ var emojiDictionary = {
     emoji_smile_tears:"😂",
     emoji_sing:"🎤",
     emoji_clock:"🕰️",
-    emoji_sad: "😞"
+    emoji_sad: "😞",
+    emoji_ok: "👌"
 };
 
 function replaceEmojiKey(input){
