@@ -102,12 +102,12 @@ function addPersistentMenu(pageToken){
             call_to_actions:[
                 {
                     type:"web_url",
-                    title:"our website 🌐",
+                    title:"my website 🌐",
                     url:"https://www.narrafy.co"
                 },
                 {
                     type:"web_url",
-                    title:"our blog 📖",
+                    title:"my blog 📖",
                     url:"https://blog.narrafy.co"
                 },
             ]

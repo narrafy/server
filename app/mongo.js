@@ -22,7 +22,7 @@ function Connect(callback) {
 }
 
 function processMessage(input, settings) {
-    var logTable = settings.LogTable;
+    var logTable = "conversations";
     var watsonWorkspace = settings.WatsonWorkspace;
     var pageToken = settings.FbPageToken;
     if (input.sender === process.env.DRONIC_CHATBOT_ID) {
@@ -43,10 +43,9 @@ function processMessage(input, settings) {
                         id: input.sender,
                         text: input.text
                     };
-                    if (result[0] && result[0].response.context) {
-                        request.context = result[0].response.context;
+                    if (result[0] && result[0].context) {
+                        request.context =  result[0].context;
                     }
-
                     //send a reply to facebook page
                     var fbCallback = (err, data) => {
                         if (err) {
@@ -63,7 +62,7 @@ function processMessage(input, settings) {
                             }
                             fb.SendMessage(request.id, message, pageToken);
                             console.log("Watson replies with: " + message.text + " " + request.id);
-                            pushContext(request.id, data, "facebook page", logTable);
+                            pushContext(data, logTable);
                         } else {
                             fb.SendMessage(request.id, {
                                 text: 'I am probably training again.' +
@@ -78,36 +77,37 @@ function processMessage(input, settings) {
     }
 }
 
-function pushContext(id, response, source, logTable) {
-    var toStore = {
-        id: id,
-        response: response,
-        source: source,
+function pushContext(conversation, logTable) {
+    var dbConversation = {
+        conversation_id: conversation.context.conversation_id,
+        intents: conversation.intents,
+        entities: conversation.entities,
+        input: conversation.input,
+        output: conversation.output,
+        context: conversation.context,
         date: new Date()
     };
     Connect((err, db) => {
-
-        db.collection(logTable).save(toStore, (err) => {
+        db.collection(logTable).save(dbConversation, (err) => {
             if (err)
                 return console.log(err);
         });
     });
-    if (response.entities &&
-        response.entities[0] &&
-        response.entities[0].entity === "email") {
-        var data = {
-            email: response.input.text,
-            message: 'an user from Dronic',
-            source: source,
-            date: new Date()
-        };
+    if (conversation.entities &&
+        conversation.entities[0] &&
+        conversation.entities[0].entity === "email") {
+
         var callback = (data, err) => {
             if (err)
                 return console.log(err);
-            sg.NotifyAdmin(data);
-            sg.NotifyUser(data.email);
+            sg.SendTranscript(conversation.input.text, dbConversation.conversation_id);
         };
-        saveEmail(data, callback);
+        var data = {
+            email: conversation.input.text,
+            date: new Date()
+        };
+
+        saveTranscript(data, callback);
     }
 }
 
@@ -116,6 +116,18 @@ function saveEmail(data, callback) {
         database.collection('emails').save(data, (err) => {
             if (callback)
                 callback(data, err);
+        })
+    });
+}
+ function getTranscript(conversation_id) {
+     
+ }
+
+function saveTranscript(data, callback){
+    Connect((err,db) => {
+        db.collection('transcripts').save(data, (err)=>{
+            if(callback)
+                callback(data,err)
         })
     });
 }
@@ -188,7 +200,7 @@ function updateMessage(id, data, logTable) {
     if (!data.output) {
         data.output = {};
     } else {
-        pushContext(id, data, "dronic.io chat", logTable);
+        pushContext(data, logTable);
         if (data.output.text && data.output.text[0]){
             data.output.text = mineWatsonResponse(data.output.text);
             return data;
@@ -208,7 +220,7 @@ function updateMessage(id, data, logTable) {
         }
     }
     data.output.text = em.ReplaceEmojiKey(responseText);
-    pushContext(id, data, "dronic.io chat", logTable);
+    pushContext(data, logTable);
     return data;
 }
 

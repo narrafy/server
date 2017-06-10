@@ -40,7 +40,6 @@ function processRequest(body, settings) {
 module.exports = {
     ProcessRequest: (body) => {
         var settings = {
-            LogTable: 'conversations',
             WatsonWorkspace: process.env.WORKSPACE_ID,
             FbPageToken:  process.env.FACEBOOK_PAGE_ACCESS_TOKEN
         };

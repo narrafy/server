@@ -37,6 +37,6 @@ module.exports = {
         setCookie(req, res)
     },
     ReadConversationCookie: (req, res) => {
-
+        return req.cookies.conversation_id;
     }
 };
