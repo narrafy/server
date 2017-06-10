@@ -1,3 +1,4 @@
+"use strict";
 require('dotenv').config({silent: true});
 
 var md = require('mongodb').MongoClient;
@@ -62,7 +63,7 @@ function processMessage(input, settings) {
                             }
                             fb.SendMessage(request.id, message, pageToken);
                             console.log("Watson replies with: " + message.text + " " + request.id);
-                            pushContext(data, logTable);
+                            pushContext(request.id, data, logTable);
                         } else {
                             fb.SendMessage(request.id, {
                                 text: 'I am probably training again.' +
@@ -77,8 +78,9 @@ function processMessage(input, settings) {
     }
 }
 
-function pushContext(conversation, logTable) {
+function pushContext(id, conversation, logTable) {
     var dbConversation = {
+        id: id,
         conversation_id: conversation.context.conversation_id,
         intents: conversation.intents,
         entities: conversation.entities,
@@ -96,18 +98,9 @@ function pushContext(conversation, logTable) {
     if (conversation.entities &&
         conversation.entities[0] &&
         conversation.entities[0].entity === "email") {
-
-        var callback = (data, err) => {
-            if (err)
-                return console.log(err);
-            sg.SendTranscript(conversation.input.text, dbConversation.conversation_id);
-        };
-        var data = {
-            email: conversation.input.text,
-            date: new Date()
-        };
-
-        saveTranscript(data, callback);
+        var email = conversation.input.text;
+        var conversation_id = dbConversation.conversation_id;
+        getTranscript(email, conversation_id);
     }
 }
 
@@ -119,16 +112,39 @@ function saveEmail(data, callback) {
         })
     });
 }
- function getTranscript(conversation_id) {
-     
+ function getTranscript(email, conversation_id) {
+
+    Connect((err, database) => {
+        database.collection('conversations').find({"conversation_id": conversation_id}).sort({$natural:1}).toArray((err, result) => {
+            var transcript = new Array();
+            for(let j = 0; j < result.length; j++){
+                var conversation = result[j];
+                if(conversation.input && conversation.input.text){
+                    transcript.push(conversation.input.text);
+                }
+                if(conversation.output && conversation.output.text){
+                    transcript.push(conversation.output.text);
+                }
+            }
+            if(transcript.length>0){
+                sg.SendTranscript(email, transcript);
+                var data = {
+                    email: email,
+                    transcript: transcript,
+                    date: new Date()
+                };
+                saveTranscript(data);
+            }
+        });
+    });
  }
 
-function saveTranscript(data, callback){
-    Connect((err,db) => {
-        db.collection('transcripts').save(data, (err)=>{
-            if(callback)
-                callback(data,err)
-        })
+function saveTranscript(data){
+    Connect((err, database) => {
+        database.collection('transcripts').save(data, (err) => {
+            if(err)
+                console.log(err);
+        });
     });
 }
 
@@ -200,7 +216,7 @@ function updateMessage(id, data, logTable) {
     if (!data.output) {
         data.output = {};
     } else {
-        pushContext(data, logTable);
+        pushContext(id, data, logTable);
         if (data.output.text && data.output.text[0]){
             data.output.text = mineWatsonResponse(data.output.text);
             return data;
@@ -219,8 +235,8 @@ function updateMessage(id, data, logTable) {
             responseText = "I didn't get that. Sometimes only a human can help. Do you want to talk to one?";
         }
     }
-    data.output.text = em.ReplaceEmojiKey(responseText);
-    pushContext(data, logTable);
+    data.output.text = mineWatsonResponse(responseText);
+    pushContext(id, data, logTable);
     return data;
 }
 
@@ -260,6 +276,10 @@ module.exports = {
 
     WebRequest: (req, res) => {
         webRequest(req.sessionID, req.body, res, 'conversations');
+    },
+
+    GetTranscript: (email, conversation_id) => {
+        getTranscript(email, conversation_id);
     },
 
     ProcessMessage: (input, settings) => {

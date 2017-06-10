@@ -1,3 +1,4 @@
+"use strict";
 require('dotenv').config({silent: true});
 
 const SendGrid = require('sendgrid')(process.env.SENDGRID_API_KEY);
@@ -25,20 +26,28 @@ function notifyAdmin(email, message) {
    sendEmail(mail);
 }
 
-function sendTranscript(email, conversation_id){
+function sendTranscript(email, transcript){
     var fromEmail = new MailHelper.Email(email);
     var toEmail = new MailHelper.Email(process.env.DRONIC_IO_ADMIN);
-    var subject = "Exercise Transcript";
-    var emailBody = getTranscriptEmailBody(conversation_id);
+    var subject = "Externalization Exercise Transcript";
+    var emailBody = getTranscriptEmailBody(transcript);
     var content = new MailHelper.Content('text/html', emailBody);
     var mail = new MailHelper.Mail(fromEmail, subject, toEmail, content);
     sendEmail(mail);
 }
-function getTranscriptEmailBody(conversation_id){
 
-    var email = "<html><body>" +
-        "</body></html>>";
+function getTranscriptEmailBody(transcript){
 
+    var email = "<html><body> <ul>";
+    for(let i = 0; i< transcript.length; i++){
+        if(i%2==0){
+            email = email + "<li> <strong>" + transcript[i] + "</strong></li>";
+        }else {
+            email = email + "<li>" + transcript[i] + "</li>";
+        }
+    }
+    email += "</ul><body/></html>"
+    return email;
 }
 
 
@@ -71,7 +80,7 @@ module.exports = {
     NotifySubscriber: (email) => {
         notifySubscriber(email)
     },
-    SendTranscript: (email, conversation_id) => {
-        sendTranscript(email, conversation_id)
+    SendTranscript: (email, transcript) => {
+        sendTranscript(email, transcript)
     }
 }

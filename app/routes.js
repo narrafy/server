@@ -52,6 +52,17 @@ module.exports =  (app) => {
         res.sendStatus(200);
     });
 
+    app.get('/api/gettranscript', (req, res) => {
+        var conversation_id = req.query['conversation_id'];
+        var email = req.query['email'];
+        if(conversation_id !== null && email!== null){
+            Mongo.GetTranscript(email, conversation_id);
+            res.sendStatus(200);
+        }else{
+            res.sendStatus(500);
+        }
+    });
+
     //free ssl encryption
     app.get('/.well-known/acme-challenge/:content', (req, res) => {
         res.send(process.env.SSL_SECRET);
@@ -62,6 +73,7 @@ module.exports =  (app) => {
             res.render('index.ejs');
         }
     });
+
 
     app.get('/privacy-policy', (req,res) => {
         res.render('privacy.ejs');
