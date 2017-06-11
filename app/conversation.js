@@ -19,9 +19,14 @@ function processRequest(body, settings) {
                     break;
                 //investor button was pressed
                 case 'CLEAR_CONTEXT':
-                    Mongo.ClearContext(data.sender);
-                    data.text = "";
-                    Mongo.ProcessMessage(data, settings);
+                    var cb = (id) => {
+                        var dt = {
+                            sender: id,
+                            text: ""
+                        };
+                        Mongo.ProcessMessage(dt, settings);
+                    };
+                    Mongo.ClearContext(data.sender, cb);
                     break;
                 case 'reset':
                 default:
