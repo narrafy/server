@@ -107,12 +107,7 @@ function addPersistentMenu(pageToken){
                 },
                 {
                     type:"web_url",
-                    title:"my website 🌐",
-                    url:"https://www.narrafy.co"
-                },
-                {
-                    type:"web_url",
-                    title:"my blog 📖",
+                    title:"what I think 📖",
                     url:"https://blog.narrafy.co"
                 },
             ]
