@@ -101,6 +101,11 @@ function addPersistentMenu(pageToken){
             thread_state : "existing_thread",
             call_to_actions:[
                 {
+                    "title":"Start Over",
+                    "type": "postback",
+                    "payload":"CLEAR_CONTEXT"
+                },
+                {
                     type:"web_url",
                     title:"my website 🌐",
                     url:"https://www.narrafy.co"

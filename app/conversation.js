@@ -18,7 +18,9 @@ function processRequest(body, settings) {
                     Mongo.ProcessMessage(data, settings);
                     break;
                 //investor button was pressed
-                case 'training_mode':
+                case 'CLEAR_CONTEXT':
+                    Mongo.ClearContext(data.sender);
+                    data.text = "";
                     Mongo.ProcessMessage(data, settings);
                     break;
                 case 'reset':

@@ -104,6 +104,15 @@ function pushContext(id, conversation, logTable) {
     }
 }
 
+function clearContext(id){
+    Connect((err, db) => {
+        db.collection('conversations').remove({"id":id}, (err) => {
+            if (err)
+                return console.log(err);
+        });
+    });
+}
+
 function saveEmail(data, callback) {
     Connect((err, database) => {
         database.collection('emails').save(data, (err) => {
@@ -286,5 +295,8 @@ module.exports = {
         //show typing icon to the user
         fb.StartTyping(input.sender, settings.FbPageToken);
         processMessage(input, settings);
+    },
+    ClearContext: (id) => {
+        clearContext(id)
     }
 }
