@@ -101,13 +101,13 @@ function addPersistentMenu(pageToken){
             thread_state : "existing_thread",
             call_to_actions:[
                 {
-                    "title":"start over",
+                    "title":"Let's try again",
                     "type": "postback",
                     "payload":"CLEAR_CONTEXT"
                 },
                 {
                     type:"web_url",
-                    title:"thoughts of mine 📖",
+                    title:"some thoughts  📖",
                     url:"https://blog.narrafy.co"
                 },
             ]
