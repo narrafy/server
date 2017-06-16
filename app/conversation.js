@@ -1,4 +1,6 @@
 const Mongo = require('./mongo');
+var fb = require('./facebook');
+var sg = require('./sendgrid');
 
 function processRequest(body, settings) {
     var events = body.entry[0].messaging;
@@ -17,7 +19,11 @@ function processRequest(body, settings) {
                     data.text = "";
                     Mongo.ProcessMessage(data, settings);
                     break;
-                //investor button was pressed
+                case 'CONTACT_REQUEST':
+                    fb.SendMessage(data.sender, "Human on the way. We will contact you as soon as possible!", process.env.FACEBOOK_PAGE_ACCESS_TOKEN);
+                    fb.SendMessage(process.env.ADMIN_FB_ID, "Check the facebook page!", process.env.FACEBOOK_PAGE_ACCESS_TOKEN);
+                    break;
+                //clear context button was pressed
                 case 'CLEAR_CONTEXT':
                     var cb = (id) => {
                         var dt = {
@@ -28,7 +34,6 @@ function processRequest(body, settings) {
                     };
                     Mongo.ClearContext(data.sender, cb);
                     break;
-                case 'reset':
                 default:
                     break;
             }

@@ -106,6 +106,11 @@ function addPersistentMenu(pageToken){
                     "payload":"CLEAR_CONTEXT"
                 },
                 {
+                    "title":"I want to talk to a person",
+                    "type": "postback",
+                    "payload": "CONTACT_REQUEST"
+                },
+                {
                     type:"web_url",
                     title:"some thoughts  📖",
                     url:"https://blog.narrafy.co"
