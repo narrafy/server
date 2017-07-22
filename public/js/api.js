@@ -81,6 +81,7 @@ var Api = (function(){
         //send request
         http.send(params);
     }
+
     function sendSubscribeRequest(email){
         //Build request payload
         var contactForm = {};
