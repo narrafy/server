@@ -19,13 +19,13 @@ var ContactInput = (function(){
 
     return {
         init: init,
-        inputKeyDown: inputKeyDown,
+        contactKeyDown: contactKeyDown,
         subscribeKeyDown: subscribeKeyDown,
     };
 
     //Initialize the module
     function init(){
-         Api.sendRequest('', null);
+        Api.sendRequest('', null);
         setupInputBox();
     }
 
@@ -185,11 +185,19 @@ var ContactInput = (function(){
         }
     }
 
+    function validateEmail(email) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
+    }
+
     // Handles the submission of input
-    function inputKeyDown(event) {
+    function contactKeyDown(event) {
         // Submit on enter key, dis-allowing blank messages
         var emailBox = document.querySelector(settings.selectors.emailBox);
-        if(emailBox.value){
+        if(emailBox.value ){
+            if(! validateEmail(emailBox.value)){
+                return;
+            }
             var messageBox = document.querySelector(settings.selectors.messageBox);
             // Send the user message
             Api.sendContactRequest(emailBox.value, messageBox.value);
@@ -210,6 +218,10 @@ var ContactInput = (function(){
         // Submit on enter key, dis-allowing blank messages
         var emailBox = document.querySelector(settings.selectors.subscribeBox);
         if(emailBox.value){
+            if(!validateEmail(emailBox.value))
+            {
+                return;
+            }
             // Send the user message
             Api.sendSubscribeRequest(emailBox.value);
 
@@ -222,5 +234,6 @@ var ContactInput = (function(){
             notification.className = 'slider';
         }
     }
+
 
 }());

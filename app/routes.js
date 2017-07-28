@@ -68,6 +68,40 @@ module.exports =  (app) => {
         res.render('index.ejs');
     });
 
+    app.get('/use-cases', (req,res) => {
+        res.render('product/use-cases.ejs');
+    });
+
+    app.get('/roadmap', (req,res) => {
+        res.render('product/roadmap.ejs');
+    });
+
+    app.get('/faq', (req,res) => {
+        res.render('documentation/faq.ejs');
+    });
+
+    app.get('/about', (req,res) => {
+        res.render('foundation/about.ejs');
+    });
+
+    app.get('/press', (req,res) => {
+        res.render('foundation/press.ejs');
+    });
+
+    app.get('/partners', (req,res) => {
+        res.render('foundation/partners.ejs');
+    });
+
+    app.get('/careers', (req,res) => {
+        res.render('foundation/careers.ejs');
+    });
+
+    app.get('/fundraiser', (req,res) => {
+        res.render('foundation/fundraiser.ejs');
+    });
+
+
+
     app.get('/privacy-policy', (req,res) => {
         res.render('privacy.ejs');
     });
