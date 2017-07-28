@@ -5,7 +5,7 @@ const Request = require('request');
 function sendMessage(id, message, pageToken) {
     //first we stop showing typing icon
     typingOff(id, pageToken);
-    if(id && id !== process.env.DRONIC_CHATBOT_ID){
+    if(id && id !== process.env.CHATBOT_ID){
         Request({
             url: process.env.FB_GRAPH_MSG_URL,
             qs: {access_token: pageToken},
@@ -28,7 +28,7 @@ function sendMessage(id, message, pageToken) {
 }
 
 function startTyping(id, pageToken){
-    if(id && id !== process.env.DRONIC_CHATBOT_ID){
+    if(id && id !== process.env.CHATBOT_ID){
         Request({
             url: process.env.FB_GRAPH_MSG_URL,
             qs: {access_token: pageToken},
@@ -48,7 +48,7 @@ function startTyping(id, pageToken){
 }
 
 function typingOff(id, pageToken){
-    if(id && id !== process.env.DRONIC_CHATBOT_ID){
+    if(id && id !== process.env.CHATBOT_ID){
         Request({
             url: process.env.FB_GRAPH_MSG_URL,
             qs: {access_token: pageToken},
