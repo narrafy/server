@@ -9,7 +9,7 @@ var ContactInput = (function(){
             notification: '#email-notification',
             subscribeForm: '#subscribe-form',
             subscribeBox: '#subscribe-box',
-            subscribeNotification: '#subscribe-notification'
+            subscribeNotification: '#mce-success-response'
         },
         authorTypes: {
             user: 'user',

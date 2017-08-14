@@ -1,7 +1,7 @@
 
+<!--
 <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container">
-        <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#menu"
                     aria-expanded="false">
@@ -20,7 +20,7 @@
             </a>
         </div>
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
+
         <div class="collapse navbar-collapse" id="menu">
             <ul class="nav navbar-nav navbar-right">
                 <li class="active"><a href="/#page-top">Home <span class="sr-only">(current)</span></a></li>
@@ -61,4 +61,75 @@
             </ul>
         </div>
     </div>
+</nav>
+-->
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="navbar-header page-scroll">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="page-scroll" href="#page-top"><img src="img/logo.svg" class="logo"></a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse navbar-ex1-collapse ">
+        <ul class="nav navbar-nav navbar-right">
+            <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
+            <li>
+                <a class="page-scroll" href="#page-top">Home</a>
+            </li>
+
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Product <span class="caret"></span>
+                </a>
+
+                <ul class="dropdown-menu">
+                    <li><a href="/use-cases">Use Cases</a></li>
+                    <li><a href="/roadmap">Roadmap</a></li>
+                </ul>
+            </li>
+
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Documentation <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="/static/whitepaper_en.pfd">Whitepaper</a></li>
+                    <li><a href="/faq">FAQ</a></li>
+                </ul>
+            </li>
+
+
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle"
+                   data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Foundation
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/press">Press</a></li>
+                    <li><a href="/partners">Partners</a></li>
+                    <li><a href="/careers">Careers</a></li>
+                    <li><a href="/fundraiser">Fundraiser</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <a class="page-scroll" href="/contact">Contact</a>
+            </li>
+
+            <div class="social-network social-circle">
+                <li><a href="#" class="icoFacebook" title="Facebook"><i class="fa fa-facebook"></i></a></li>
+                <li><a href="#" class="icoTwitter" title="Twitter"><i class="fa fa-twitter"></i></a></li>
+                <li><a href="#" class="faMedium" title="Medium"><i class="fa fa-medium"></i></a></li>
+                <li><a href="#" class="icoGithub" title="Github"><i class="fa fa-github"></i></a></li>
+            </div>
+        </ul>
+
+    </div>
+    <!-- /.navbar-collapse -->
+
 </nav>

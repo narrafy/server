@@ -5,7 +5,7 @@
   <% include ./partials/head %>
 </head>
 
-<body id="page-top" data-gr-c-s-loaded="true">
+<body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
 
     <header>
         <% include ./partials/navbar %>
@@ -13,13 +13,19 @@
 
     <% include ./partials/hero %>
 
+    <% include ./partials/benefits %>
+
+    <% include ./partials/subscribe %>
+
     <%include ./partials/chatbox %>
 
-    <% include ./partials/features %>
+    <% include ./partials/blog %>
+
+    <% include ./partials/testimonials %>
 
     <% include ./partials/footer %>
 
-    <a class="back-to-top" href="#hero">
+    <a class="back-to-top" href="#intro">
         <i class="glyphicon glyphicon-menu-up"></i>
     </a>
 

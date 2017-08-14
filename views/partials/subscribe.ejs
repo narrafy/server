@@ -1,22 +1,26 @@
-<div id="subscribe-form">
-            <div class="row">
-                <div class="email">
-                    <div class="col-md-5">
-                            <input id="subscribe-box" type="email" name="email" placeholder="Your email address">
+<section id="signup" class="section-primary">
+    <div class="container">
+        <h2>Sign up for news and updates</h2>
+
+        <div id="mc_embed_signup">
+            <form action="/" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+                <div id="mc_embed_signup_scroll">
+
+                    <!-- Text Input Field -->
+                    <div class="mc-field-group"><input type="email"  placeholder="Your Email" name="EMAIL" class="inputline" id="subscribe-box"></div>
+                    <!-- /Text Input Field -->
+
+                    <div id="mce-responses" class="clear">
+                        <div class="response" id="mce-error-response" style="display:none"></div>
+                        <div class="response" id="mce-success-response" style="display:none">
+                            we will contact you when there is something important.
                         </div>
-                    <div class="col-md-4">
-                            <button type="submit" onclick="ContactInput.subscribeKeyDown(event, this)" >Stay updated</button>
-                        </div>
-                    <div class="col-md-3">
-                        <a href="https://m.me/narrafy" target="_blank" class="google-play"><img src="img/fbmessenger.png" alt=""></a>
                     </div>
-                </div>
-            </div>
-</div>
-<div class="row">
-    <div id="subscribe-notification" class="hide">
-        <p class="leave-email-white">
-            we will contact you when there is something important.
-        </p>
+                    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+                    <input type="submit" onclick="ContactInput.subscribeKeyDown(event, this)" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button btn btn-primary"></div>
+                <!-- /Submit Button -->
+            </form>
+        </div>
     </div>
-</div>
+</section>
+
