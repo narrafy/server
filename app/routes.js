@@ -72,8 +72,8 @@ module.exports =  (app) => {
         res.render('product/use-cases.ejs');
     });
 
-    app.get('/roadmap', (req,res) => {
-        res.render('product/roadmap.ejs');
+    app.get('/timeline', (req,res) => {
+        res.render('timeline.ejs');
     });
 
     app.get('/faq', (req,res) => {
