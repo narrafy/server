@@ -1,3 +1,4 @@
-# iSegoria - a p2p counseling network. You'll listen your peers, we'll suggest the questions you could ask.
-A person-to-person counseling network powered by artificial narrow intelligence and narrative approach to counseling.
-You listen, we suggest questions.
+# iSegoria - a person-to-person counseling network powered by artificial narrow intelligence, narrative approach to counseling and blockchain.
+People listen each other. We suggest questions worth answering.
+
+

@@ -8342,6 +8342,7 @@ label {
 .blogimg {
     margin-bottom: 20px;
     margin-top: 20px;
+    max-width: 200px;
 }
 .quotation {
     width: 45px;
