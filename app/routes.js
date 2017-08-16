@@ -84,8 +84,8 @@ module.exports =  (app) => {
         res.render('foundation/about.ejs');
     });
 
-    app.get('/press', (req,res) => {
-        res.render('foundation/press.ejs');
+    app.get('/media', (req,res) => {
+        res.render('foundation/media.ejs');
     });
 
     app.get('/partners', (req,res) => {
