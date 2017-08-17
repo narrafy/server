@@ -34,7 +34,7 @@ module.exports =  (app) => {
             source: "subscribe form",
             date: new Date()
         };
-        Mongo.AddEmail(data);
+        Mongo.AddInquiry(data);
         res.sendStatus(200);
     });
 

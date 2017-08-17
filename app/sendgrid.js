@@ -19,8 +19,8 @@ function sendEmail(mail){
 
 function notifyAdmin(email, message) {
     var fromEmail = new MailHelper.Email(email);
-    var toEmail = new MailHelper.Email(process.env.DRONIC_IO_ADMIN);
-    var subject = 'Narrafy Exercise Notification';
+    var toEmail = new MailHelper.Email(process.env.ADMIN_EMAIL);
+    var subject = 'iSegoria website';
     var content = new MailHelper.Content('text/plain', message);
     var mail = new MailHelper.Mail(fromEmail, subject, toEmail, content);
    sendEmail(mail);
@@ -28,8 +28,8 @@ function notifyAdmin(email, message) {
 
 function sendTranscript(email, transcript){
     var fromEmail = new MailHelper.Email(email);
-    var toEmail = new MailHelper.Email(process.env.DRONIC_IO_ADMIN);
-    var subject = "Externalization Exercise Transcript";
+    var toEmail = new MailHelper.Email(process.env.ADMIN_EMAIL);
+    var subject = "Exercise Transcript";
     var emailBody = getTranscriptEmailBody(transcript);
     var content = new MailHelper.Content('text/html', emailBody);
     var mail = new MailHelper.Mail(fromEmail, subject, toEmail, content);
@@ -38,7 +38,7 @@ function sendTranscript(email, transcript){
 
 function getTranscriptEmailBody(transcript){
 
-    var email = "<html><body> <ul>";
+    var email = "<html><body><ul>";
     for(let i = 0; i< transcript.length; i++){
         if(i%2==0){
             email = email + "<li> <strong>" + transcript[i] + "</strong></li>";
@@ -52,20 +52,38 @@ function getTranscriptEmailBody(transcript){
 
 
 function notifySubscriber(email) {
-    var fromEmail = new MailHelper.Email(process.env.DRONIC_IO_ADMIN);
+    var fromEmail = new MailHelper.Email(process.env.ADMIN_EMAIL);
     var toEmail = new MailHelper.Email(email);
-    var subject = "Narrafy got your email";
-    var content = new MailHelper.Content('text/plain', "Hey, I'm Narrafy. I got your email." +
-        " I will contact you when I have something cool to share. Otherwise, I don't bother innocent people!");
+    var subject = "iSegoria got your email";
+    var emailBody = getSubscriberReplyEmailBody();
+    var content = new MailHelper.Content('text/html', emailBody);
     var mail = new MailHelper.Mail(fromEmail, subject, toEmail, content);
     sendEmail(mail);
 }
 
+function getSubscriberReplyEmailBody(){
+
+    var text = "<html><body><p>"+"Hey! We've got your email." +
+        " We will contact you when I have something cool to share." +
+        " Otherwise, we don't bother innocent people!" + "</p>" +
+    "<p>Have a nice day! <a href='https://www.isegoria.com'>iSegoria.com</a> Team</p></body></html>";
+    return text;
+}
+
+function getUserReplyEmailBody(){
+    var text = "<html><body><p>"+"Hey! We've got your email." +
+        " We will contact as soon as possible. Thank you for your interest!" +
+        "</p>" +
+        "<p><a href='https://www.isegoria.com'>iSegoria.com</a> Team</p></body></html>";
+    return text;
+}
+
 function notifyUser(email) {
-    var fromEmail = new MailHelper.Email(process.env.DRONIC_IO_ADMIN);
+    var fromEmail = new MailHelper.Email(process.env.ADMIN_EMAIL);
     var toEmail = new MailHelper.Email(email);
-    var subject = "we got your message!";
-    var content = new MailHelper.Content('text/plain', "Hey, I'm Narrafy. I got your email. I will get back to you shortly!");
+    var subject = "We've got your message!";
+    var emailBody = getUserReplyEmailBody();
+    var content = new MailHelper.Content('text/html', emailBody);
     var mail = new MailHelper.Mail(fromEmail, subject, toEmail, content);
     sendEmail(mail);
 }

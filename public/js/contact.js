@@ -8,8 +8,7 @@ var ContactInput = (function(){
             contactForm: '#contact-form',
             notification: '#email-notification',
             subscribeForm: '#subscribe-form',
-            subscribeBox: '#subscribe-box',
-            subscribeNotification: '#mce-success-response'
+            subscribeNotification: '#subscribe-notification'
         },
         authorTypes: {
             user: 'user',
@@ -19,8 +18,9 @@ var ContactInput = (function(){
 
     return {
         init: init,
-        contactKeyDown: contactKeyDown,
+        contactSubmit: contactSubmit,
         subscribeKeyDown: subscribeKeyDown,
+        subscribeSubmit: subscribeSubmit
     };
 
     //Initialize the module
@@ -191,7 +191,7 @@ var ContactInput = (function(){
     }
 
     // Handles the submission of input
-    function contactKeyDown(event) {
+    function contactSubmit(event) {
         // Submit on enter key, dis-allowing blank messages
         var emailBox = document.querySelector(settings.selectors.emailBox);
         if(emailBox.value ){
@@ -214,26 +214,44 @@ var ContactInput = (function(){
     }
 
     // Handles the submission of input
-    function subscribeKeyDown(event) {
+    function inputKeyDown(event, inputBox) {
         // Submit on enter key, dis-allowing blank messages
-        var emailBox = document.querySelector(settings.selectors.subscribeBox);
-        if(emailBox.value){
-            if(!validateEmail(emailBox.value))
-            {
-                return;
-            }
-            // Send the user message
-            Api.sendSubscribeRequest(emailBox.value);
-
-            // Clear input box for further messages
-            emailBox.value = '';
-            Common.fireEvent(emailBox, 'input');
-            var contactForm = document.querySelector(settings.selectors.subscribeForm);
-            contactForm.className = 'hide';
-            var notification = document.querySelector(settings.selectors.subscribeNotification);
-            notification.className = 'slider';
+        if (event.keyCode === 13 && inputBox.value) {
+            fireChatEvent(inputBox);
         }
     }
 
+    // Handles the submission of input
+    function subscribeKeyDown(event, inputBox) {
+        // Submit on enter key
+        if (event.keyCode === 13) {
+            fireSubscribeEvent(inputBox);
+        }
+    }
+
+    function subscribeSubmit(subscribeIdBox){
+        var inputBox = document.querySelector('#' +  subscribeIdBox);
+        fireSubscribeEvent(inputBox);
+    }
+
+    function fireSubscribeEvent(emailBox){
+
+        // Submit on enter key, dis-allowing blank messages
+        if(!validateEmail(emailBox.value))
+        {
+            return;
+        }
+
+        // Send the user message
+        Api.sendSubscribeRequest(emailBox.value);
+
+        // Clear input box for further messages
+        emailBox.value = '';
+        Common.fireEvent(emailBox, 'input');
+        var contactForm = document.querySelector(settings.selectors.subscribeForm);
+        contactForm.className = 'hide';
+        var notification = document.querySelector(settings.selectors.subscribeNotification);
+        notification.className = 'slider';
+    }
 
 }());

@@ -114,9 +114,9 @@ function clearContext(id, cb){
     });
 }
 
-function saveEmail(data, callback) {
+function saveInquiry(data, callback) {
     Connect((err, database) => {
-        database.collection('emails').save(data, (err) => {
+        database.collection('contact').save(data, (err) => {
             if (callback)
                 callback(data, err);
         })
@@ -262,14 +262,14 @@ function mineWatsonResponse(data) {
 
 module.exports = {
 
-    AddEmail: (data) => {
+    AddInquiry: (data) => {
         var callback = (data, err) => {
             if (err)
                 return console.log(err);
             sg.NotifyAdmin(data);
             sg.NotifyUser(data.email);
         };
-        saveEmail(data, callback);
+        saveInquiry(data, callback);
     },
 
     AddSubscriber: (data) =>

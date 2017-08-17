@@ -16,7 +16,8 @@ var ConversationPanel = (function(){
 
     return {
         init: init,
-        inputKeyDown: inputKeyDown
+        inputKeyDown: inputKeyDown,
+        sendMessage: sendMessage,
     };
 
     //Initialize the module
@@ -196,10 +197,8 @@ var ConversationPanel = (function(){
         }
     }
 
-    // Handles the submission of input
-    function inputKeyDown(event, inputBox) {
-        // Submit on enter key, dis-allowing blank messages
-        if (event.keyCode === 13 && inputBox.value) {
+    function fireChatEvent(inputBox){
+        if(inputBox.value){
             // Retrieve the context from the previous server response
             var context;
             var latestResponse = Api.getResponsePayload();
@@ -214,5 +213,19 @@ var ConversationPanel = (function(){
             inputBox.value = '';
             Common.fireEvent(inputBox, 'input');
         }
+    }
+
+    // Handles the submission of input
+    function inputKeyDown(event, inputBox) {
+        // Submit on enter key, dis-allowing blank messages
+        if (event.keyCode === 13) {
+           fireChatEvent(inputBox);
+        }
+    }
+
+    function sendMessage(inputBoxId)
+    {
+        var inputBox = document.getElementById(inputBoxId);
+        fireChatEvent(inputBox);
     }
 }());
