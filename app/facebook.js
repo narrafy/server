@@ -113,7 +113,7 @@ function addPersistentMenu(pageToken){
                 {
                     type:"web_url",
                     title:"some thoughts  📖",
-                    url:"https://blog.narrafy.co"
+                    url:"https://blog.isegoria.com"
                 },
             ]
         }
