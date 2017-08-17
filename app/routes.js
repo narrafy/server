@@ -68,12 +68,12 @@ module.exports =  (app) => {
         res.render('index.ejs');
     });
 
-    app.get('/use-cases', (req,res) => {
-        res.render('product/use-cases.ejs');
-    });
-
     app.get('/timeline', (req,res) => {
         res.render('timeline.ejs');
+    });
+
+    app.get('/token', (req, res) => {
+       res.render('token.ejs');
     });
 
     app.get('/faq', (req,res) => {
@@ -100,8 +100,6 @@ module.exports =  (app) => {
         res.render('foundation/fundraiser.ejs');
     });
 
-
-
     app.get('/privacy-policy', (req,res) => {
         res.render('privacy.ejs');
     });
@@ -110,6 +108,6 @@ module.exports =  (app) => {
         res.render('terms.ejs');
     });
     app.get('/contact', (req,res)=>{
-        res.render('contact.ejs');
+        res.render('foundation/contact.ejs');
     });
 }
