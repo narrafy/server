@@ -231,8 +231,11 @@ body {
   text-align: center;
 }
 
-#contact {
+#partners {
   padding: 120px 0;
+  width: 100%;
+  position: relative;
+  text-align: center;
 }
 
 .letter-icon {
