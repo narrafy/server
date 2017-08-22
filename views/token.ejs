@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
     <% include ./partials/head %>
+    <script src="js/Chart.js" ></script>
 </head>
 
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
@@ -11,27 +12,159 @@
     <% include ./partials/navbar %>
 </header>
 
-<section id="token">
+<section id="token-stats" class="section-white">
     <div class="container">
-        <div class="page-header">
-            <h3> Token Crowd sale </h3>
-        </div>
-        <div class="row">
-            <p>
-
-            </p>
-
-        </div>
+            <h1>Token Crowd Sale</h1>
+            <p class="big"> The crowd sale starts 1'st of october and will last until 15'th of october or hidden cap is reached. </p>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="stats-value">
+                        <span>100 MLN</span>
+                    </div>
+                    <div class="stats-label">
+                    <span> NAR Fundraiser
+                    <br />
+                        token allocation
+                    </span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-value">
+                        <span> - </span>
+                    </div>
+                    <div class="stats-label">
+                        ETH Raised
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-value">
+                        <span> - </span>
+                    </div>
+                    <div class="stats-label">
+                        XBT Raised
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-value">
+                        <span>20 BLN</span>
+                    </div>
+                    <div class="stats-label">
+                    <span> Total NAR SUPPLY
+                    <br />
+                    </span>
+                    </div>
+                </div>
+            </div>
     </div>
-
 </section>
 
+<section id="token-sale-details" class="section-primary">
+    <div class="container">
+        <h1> Token Benefits </h1>
+        <p class="big"> What are you investing in? </p>
+        <div class="row">
+            <div class="col-md-3 col-md-offset-5">
+                <a href="#" class="thumbnail"> <img width="150px" height="100px" src="/img/nar.png" /> </a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3 col-md-offset-1">
+                <p class="big">Healthy Productive Life</p>
+                <p> Professional counseling services. </p>
+            </div>
+            <div class="col-md-3">
+                <p class="big"> Education </p>
+                <p> Access to a 3-level counseling boot camp.
+                </p>
+            </div>
+            <div class="col-md-3">
+                <p class="big"> Artificial General Intelligence </p>
+                <p> A stake in the greatest invention of humanity. </p>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section id="token-allocation-details" class="section-white">
+
+    <div class="container">
+        <h1>
+            Token Creation Details
+        </h1>
+        <a type="button" class="btn btn-primary page-scroll" href="">Read Full Post</a>
+
+        <div class="row">
+            <hr />
+            <div class="col-md-4 col-md-offset-1">
+                <h3> Use of Proceeds </h3>
+                <canvas id="useOfProceedsChart" width="200" height="200"></canvas>
+            </div>
+            <div class="col-md-4 col-md-offset-1">
+                <h3> Token Allocation </h3>
+                <canvas id="tokenAllocation" width="200" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="token-"></section>
 
 <% include ./partials/subscribe %>
 
 <% include ./partials/footer %>
 
-<% include ./partials/script %>
+<%%>
+
+<script type="text/javascript">
+    function getChartOptions(labels, percents){
+        return {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '# %',
+                    data: percents,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255,99,132,1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                legend:{
+                    position: 'bottom'
+                }
+            }
+        }
+    }
+
+    var ctx = document.getElementById("useOfProceedsChart");
+    var ctx2 = document.getElementById("tokenAllocation");
+    var labels1  = ["Software Development - 35%", "Counseling Boot camps - 35%", "Marketing - 12%",
+        "Operational - 8%", "Legal - 5%", "Miscellaneous - 5%"];
+    var data1 = [35, 35, 12, 8, 5, 5];
+    var labels2 = ["Fundraiser - 50%", "Grants 20%", "Long term Budget 20%", "Team 10%"];
+    var data2 = [50,20,20,10];
+
+    var myChart = new Chart(ctx, getChartOptions(labels1,data1));
+    var myChart2 = new Chart(ctx2, getChartOptions(labels2, data2));
+
+</script>
 
 </body>
 </html>
