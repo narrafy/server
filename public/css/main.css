@@ -464,6 +464,30 @@ body {
   padding: 20px;
 }
 
+.accordion .item {
+  position: relative;
+  margin: 0 0 2px;
+}
+
+.accordion .item .title {
+  position: relative;
+  background-color: #233d4f;
+  margin: 0;
+  font-size: 20px;
+  color: #fff;
+  line-height: 24px;
+  text-align: left;
+  text-transform: none;
+  padding: 14px 44px 12px 12px;
+  cursor: pointer;
+}
+
+.accordion .item .content {
+  display: none;
+  padding: 20px 20px 5rem;
+  color: #989898;
+}
+
 footer {
   height: auto;
   padding: 50px 20px 20px;
