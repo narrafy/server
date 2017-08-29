@@ -106,7 +106,7 @@ function pushContext(id, conversation, logTable) {
 
 function clearContext(id, cb){
     Connect((err, db) => {
-        db.collection('conversations').remove({"id":id}, (err) => {
+        db.collection('conversations').deleteOne({"id":id}, (err) => {
             if (err)
                 return console.log(err);
             cb(id);
