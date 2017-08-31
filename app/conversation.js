@@ -1,6 +1,5 @@
 const Mongo = require('./mongo');
 var fb = require('./facebook');
-var sg = require('./sendgrid');
 
 function processRequest(body, settings) {
     var events = body.entry[0].messaging;
