@@ -104,12 +104,18 @@ function pushContext(id, conversation, logTable) {
     }
 }
 
-function clearContext(id, cb){
+function clearContext(id, settings){
     Connect((err, db) => {
         db.collection('conversations').deleteOne({"id":id}, (err) => {
             if (err)
                 return console.log(err);
-            cb(id);
+            else{
+                var dt = {
+                    sender: id,
+                    text: ""
+                };
+                processMessage(dt, settings);
+            }
         });
     });
 }
@@ -297,7 +303,7 @@ module.exports = {
         fb.StartTyping(input.sender, settings.FbPageToken);
         processMessage(input, settings);
     },
-    ClearContext: (id, cb) => {
-        clearContext(id, cb)
+    ClearContext: (id, settings) => {
+        clearContext(id, settings)
     }
 }

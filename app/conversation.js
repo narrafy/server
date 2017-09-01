@@ -24,14 +24,7 @@ function processRequest(body, settings) {
                     break;
                 //clear context button was pressed
                 case 'CLEAR_CONTEXT':
-                    var cb = (id) => {
-                        var dt = {
-                            sender: id,
-                            text: ""
-                        };
-                        Mongo.ProcessMessage(dt, settings);
-                    };
-                    Mongo.ClearContext(data.sender, cb);
+                    Mongo.ClearContext(data.sender, settings);
                     break;
                 default:
                     break;

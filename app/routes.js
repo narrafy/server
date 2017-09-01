@@ -67,12 +67,15 @@ module.exports =  (app) => {
     app.get('/', (req, res) => {
         res.render('index.ejs');
     });
+
     app.get('/timeline', (req,res) => {
-        res.render('foundation/timeline.ejs');
+        res.render('timeline.ejs');
     });
-	app.get('/network', (req,res) => {
+
+    app.get('/network', (req,res) => {
         res.render('network.ejs');
     });
+
     app.get('/about', (req,res) => {
         res.render('foundation/about.ejs');
     });
@@ -83,6 +86,7 @@ module.exports =  (app) => {
 
     app.get('/network', (req,res) => {
         res.render('network.ejs');
+    });
     app.get('/fundraiser', (req,res) => {
         res.render('fundraiser.ejs');
     });

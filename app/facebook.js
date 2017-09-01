@@ -101,6 +101,11 @@ function addPersistentMenu(pageToken){
             thread_state : "existing_thread",
             call_to_actions:[
                 {
+                    type:"web_url",
+                    title:"some thoughts  📖",
+                    url:"https://blog.isegoria.com"
+                },
+                {
                     "title":"Let's try again",
                     "type": "postback",
                     "payload":"CLEAR_CONTEXT"
@@ -109,12 +114,7 @@ function addPersistentMenu(pageToken){
                     "title":"I want to talk to a person",
                     "type": "postback",
                     "payload": "CONTACT_REQUEST"
-                },
-                {
-                    type:"web_url",
-                    title:"some thoughts  📖",
-                    url:"https://blog.isegoria.com"
-                },
+                }
             ]
         }
     }, function(error, response, body) {
