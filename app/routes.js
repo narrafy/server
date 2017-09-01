@@ -67,33 +67,14 @@ module.exports =  (app) => {
     app.get('/', (req, res) => {
         res.render('index.ejs');
     });
-
-    app.get('/agi', (req, res) => {
-        res.render('agi.ejs');
-    });
-
     app.get('/timeline', (req,res) => {
         res.render('foundation/timeline.ejs');
     });
-
-    app.get('/fundraiser', (req, res) => {
-       res.render('foundation/fundraiser.ejs');
+	app.get('/network', (req,res) => {
+        res.render('network.ejs');
     });
-
-    app.get('/faq', (req,res) => {
-        res.render('documentation/faq.ejs');
-    });
-
     app.get('/about', (req,res) => {
         res.render('foundation/about.ejs');
-    });
-
-    app.get('/media', (req,res) => {
-        res.render('foundation/media.ejs');
-    });
-
-    app.get('/partners', (req,res) => {
-        res.render('foundation/partners.ejs');
     });
 
     app.get('/careers', (req,res) => {
@@ -102,6 +83,8 @@ module.exports =  (app) => {
 
     app.get('/network', (req,res) => {
         res.render('network.ejs');
+    app.get('/fundraiser', (req,res) => {
+        res.render('fundraiser.ejs');
     });
 
     app.get('/privacy-policy', (req,res) => {
