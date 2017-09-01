@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <% include ./partials/head %>
+    <script src="js/Chart.js" ></script>
+</head>
+
+<body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
+
+<header>
+    <% include ./partials/navbar %>
+</header>
+
+<section id="introtoken" class="section-primary">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h1>Token Crowd Sale</h1>
+                <p class="subtitle"> The crowd sale starts 1'st of december and will last until 15'th of december or hidden cap is reached.
+                    <strong>NAR</strong> is the network token.
+                    <br/> - 100 mln token allocation for the fundraiser<br/>
+                    - 20 bln total nar supply</p>
+                <a type="button" class="btn btn-primary page-scroll" href="https://blog.isegoria.com/token-crowd-sale-d2ab2de2e3b5">Read more</a></div>
+            <div class="col-md-6"> <img src="./img/banner-token.svg" type="image/svg+xml" alt="banner" class=""></div>
+        </div>
+    </div>
+</section>
+
+
+<section id="token-sale-details" class="section-white">
+    <div class="container">
+        <div class="row">
+            <h2><strong> What are you investing in? </strong> </h2>
+            <div class="col-md-4">
+                <img src="img/health.svg" type="image/svg+xml" alt="icon" class="featureicon">
+                <p class="big"><strong>Mental Health</strong><br>
+                    Professional Counseling Services.</p>
+            </div>
+            <div class="col-md-4">
+                <img src="img/edu.svg" type="image/svg+xml" alt="icon" class="featureicon">
+                <p class="big"><strong>Education</strong><br>
+                    Access to a 3-level counseling boot camp.</p>
+            </div>
+            <div class="col-md-4">
+                <img src="img/ai.svg" type="image/svg+xml" alt="icon" class="featureicon">
+                <p class="big"><strong>Artificial Intelligence</strong><br>
+                    A stake in the greatest invention of humanity.</p>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section id="faq" class="section-secondary">
+    <div class="container">
+        <h1> Token FAQ </h1>
+        <div class="row text-left">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    What are NAR tokens and what are they used for?
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                Starting from January 2018 the network token will allow it's holder to participate in counseling
+                                bootcamps. Starting from 2019, the token would consume and reward counseling services on the network.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingTwo">
+                            <h4 class="panel-title">
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    When do I receive my tokens?
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                            <div class="panel-body">
+                                You will receive your tokens no later than one week after the conclusion of the sale.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingThree">
+                            <h4 class="panel-title">
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    What is the token supply breakdown?
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                            <canvas id="tokenAllocation" width="200" height="200"></canvas>
+                            <div class="panel-body">
+                                100 Million tokens will be created for the sale, the rest of the supply will be ensure by network's consensus algorithm.
+                                A portion of these tokens will be sold in the sale, and a portion will be retained by iSegoria.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingFour">
+                            <h4 class="panel-title">
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                    What is the funding breakdown?
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+
+                            <canvas id="useOfProceedsChart" width="200" height="200"></canvas>
+                            <div class="panel-body">
+                                The largest portions of funding will be used for software development - 45%.
+                                Counseling boot camps would consume another 25%. Operational, marketing,
+                                business development and legal purposes would consume the rest of the funds.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingFive">
+                            <h4 class="panel-title">
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                    How do I purchase tokens?
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+                            <div class="panel-body">
+                                In general, tokens are purchased by sending ETH or XBT to the token sale addresses.
+                                Shortly before launching the sale we will publish the address.
+                                You will receive your tokens no later than one week after the conclusion of the sale.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<% include ./partials/subscribe %>
+
+<% include ./partials/footer %>
+
+<script src="./js/jquery.js"></script>
+<script src="./js/bootstrap.js"></script>
+
+<script type="text/javascript">
+    function getChartOptions(labels, percents){
+        return {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '# %',
+                    data: percents,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255,99,132,1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                legend:{
+                    position: 'bottom'
+                }
+            }
+        }
+    }
+
+    var ctx = document.getElementById("useOfProceedsChart");
+    var ctx2 = document.getElementById("tokenAllocation");
+    var labels1  = ["Software Development - 45%", "Counseling Boot camps - 25%", "Marketing - 12%",
+        "Operational - 8%", "Legal - 5%", "Miscellaneous - 5%"];
+    var data1 = [45, 25, 12, 8, 5, 5];
+    var labels2 = ["Fundraiser - 50%", "Grants 20%", "Long term Budget 20%", "Team 10%"];
+    var data2 = [50,20,20,10];
+
+    var myChart = new Chart(ctx, getChartOptions(labels1,data1));
+    var myChart2 = new Chart(ctx2, getChartOptions(labels2, data2));
+
+</script>
+
+</body>
+</html>

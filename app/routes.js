@@ -72,24 +72,12 @@ module.exports =  (app) => {
         res.render('timeline.ejs');
     });
 
-    app.get('/token', (req, res) => {
-       res.render('token.ejs');
-    });
-
-    app.get('/faq', (req,res) => {
-        res.render('documentation/faq.ejs');
+    app.get('/network', (req,res) => {
+        res.render('network.ejs');
     });
 
     app.get('/about', (req,res) => {
         res.render('foundation/about.ejs');
-    });
-
-    app.get('/media', (req,res) => {
-        res.render('foundation/media.ejs');
-    });
-
-    app.get('/partners', (req,res) => {
-        res.render('foundation/partners.ejs');
     });
 
     app.get('/careers', (req,res) => {
@@ -97,7 +85,7 @@ module.exports =  (app) => {
     });
 
     app.get('/fundraiser', (req,res) => {
-        res.render('foundation/fundraiser.ejs');
+        res.render('fundraiser.ejs');
     });
 
     app.get('/privacy-policy', (req,res) => {
