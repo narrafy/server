@@ -69,7 +69,7 @@ module.exports =  (app) => {
     });
 
     app.get('/timeline', (req,res) => {
-        res.render('timeline.ejs');
+        res.render('foundation/timeline.ejs');
     });
 
     app.get('/network', (req,res) => {

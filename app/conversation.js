@@ -34,8 +34,12 @@ function processRequest(body, settings) {
         if(event.message){
             //user picks from quick replies
             if(event.message.text) {
-                data.text = event.message.text;
-                Mongo.ProcessMessage(data, settings);
+                if(event.message.text==="Let's try again"){
+                    Mongo.ClearContext(data.sender, settings);
+                }else{
+                    data.text = event.message.text;
+                    Mongo.ProcessMessage(data, settings);
+                }
             }
         }
     }
