@@ -91,7 +91,7 @@ h4.white {
         -moz-transition: background .5s ease-in-out, padding .5s ease-in-out;
         transition: background .5s ease-in-out, padding .5s ease-in-out;
     }
-    
+
     .top-nav-collapse {
         padding: 10px;
     }
@@ -376,24 +376,24 @@ label:focus,
     h1 {
         font-size: 32px;
     }
-    
+
     h2 {
         font-size: 28px;
     }
-    
+
     h3 {
         font-size: 22px;
     }
-    
+
     h4 {
         font-size: 16px;
     }
-    
+
     p.big {
         font-size: 14px;
         margin-bottom: 20px;
     }
-    
+
     .blogimg {
         width: 100%;
     }
@@ -641,11 +641,11 @@ html {
     html {
         font-size: 14px;
     }
-    
+
     .chat-column {
         padding-top: 4rem;
     }
-    
+
     #payload-column {
         width: 0;
         max-width: none;
@@ -815,16 +815,16 @@ html {
         right: 50%;
         transform: translateX(50%);
     }
-    
+
     #hero h1 {
         width: 620px;
     }
-    
+
     #stories-carousel .menu-left,
     #stories-carousel .menu-right {
         display: none;
     }
-    
+
     #stories-carousel-inner .col-md-2,
     #stories-carousel-inner .col-md-4 {
         width: 20.7%;
@@ -834,7 +834,7 @@ html {
     #stories-carousel-inner {
         width: auto;
     }
-    
+
     #stories-carousel-inner .col-md-2,
     #stories-carousel-inner .col-md-4 {
         width: 100%;
@@ -844,16 +844,16 @@ html {
     #hero .intro {
         top: 200px;
     }
-    
+
     #hero h1 {
         width: auto;
         font-size: 25px;
     }
-    
+
     .download-app {
         width: auto;
     }
-    
+
     .download-app a {
         display: block;
         width: 172px;
@@ -1096,42 +1096,42 @@ img {
     .page-header h1 {
         font-size: 1.8em;
     }
-    
+
     ul.timeline:before {
         left: 40px;
     }
-    
+
     .tldate {
         width: 140px;
     }
-    
+
     ul.timeline li .timeline-panel {
         width: calc(100% - 90px);
         width: -moz-calc(100% - 90px);
         width: -webkit-calc(100% - 90px);
     }
-    
+
     ul.timeline li .tl-circ {
         top: 22px;
         left: 22px;
         margin-left: 0;
     }
-    
+
     ul.timeline>li>.tldate {
         margin: 0;
     }
-    
+
     ul.timeline>li>.timeline-panel {
         float: right;
     }
-    
+
     ul.timeline>li>.timeline-panel:before {
         border-left-width: 0;
         border-right-width: 15px;
         left: -15px;
         right: auto;
     }
-    
+
     ul.timeline>li>.timeline-panel:after {
         border-left-width: 0;
         border-right-width: 14px;
