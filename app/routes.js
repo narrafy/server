@@ -72,23 +72,12 @@ module.exports =  (app) => {
         res.render('foundation/timeline.ejs');
     });
 
-    app.get('/network', (req,res) => {
-        res.render('network.ejs');
-    });
-
     app.get('/about', (req,res) => {
         res.render('foundation/about.ejs');
     });
 
     app.get('/careers', (req,res) => {
         res.render('foundation/careers.ejs');
-    });
-
-    app.get('/network', (req,res) => {
-        res.render('network.ejs');
-    });
-    app.get('/fundraiser', (req,res) => {
-        res.render('fundraiser.ejs');
     });
 
     app.get('/privacy-policy', (req,res) => {
