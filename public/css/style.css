@@ -8593,11 +8593,12 @@ div#mc_embed_signup_scroll {
 #textInput {
     border: none;
     outline: none;
-    font-size: 21px;
     background: transparent;
-    color: #323232;
+    color: #1D1D1B;
+    height: 4rem;
     max-width: 100%;
-    font-family: Helvetica Neue for IBM, Helvetica Neue, Helvetica, Arial, sans-serif;
+    padding-left: 0.125rem;
+    margin-bottom: -0.125rem;
 }
 
 #textInput.underline {

@@ -11,10 +11,13 @@
 
     <div class="inputgroup">
         <label for="textInput" class="inputOutline">
-            <input id="textInput" class="input responsive-column" placeholder="Type something"
+            <input id="textInput" class="input responsive-column"
+                   placeholder="Type something"
                    onkeydown="ConversationPanel.inputKeyDown(event, this)">
         </label>
-        <input type="submit" onclick="ConversationPanel.sendMessage('textInput')" value="enter" name="enter" id="enter" class="button btn btn-primary">
+        <input type="submit" onclick="ConversationPanel.sendMessage('textInput')"
+               value="enter" name="enter" id="enter"
+               class="button btn btn-primary">
     </div>
 </div>
 <div style="display: none" id="payload-column" class="fixed-column content-column">
