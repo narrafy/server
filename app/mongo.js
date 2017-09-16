@@ -26,7 +26,7 @@ function processMessage(input, settings) {
     var logTable = "conversations";
     var watsonWorkspace = settings.WatsonWorkspace;
     var pageToken = settings.FbPageToken;
-    if (input.sender === process.env.DRONIC_CHATBOT_ID) {
+    if (input.sender === process.env.CHATBOT_ID) {
         //if it's an echo from the facebook page
         // we catch the message when a counsellor takes over
         console.log("page echo: " + input.sender + " says  " + input.text);
@@ -101,6 +101,17 @@ function pushContext(id, conversation, logTable) {
         var email = conversation.input.text;
         var conversation_id = dbConversation.conversation_id;
         getTranscript(email, conversation_id);
+    }
+    if(conversation.context&&
+        conversation.context.system){
+        if(conversation.context.system.dialog_request_counter===3){
+            sg.NotifyAdmin(
+                {
+                    email: "dronic@narrafy.io",
+                    message: "Someone is talking to the bot. Remember to train on the input!"
+                }
+            );
+        }
     }
 }
 
