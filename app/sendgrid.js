@@ -18,7 +18,7 @@ function sendEmail(mail){
 }
 
 function notifyAdmin(email, message) {
-    var fromEmail = new MailHelper.Email(email);
+    var fromEmail = new MailHelper.Email(email);1
     var toEmail = new MailHelper.Email(process.env.ADMIN_EMAIL);
     var subject = process.env.APP_NAME;
     var content = new MailHelper.Content('text/plain', message);
