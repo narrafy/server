@@ -54,7 +54,7 @@ function getTranscriptEmailBody(transcript){
 function notifySubscriber(email) {
     var fromEmail = new MailHelper.Email(process.env.ADMIN_EMAIL);
     var toEmail = new MailHelper.Email(email);
-    var subject = "iSegoria got your email";
+    var subject = "Narrafy got your email";
     var emailBody = getSubscriberReplyEmailBody();
     var content = new MailHelper.Content('text/html', emailBody);
     var mail = new MailHelper.Mail(fromEmail, subject, toEmail, content);
@@ -66,7 +66,7 @@ function getSubscriberReplyEmailBody(){
     var text = "<html><body><p>"+"Hey! We've got your email." +
         " We will contact you when I have something cool to share." +
         " Otherwise, we don't bother innocent people!" + "</p>" +
-    "<p>Have a nice day! <a href='https://www.isegoria.com'>iSegoria.com</a> Team</p></body></html>";
+    "<p>Have a nice day! <a href='https://www.narrafy.io'>Narrafy</a> Team</p></body></html>";
     return text;
 }
 
@@ -74,7 +74,7 @@ function getUserReplyEmailBody(){
     var text = "<html><body><p>"+"Hey! We've got your email." +
         " We will contact as soon as possible. Thank you for your interest!" +
         "</p>" +
-        "<p><a href='https://www.isegoria.com'>iSegoria.com</a> Team</p></body></html>";
+        "<p><a href='https://www.narrafy.io'>Narrafy</a> Team</p></body></html>";
     return text;
 }
 

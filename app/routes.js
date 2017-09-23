@@ -6,7 +6,7 @@ const Facebook = require('./facebook');
 const Conversation = require('./conversation');
 const FbPageAccessToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
 const FbVerifyToken = process.env.FACEBOOK_PAGE_VERIFY_TOKEN;
-const greetingMessage = "Hey! I'm Any, your counseling bot. Talk to me!";
+const greetingMessage = "Hi! I'm Narrafy, I turn problems into stories. Talk to me!";
 
 module.exports =  (app) => {
 
