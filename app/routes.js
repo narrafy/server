@@ -4,6 +4,7 @@ require('dotenv').config({silent: true});
 const Mongo = require('./mongo');
 const Facebook = require('./facebook');
 const Conversation = require('./conversation');
+const Nlu = require('./nlu')
 const FbPageAccessToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
 const FbVerifyToken = process.env.FACEBOOK_PAGE_VERIFY_TOKEN;
 const greetingMessage = "Hi! I'm Narrafy, I turn problems into stories. Talk to me!";
@@ -25,6 +26,12 @@ module.exports =  (app) => {
 
     app.post('/api/message', function (req, res) {
         Mongo.WebRequest(req, res);
+    });
+
+    app.get('/api/parse', function(req, res){
+        var sentence = req.query['sentence'];
+        var roles = Nlu.GetSemanticRoles("I want to break free");
+        res.send(roles);
     });
 
     app.post('/api/contact',  (req, res) => {

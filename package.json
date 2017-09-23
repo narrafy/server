@@ -1,7 +1,7 @@
 {
-  "name": "dronic.io",
+  "name": "narrafy.io",
   "version": "1.0.0",
-  "description": "911 for broken hearts",
+  "description": "narrafy - software for counseling",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -20,10 +20,10 @@
     }
   },
   "keywords": [
-    "911",
-    "broken",
-    "hearts",
-    "narrative",
+    "software",
+    "counseling",
+    "watson",
+    "artificial intelligence",
     "story",
     "postmodernism"
   ],
@@ -33,24 +33,23 @@
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "1.15.1",
     "bootstrap": "^3.3.7",
-    "chart.js": "^2.6.0",
+    "chart.js": "^2.7.0",
     "connect-flash": "0.1.1",
     "cookie-parser": "1.4.3",
     "crypto": "0.0.3",
     "dotenv": "^4.0.0",
     "ejs": "2.4.2",
-    "express": "^4.13.4",
+    "express": "^4.15.4",
     "express-session": "1.13.0",
-    "mongodb": "^2.2.23",
+    "mongodb": "^2.2.31",
     "mongoose": "4.4.19",
     "morgan": "1.7.0",
-    "nodemon": "^1.11.0",
-    "request": "^2.79.0",
+    "request": "^2.82.0",
     "sendgrid": "^4.7.1",
-    "watson-developer-cloud": "^2.18.0"
+    "watson-developer-cloud": "^2.39.0"
   },
   "devDependencies": {
     "grunt": "^1.0.1",
-    "nodemon": "^1.11.0"
+    "nodemon": "^1.12.1"
   }
 }
