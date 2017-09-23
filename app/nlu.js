@@ -21,8 +21,8 @@ function getSemanticRoles(sentence) {
         if (err)
             console.log('error:', err);
         else{
-            semanticRoles = response;
-            console.log(JSON.stringify(semanticRoles, null, 2));
+            semanticRoles = JSON.stringify(response, null, 2);
+            console.log(semanticRoles);
         }
     });
     return semanticRoles;
