@@ -18,6 +18,7 @@ var emojiDictionary = {
     emoji_dance:"💃🏿",
     emoji_relax:"🛀",
     emoji_smile_tears:"😂",
+    emoji_grin:"😀"
     emoji_sing:"🎤",
     emoji_clock:"🕰️",
     emoji_sad: "😞",
