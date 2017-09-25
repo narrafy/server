@@ -44,6 +44,7 @@
     "mongodb": "^2.2.31",
     "mongoose": "4.4.19",
     "morgan": "1.7.0",
+    "natural": "^0.5.4",
     "request": "^2.82.0",
     "sendgrid": "^4.7.1",
     "watson-developer-cloud": "^2.39.0"

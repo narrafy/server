@@ -1,14 +1,17 @@
 require('dotenv').config({silent: true});
 
 const Request = require('request');
+const page_token = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
+const chatbot_id = process.env.CHATBOT_ID;
+const fb_graph_url = process.env.FB_GRAPH_MSG_URL;
 
-function sendMessage(id, message, pageToken) {
+function sendMessage(id, message) {
     //first we stop showing typing icon
-    typingOff(id, pageToken);
-    if(id && id !== process.env.CHATBOT_ID){
+    typingOff(id, page_token);
+    if(id && id !== chatbot_id){
         Request({
-            url: process.env.FB_GRAPH_MSG_URL,
-            qs: {access_token: pageToken},
+            url: fb_graph_url ,
+            qs: { access_token: page_token },
             method: 'POST',
             json: {
                 recipient: {id: id},
@@ -27,11 +30,11 @@ function sendMessage(id, message, pageToken) {
     }
 }
 
-function startTyping(id, pageToken){
-    if(id && id !== process.env.CHATBOT_ID){
+function startTyping(id){
+    if(id && id !== chatbot_id){
         Request({
-            url: process.env.FB_GRAPH_MSG_URL,
-            qs: {access_token: pageToken},
+            url: fb_graph_url,
+            qs: {access_token: page_token},
             method: 'POST',
             json: {
                 recipient: {id: id},
@@ -47,11 +50,11 @@ function startTyping(id, pageToken){
     }
 }
 
-function typingOff(id, pageToken){
-    if(id && id !== process.env.CHATBOT_ID){
+function typingOff(id){
+    if(id && id !== chatbot_id){
         Request({
-            url: process.env.FB_GRAPH_MSG_URL,
-            qs: {access_token: pageToken},
+            url: fb_graph_url,
+            qs: {access_token: page_token},
             method: 'POST',
             json: {
                 recipient: {id: id},
@@ -67,11 +70,11 @@ function typingOff(id, pageToken){
     }
 }
 
-function greet(text, pageToken){
+function greet(text){
 
     Request({
         url: 'https://graph.facebook.com/v2.8/me/thread_settings',
-        qs: {access_token: pageToken },
+        qs: {access_token: page_token },
         method: 'POST',
         json:{
             setting_type : "greeting",
@@ -81,7 +84,7 @@ function greet(text, pageToken){
             thread_state : "existing_thread"
         }
 
-    }, function(error, response, body) {
+    }, function(error, response) {
         console.log(response)
         if (error) {
             console.log('Error sending messages: ', error)
@@ -91,10 +94,10 @@ function greet(text, pageToken){
     })
 }
 
-function addPersistentMenu(pageToken){
+function addPersistentMenu(){
     Request({
         url: 'https://graph.facebook.com/v2.8/me/thread_settings',
-        qs: { access_token: pageToken },
+        qs: { access_token: page_token },
         method: 'POST',
         json:{
             setting_type : "call_to_actions",
@@ -117,7 +120,7 @@ function addPersistentMenu(pageToken){
                 }
             ]
         }
-    }, function(error, response, body) {
+    }, function(error, response) {
         console.log(response)
         if (error) {
             console.log('Error sending messages: ', error)
@@ -127,11 +130,11 @@ function addPersistentMenu(pageToken){
     })
 
 }
-
-function removePersistentMenu(pageToken){
+/* it will remove the persistent menu that appears on facebook */
+function removePersistentMenu(){
     Request({
         url: 'https://graph.facebook.com/v2.8/me/thread_settings',
-        qs: {access_token: pageToken },
+        qs: {access_token: page_token },
         method: 'POST',
         json:{
             setting_type : "call_to_actions",
@@ -139,7 +142,7 @@ function removePersistentMenu(pageToken){
             call_to_actions:[ ]
         }
 
-    }, function(error, response, body) {
+    }, function(error, response) {
         console.log(response)
         if (error) {
             console.log('Error sending messages: ', error)
@@ -159,17 +162,18 @@ module.exports = {
         }
     },
 
-    SendMessage: (id, message, pageToken) => {
-        sendMessage(id, message, pageToken);
+    SendMessage: (id, message) => {
+        startTyping(id);
+        sendMessage(id, message);
     },
 
-    StartTyping: (id, pageToken) => {
-      startTyping(id, pageToken)
+    StartTyping: (id) => {
+      startTyping(id)
     },
 
-    RemovePersistentMenu: (pageToken) =>  removePersistentMenu(pageToken),
+    RemovePersistentMenu: () =>  removePersistentMenu(),
 
-    AddPersistentMenu: (pageToken) => addPersistentMenu(pageToken),
+    AddPersistentMenu: () => addPersistentMenu(),
 
-    Greet: (text, pageToken) => greet(text, pageToken)
+    Greet: (text) => greet(text)
 };
