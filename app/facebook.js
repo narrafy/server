@@ -164,7 +164,9 @@ module.exports = {
 
     SendMessage: (id, message) => {
         startTyping(id);
-        sendMessage(id, message);
+        setTimeout(function(){
+            sendMessage(id, message);
+        }, 1500);
     },
 
     StartTyping: (id) => {

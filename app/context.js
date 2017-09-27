@@ -1,13 +1,20 @@
-var natural = require('natural');
+"use strict";
 const admin_email = process.env.ADMIN_EMAIL;
+
+var natural = require('natural');
 var mongo = require('./mongo');
 var sg = require('./sendgrid');
 var nlu = require('./nlu');
 var nlg = require('./nlg');
-
 var tokenizer = new natural.WordTokenizer();
 
+var Story = {
+    INTERNAL_PROBLEM: "recap_internal_problem",
+    EXTERNAL_PROBLEM: "recap_external_problem"
+};
+
 var ProblemNodeName = "internal_problem";
+
 var InternalContextNodes = [
     "internal_problem_context",
     "internal_problem_prerequisite",
@@ -15,9 +22,11 @@ var InternalContextNodes = [
     "influence_on_relationships",
     "influence_on_relationships_example",
     "internal_problems_difficulties",
-    "internal_problem_invitation_to_unique_outcome"];
+    "internal_problem_invitation_to_unique_outcome"
+];
 
-var ExternalContextNodes = ["external_problem",
+var ExternalContextNodes = [
+    "external_problem",
     "vulnerable_to_external_problem",
     "external_problem_context",
     "external_problem_takeover",
@@ -29,24 +38,13 @@ var ExternalContextNodes = ["external_problem",
     "external_problem_invite_action"
 ];
 
-function isInternalProblemNode(node_name) {
-    return InternalContextNodes.hasOwnProperty(node_name);
-}
-
-function isExternalProblemNode() {
-    return ExternalContextNodes.hasOwnProperty(node_name);
-}
-
 /* tasks to run after the context of a conversation is pushed to the database
  * it's usually to send an email or parse the context variable */
-function runContextTasks(conversation, callback) {
-
-    var conversation_id = conversation.context.conversation_id;
-
-    var context_var_name = SemanticContextNode(conversation);
+function runContextTasks(conversation) {
 
     if (isEmailNode(conversation)) {
         var email = conversation.input.text;
+        var conversation_id = conversation.context.conversation_id;
 
         var cb = (trans) =>
         {
@@ -63,43 +61,43 @@ function runContextTasks(conversation, callback) {
             }
         );
     }
-    //check if it's a recap node
-    if(isInternalRecapNode(conversation)){
-        // if a recap node, check semantic roles of the context and generate a story
-        //message.text = nlg.GetInternalProblemStory(conversation_id);
-        //facebook_callback(request.id, message);
+
+}
+
+function semanticParse(context, array){
+
+    var conversation_id = context.conversation_id;
+    var parsedArray = [];
+    for(let i=0; i < array.length; i++){
+        var context_var_name = array[i];
+        if(context && context.hasOwnProperty(context_var_name))
+        {
+            //found the context variable to send to semantic parser
+            var context_var = context[context_var_name];
+           if(context_var){
+               parseItem(context_var,context_var_name, conversation_id, (item) =>
+               {
+                   parsedArray[context_var_name] = item;
+               });
+           }
+        }
     }
+    return parsedArray;
+}
 
-    if(context_var_name!=null)
-    {
-        var cb = (semantic_data)=>{
-
-            var context_var_semantics= {
-                conversation_id: conversation_id,
-                context_var: context_var_name,
-                semantics: semantic_data
-            };
-            var callback_update_context = () =>
-            {
-                conversation.context[context_var_name] = undefined;
-                //push new context to the database only after deleting semantic variable from the context
-                if(callback)
-                    return callback(conversation);
-            }
-            mongo.SaveSemantics(context_var_semantics, callback_update_context)
+function parseItem(context_var, context_var_name, conversation_id, callback){
+    var cb = (semantic_data) => {
+        var context_var_semantics = {
+            conversation_id: conversation_id,
+            context_var: context_var_name,
+            semantics: semantic_data
         };
-
-        //found the context variable to send to semantic parser
-        var context_var = conversation.context[context_var_name];
-        //send for parsing only there is a sentence to be parsed
-        if(isSentence(context_var))
-            nlu.GetSemanticRoles(context_var,cb);
-        else
-            callback(conversation);
-    } else {
-        // if there is no parsable variable in the context just push the context to the database
-        callback(conversation);
-    }
+        mongo.SaveSemantics(context_var_semantics);
+        callback(semantic_data);
+    };
+    //send for parsing only there is a sentence to be parsed
+    if(isSentence(context_var))
+        nlu.GetSemanticRoles(context_var, cb);
 }
 
 function isSentence(context_variable) {
@@ -119,42 +117,86 @@ function is3RdNode(conversation){
         conversation.context.system.dialog_request_counter===3;
 }
 
-function isInternalRecapNode(conversation){
-    return getCurrentNodeName(conversation) === nlg.Story.INTERNAL_PROBLEM;
+function isRecapNode(context){
+    return context && (context.recap_node === Story.INTERNAL_PROBLEM || context.recap_node === Story.EXTERNAL_PROBLEM);
 }
 
-function getCurrentNodeName(conversation){
-    if(conversation.context &&
-        conversation.context.system &&
-        conversation.context.system.dialog_stack &&
-        conversation.context.system.dialog_stack.length > 0)
-        return conversation.context.system.dialog_stack[0].dialog_node;
-    return null;
-}
-
-function SemanticContextNode(conversation){
-    for(let i=0; i < InternalContextNodes.length; i++){
-        if(conversation.context && conversation.context.hasOwnProperty(InternalContextNodes[i]))
-            return InternalContextNodes[i];
+function getRecapStory(conversation){
+    var template = conversation.output.text;
+    switch(conversation.context.recap_node) {
+        case Story.INTERNAL_PROBLEM:
+            var array = semanticParse(conversation.context, InternalContextNodes);
+            return getSentence(array, template);
+        case Story.EXTERNAL_PROBLEM:
+            var array = semanticParse(conversation.context, ExternalContextNodes);
+            return getExternalProblemStory(array, template);
+        default:
+            return null;
     }
-    return null;
 }
 
-function isExternalRecapNode(conversation){
-    return conversation.context &&
-        conversation.context.system &&
-        conversation.context.system.dialog_stack &&
-        conversation.context.system.dialog_stack.length > 0 &&
-        conversation.context.system.dialog_stack[0] === nlg.Story.EXTERNAL_PROBLEM;
+/*
+*
+* $user_name you say you are too $internal_problem. And this is what it does to your life.
+* You are too $internal_problem about internal_problem_context. There is a trigger that launches it:
+* internal_problem_prerequisite. This does affect your life, because it makes you do things you wouldn’t do otherwise.
+* For ex: internal_problem_influence. It affects the people and relationships you care about -- influence_on_relationships_example.
+* It makes your life difficult: internal_problems_difficulties.
+* But, there is a hope. You see it: internal_problem_invitation_to_unique_outcome.
+*
+* */
+
+function getSentence(template, array)
+{
+    if(array["internal_problem_context"])
+        template = template.replace("internal_problem_context", array["internal_problem_context"].semantic_roles.object.text);
+    if(array["internal_problem_prerequisite"])
+        template = template.replace("internal_problem_prerequisite", array["internal_problem_prerequisite"].semantic_roles.object.text);
+    if(array["internal_problem_influence"])
+        template = template.replace("internal_problem_influence", "You " + array["internal_problem_influence"].semantic_roles.action.normalized + array["internal_problem_influence"].semantic_roles.object.text);
+    if(array["influence_on_relationships_example"])
+        template = template.replace("influence_on_relationships_example", "You " + array["influence_on_relationships_example"].semantic_roles.action.normalized + array["influence_on_relationships_example"].semantic_roles.object.text);
+    if(array["internal_problems_difficulties"])
+        template = template.replace("internal_problems_difficulties", "You " + array["internal_problems_difficulties"].semantic_roles.action.normalized + array["internal_problems_difficulties"].semantic_roles.object.text);
+    if(array["internal_problem_invitation_to_unique_outcome"])
+        template = template.replace("internal_problem_invitation_to_unique_outcome", array["internal_problem_invitation_to_unique_outcome"].semantic_roles.object.text);
+    return template;
+}
+
+function getInternalProblemStory(array, template){
+    var text = template;
+    for(let i = 0; i < array.length; i++){
+        for(let j=0; j < InternalContextNodes.length; j++)
+        {
+            var context_var_node = InternalContextNodes[j];
+
+            if(array[i].context_var === context_node){
+                console.log(array[i]);
+            }
+        }
+    }
+    return text;
+}
+
+function getExternalProblemStory(array, template){
+
 }
 
 module.exports = {
 
-    Tasks: (conversation, cb) => {
-        runContextTasks(conversation, cb)
+    IsRecapNode: (context) => {
+      return isRecapNode(context);
     },
-    Push: (id, context) => {
-        mongo.PushContext(id, context);
+
+    GetRecapStory: (conversation) => {
+        return getRecapStory(conversation)
+    },
+
+    Tasks: (conversation) => {
+        runContextTasks(conversation)
+    },
+    Push: (id, context, cb) => {
+        mongo.PushContext(id, context, cb);
     },
     Get: (data, cb) => {
         mongo.GetContext(data, cb);

@@ -42,7 +42,7 @@ function getContext(input, cb) {
     }
 }
 
-function pushContext(id, conversation) {
+function pushContext(id, conversation, cb) {
     var dbConversation = {
         id: id,
         conversation_id: conversation.context.conversation_id,
@@ -57,6 +57,8 @@ function pushContext(id, conversation) {
         db.collection(log_table).save(dbConversation, (err) => {
             if (err)
                 return console.log(err);
+            if(cb)
+                cb;
         });
     });
 }
@@ -142,14 +144,13 @@ function saveSubscriber(data, cb){
     });
 }
 
-function saveSemantics(data, cb)
+function saveSemantics(data)
 {
     Connect((err, db)=> {
         db.collection(context_semantics).save(data,(err) => {
            if(err)
                return console.log(err);
-           if(cb)
-               cb;
+           return data;
         });
     });
 }
@@ -193,11 +194,11 @@ module.exports = {
         clearContext(id, cb)
     },
 
-    PushContext: (id, conversation) =>{
-        pushContext(id, conversation)
+    PushContext: (id, conversation, cb) =>{
+        pushContext(id, conversation, cb)
     },
-    SaveSemantics: (data, cb) =>
+    SaveSemantics: (data) =>
     {
-        saveSemantics(data, cb)
+        saveSemantics(data)
     }
 }

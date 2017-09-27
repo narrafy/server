@@ -1,23 +1,23 @@
-/* natural language generation */
 
 var mongo = require('./mongo');
 
-var Story = {
-    INTERNAL_PROBLEM: "recap_internal_problem",
-    EXTERNAL_PROBLEM: "recap_external_problem"
+
+function getInternalProblemStory(array, template, context_nodes){
+
+
+}
+
+function getExternalProblemStory(array, template){
+
 }
 
 module.exports = {
 
-    Story: ()=> {
-        Story
+    GetInternalProblemStory: (array, template, context_nodes) => {
+        return getInternalProblemStory(array, template,context_nodes)
     },
 
-    GetInternalProblemStory: (conversation_id) => {
-
-    },
-
-    GetExternalProblematicStory: () => {
-
+    GetExternalProblematicStory: (array, template, context_nodes) => {
+        return getExternalProblemStory(array, template, context_nodes)
     }
 }

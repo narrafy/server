@@ -11,7 +11,6 @@ var callback_received_message = (input, stored_log) => {
     //send a reply to facebook page
     var cb = (err, data) => {
         fb.StartTyping(input.sender);
-
         if (err) {
             console.log("error in the facebook callback function " + err);
             fb.SendMessage(request.id, {text: err});
@@ -27,13 +26,18 @@ var callback_received_message = (input, stored_log) => {
             if (currentContext && currentContext.quick_replies) {
                 message.quick_replies = currentContext.quick_replies;
             }
-            context.Tasks(data ,(updated_context) => {
-                context.Push(request.id, updated_context);
+            context.Push(request.id, data, () => {
+                //if its a recap node, send the story to the user
+                if(context.IsRecapNode(data.context))
+                {
+                    message.text = context.GetRecapStory(data);
+                    fb.SendMessage(request.id, message);
+                } else {
+                    fb.SendMessage(request.id, message);
+                }
             });
 
-            setTimeout(function(){
-                fb.SendMessage(request.id, message);
-            }, 1500);
+            context.Tasks(data);
             console.log("Watson replies with: " + message.text + " " + request.id);
 
         } else {
@@ -43,10 +47,8 @@ var callback_received_message = (input, stored_log) => {
             });
         }
     };
-
     //Send the input to the conversation service
     watson.Ask(request, cb);
-
 };
 
 function messengerRequest(body) {
@@ -95,7 +97,6 @@ function messengerRequest(body) {
 }
 
 function webRequest(id, body, res) {
-
     var data = {};
     if (body) {
         if (body.input) {
@@ -119,36 +120,36 @@ function webRequest(id, body, res) {
 
 function updateMessage(id, data) {
     var responseText = null;
-    if (!data.output) {
-        data.output = {};
-    } else {
-        context.Tasks(data, (updated_context) => {
-            context.Push(id, updated_context);
-        });
-
+    if (data.output){
+        context.Push(id, data);
+        context.Tasks(data);
         if (data.output.text && data.output.text[0]){
-            data.output.text = watson.Mine(data.output.text);
+            if(context.IsRecapNode(data.context)){
+                data.output.text = context.GetRecapStory(data);
+            } else {
+                data.output.text = watson.Mine(data.output.text);
+            }
             return data;
         }
+    } else {
+        data.output = {};
     }
+
     if (data.intents && data.intents[0]) {
         var intent = data.intents[0];
-        // Depending on the confidence of the response the app can return different messages.
-        // The confidence will vary depending on how well the system is trained. The service will always try to assign
-        // a class/intent to the input. If the confidence is low, then it suggests the service is unsure of the
-        // user's intent . In these cases it is usually best to return a disambiguation message
-        // ('I did not understand your intent, please rephrase your question', etc..)
         if (intent.confidence >= 0.75) {
             responseText = "I understood you but I don't have an answer yet. Could you rephrase your question? ";
         } else {
             responseText = "I didn't get that. Sometimes only a human can help. Do you want to talk to one?";
         }
     }
-    data.output.text = watson.Mine(responseText);
-    context.Tasks(data, (updated_context) => {
-        context.Push(id, updated_context);
-    });
-
+    context.Push(id, data);
+    context.Tasks(data);
+    if(context.IsRecapNode(data.context)){
+        data.output.text = context.GetRecapStory(data);
+    } else {
+        data.output.text = watson.Mine(responseText);
+    }
     return data;
 }
 
