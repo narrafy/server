@@ -15,8 +15,8 @@ module.exports = (app) => {
 		}
 	})
 
-	app.post('/webhook', function (req, res) {
-		Conversation.messengerRequest(req.body)
+	app.post('/webhook', async function (req, res) {
+		await Conversation.messengerRequest(req.body)
 		res.sendStatus(200)
 	})
 
@@ -59,13 +59,13 @@ module.exports = (app) => {
 		}
 	})
 
-	app.get('/api/emailtranscript', async (req, res) => {
+	app.get('/api/emailtranscript',  (req, res) => {
 
 		var conversation_id = req.query['conversation_id']
 		var email = req.query['email']
 		if (conversation_id !== null) {
-			const transcript = await db.getTranscript(conversation_id)
-			await mailService.sendTranscript(email, transcript)
+			const transcript = db.getTranscript(conversation_id)
+			mailService.sendTranscript(email, transcript)
 			res.sendStatus(200)
 		} else {
 			res.sendStatus(500)

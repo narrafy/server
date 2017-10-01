@@ -48,4 +48,4 @@ require('./app/modules/router/routes.js')(app)
 
 /* Start server */
 app.listen(config.app.port)
-logger.info(`Narrify listening on port ${config.app.port}`)
+logger.info(`Narrafy listening on port ${config.app.port}`)

@@ -8,7 +8,7 @@ module.exports = exports = {
 	},
 
 	mongoDb: {
-		uri: process.env.MONGODB_URI || 'mongodb://localhost:27017/narrafy'
+		uri: process.env.MONGODB_URI //|| 'mongodb://localhost:27017/narrafy'
 	},
 
 	sendGrid: {
@@ -19,7 +19,7 @@ module.exports = exports = {
 	facebook: {
 		pageToken: process.env.FACEBOOK_PAGE_ACCESS_TOKEN,
 		graphUrl: process.env.FB_GRAPH_MSG_URL,
-		verifyToken : FACEBOOK_PAGE_VERIFY_TOKEN
+		verifyToken : process.env.FACEBOOK_PAGE_VERIFY_TOKEN
 	},
 
 	watson : {

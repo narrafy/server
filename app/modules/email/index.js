@@ -3,7 +3,7 @@ const SendGrid = require('sendgrid')(config.sendGrid.apiKey)
 const MailHelper = require('sendgrid').mail
 const log = require('../log')
 
-async function sendEmail(mail) {
+function sendEmail(mail) {
 
 	const request = SendGrid.emptyRequest({
 		method: 'POST',
@@ -11,11 +11,18 @@ async function sendEmail(mail) {
 		body: mail.toJSON(),
 	})
 
-	const [response, body] = await SendGrid.API(request)
-	console.info(response.statusCode)
+    SendGrid.API(request,(error, response) => {
+        if(error)
+            return console.log(error);
+        console.log(response.statusCode);
+    });
+
+
+    // const [response, body] = await SendGrid.API(request)
+	// console.info(response.statusCode)
 }
 
-async function notifyAdmin(email, message) {
+function notifyAdmin(email, message) {
 	const fromEmail = new MailHelper.Email(email)
 	const toEmail = new MailHelper.Email(config.sendGrid.adminEmail)
 	const subject = config.app.name
@@ -24,7 +31,7 @@ async function notifyAdmin(email, message) {
 	return sendEmail(mail)
 }
 
-async function sendTranscript(email, transcript) {
+function sendTranscript(email, transcript) {
 	const fromEmail = new MailHelper.Email(email)
 	const toEmail = new MailHelper.Email(config.sendGrid.adminEmail)
 	const subject = "Exercise Transcript"
@@ -34,7 +41,7 @@ async function sendTranscript(email, transcript) {
 	return sendEmail(mail)
 }
 
-async function notifySubscriber(email) {
+function notifySubscriber(email) {
 	const fromEmail = new MailHelper.Email(config.sendGrid.adminEmail)
 	const toEmail = new MailHelper.Email(email)
 	const subject = "Narrafy got your email"
@@ -44,7 +51,7 @@ async function notifySubscriber(email) {
 	return sendEmail(mail)
 }
 
-async function notifyUser(email) {
+function notifyUser(email) {
 	const fromEmail = new MailHelper.Email(config.sendGrid.adminEmail)
 	const toEmail = new MailHelper.Email(email)
 	const subject = "We've got your message!"
@@ -64,14 +71,14 @@ function getTranscriptEmailBody(transcript) {
 }
 
 function getSubscriberReplyEmailBody() {
-	return "<html><body><p>" + "Hey! We've got your email." +
-		" We will contact you when I have something cool to share." +
+	return "<html><body><p>" + "Hey! We received your email." +
+		" We will contact you when we have something important to share." +
 		" Otherwise, we don't bother innocent people!" + "</p>" +
 		"<p>Have a nice day! <a href='https://www.narrafy.io'>Narrafy</a> Team</p></body></html>"
 }
 
 function getUserReplyEmailBody() {
-	return "<html><body><p>" + "Hey! We've got your email." +
+	return "<html><body><p>" + "Hey! We received your email." +
 		" We will contact as soon as possible. Thank you for your interest!" +
 		"</p>" +
 		"<p><a href='https://www.narrafy.io'>Narrafy</a> Team</p></body></html>"
@@ -83,7 +90,7 @@ module.exports = {
 	notifySubscriber: notifySubscriber,
 	sendTranscript: sendTranscript,
 
-	async notifyAdmin(data) {
+	notifyAdmin(data) {
 		return notifyAdmin(data.email, data.message)
 	}
 

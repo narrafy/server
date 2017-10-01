@@ -34,7 +34,7 @@ function checkForEmoji(input) {
 		.keys(emojiDictionary)
 		.forEach(emojiKey => {
 			if (input.includes(emojiKey)) {
-				input.replace(emojiDictionary[emojiKey])
+				input=input.replace(emojiKey, emojiDictionary[emojiKey])
 			}
 		})
 

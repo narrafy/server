@@ -40,7 +40,7 @@ function createPayload(data, workspace) {
 	return payload
 }
 
-async function askWatson(data) {
+async function ask(data) {
 
 	const payload = createPayload(data, watson_workspace)
 
@@ -82,5 +82,5 @@ function populateRequest(input, stored_log) {
 module.exports = {
 	mineResponse: mineResponse,
 	populateRequest: populateRequest,
-	askWatson: askWatson,
+	ask: ask,
 }

@@ -45,11 +45,11 @@ async function runContextTasks(conversation) {
 		const email = conversation.input.text
 		const conversation_id = conversation.context.conversation_id
 		const transcript = await db.getTranscript(conversation_id)
-		await emailService.sendTranscript(email, transcript)
+		emailService.sendTranscript(email, transcript)
 	}
 
 	if (is3RdNode(conversation)) {
-		await emailService.notifyAdmin(
+		emailService.notifyAdmin(
 			{
 				email: adminEmail,
 				message: "Someone is talking to the bot. Remember to train on the input!"

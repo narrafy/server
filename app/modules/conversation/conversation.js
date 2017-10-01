@@ -11,7 +11,7 @@ async function callback_received_message(input, stored_log) {
 	//Send the input to the conversation service
 	try {
 
-		const conversation = await watson.askWatson(request, cb)
+		const conversation = await watson.ask(request)
 		if (conversation && conversation.output) {
 			const context_data = await context.pushContext(request.id, conversation)
 			//watson have an answer
@@ -99,6 +99,7 @@ async function messengerRequest(body) {
 }
 
 async function webRequest(id, body, res) {
+	var data = {};
 	if (body) {
 		if (body.input) {
 			data.text = body.input.text
@@ -109,7 +110,7 @@ async function webRequest(id, body, res) {
 	}
 
 	//Send the input to the conversation service
-	const data = await  watson.askWatson(data)
+	data = await watson.ask(data);
 	const response = await updateMessage(id, data)
 	return res.json(response)
 }
@@ -156,7 +157,6 @@ async function updateMessage(id, conversation) {
 module.exports = {
 
 	messengerRequest: messengerRequest,
-
 
 	async web(req, res) {
 		return webRequest(req.sessionID, req.body, res)
