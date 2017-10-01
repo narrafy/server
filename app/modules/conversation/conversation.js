@@ -1,4 +1,4 @@
-var fb = require('./facebook');
+var fb = require('../bots/facebook');
 var watson = require('./watson');
 var context = require ('./context');
 
@@ -9,36 +9,38 @@ var callback_received_message = (input, stored_log) => {
     var request = watson.LoadRequest(input, stored_log);
 
     //send a reply to facebook page
-    var cb = (err, data) => {
-        fb.StartTyping(input.sender);
+    var cb = (err, conversation) => {
         if (err) {
             console.log("error in the facebook callback function " + err);
             fb.SendMessage(request.id, {text: err});
         }
-        if (data && data.output) {
-            //watson have an answer
-            //declare local variables
-            var currentContext = data.context;
-            var message = {};
-            //mine watson response
-            message.text = watson.Mine(data.output.text);
-            //add quick replies to facebook message
-            if (currentContext && currentContext.quick_replies) {
-                message.quick_replies = currentContext.quick_replies;
-            }
-            context.Push(request.id, data, () => {
-                //if its a recap node, send the story to the user
-                if(context.IsRecapNode(data.context))
-                {
-                    message.text = context.GetRecapStory(data);
-                    fb.SendMessage(request.id, message);
-                } else {
-                    fb.SendMessage(request.id, message);
-                }
-            });
+        if (conversation && conversation.output) {
 
-            context.Tasks(data);
-            console.log("Watson replies with: " + message.text + " " + request.id);
+            var context_callback = (context_data) =>
+            {
+                //watson have an answer
+                //declare local variables
+                var currentContext = context_data.context;
+
+                var message = {};
+                //mine watson response
+                message.text = watson.Mine(context_data.output.text);
+                //add quick replies to facebook message
+                if (currentContext && currentContext.quick_replies) {
+                    message.quick_replies = currentContext.quick_replies;
+                }
+                //if its a recap node, send the story to the user
+                //if(context.IsRecapNode(data.context))
+                //{
+                //   message.text = context.GetRecapStory(data);
+                //   fb.SendMessage(request.id, message);
+                // } else {
+                fb.SendMessage(request.id, message);
+                console.log("Watson replies with: " + message.text + " " + request.id);
+                // }
+            };
+            context.Push(request.id, conversation, context_callback);
+            context.Tasks(conversation);
 
         } else {
             fb.SendMessage(request.id, {
@@ -118,39 +120,43 @@ function webRequest(id, body, res) {
     watson.Ask(data, cb);
 }
 
-function updateMessage(id, data) {
+function updateMessage(id, conversation) {
     var responseText = null;
-    if (data.output){
-        context.Push(id, data);
-        context.Tasks(data);
-        if (data.output.text && data.output.text[0]){
-            if(context.IsRecapNode(data.context)){
-                data.output.text = context.GetRecapStory(data);
-            } else {
-                data.output.text = watson.Mine(data.output.text);
-            }
-            return data;
+    if (conversation.output){
+
+        context.Push(id, conversation);
+        context.Tasks(conversation);
+
+        if (conversation.output.text && conversation.output.text[0]){
+            //if(context.IsRecapNode(data.context)){
+            //    data.output.text = context.GetRecapStory(data);
+            //} else {
+            conversation.output.text = watson.Mine(conversation.output.text);
+            //}
+            return conversation;
         }
     } else {
-        data.output = {};
+        conversation.output = {};
     }
 
-    if (data.intents && data.intents[0]) {
-        var intent = data.intents[0];
+    if (conversation.intents && conversation.intents[0]) {
+        var intent = conversation.intents[0];
         if (intent.confidence >= 0.75) {
             responseText = "I understood you but I don't have an answer yet. Could you rephrase your question? ";
         } else {
             responseText = "I didn't get that. Sometimes only a human can help. Do you want to talk to one?";
         }
     }
-    context.Push(id, data);
-    context.Tasks(data);
-    if(context.IsRecapNode(data.context)){
-        data.output.text = context.GetRecapStory(data);
-    } else {
-        data.output.text = watson.Mine(responseText);
-    }
-    return data;
+
+    context.Push(id, conversation);
+    context.Tasks(conversation);
+
+    //if(context.IsRecapNode(data.context)){
+    //  data.output.text = context.GetRecapStory(data);
+    //} else {
+    conversation.output.text = watson.Mine(responseText);
+    //}
+    return conversation;
 }
 
 module.exports = {

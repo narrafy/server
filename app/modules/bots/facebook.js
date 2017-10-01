@@ -7,7 +7,7 @@ const fb_graph_url = process.env.FB_GRAPH_MSG_URL;
 
 function sendMessage(id, message) {
     //first we stop showing typing icon
-    typingOff(id, page_token);
+    typingOff(id);
     if(id && id !== chatbot_id){
         Request({
             url: fb_graph_url ,
@@ -34,7 +34,7 @@ function startTyping(id){
     if(id && id !== chatbot_id){
         Request({
             url: fb_graph_url,
-            qs: {access_token: page_token},
+            qs: { access_token: page_token },
             method: 'POST',
             json: {
                 recipient: {id: id},
@@ -71,10 +71,9 @@ function typingOff(id){
 }
 
 function greet(text){
-
     Request({
         url: 'https://graph.facebook.com/v2.8/me/thread_settings',
-        qs: {access_token: page_token },
+        qs: { access_token: page_token },
         method: 'POST',
         json:{
             setting_type : "greeting",
@@ -164,13 +163,7 @@ module.exports = {
 
     SendMessage: (id, message) => {
         startTyping(id);
-        setTimeout(function(){
-            sendMessage(id, message);
-        }, 1500);
-    },
-
-    StartTyping: (id) => {
-      startTyping(id)
+        sendMessage(id, message);
     },
 
     RemovePersistentMenu: () =>  removePersistentMenu(),

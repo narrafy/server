@@ -2,10 +2,10 @@
 const admin_email = process.env.ADMIN_EMAIL;
 
 var natural = require('natural');
-var mongo = require('./mongo');
-var sg = require('./sendgrid');
-var nlu = require('./nlu');
-var nlg = require('./nlg');
+var mongo = require('../db/mongo');
+var sg = require('../email/sendgrid');
+var nlu = require('../natural-language/understanding/nlu');
+var nlg = require('../natural-language/generation/nlg');
 var tokenizer = new natural.WordTokenizer();
 
 var Story = {
@@ -195,8 +195,8 @@ module.exports = {
     Tasks: (conversation) => {
         runContextTasks(conversation)
     },
-    Push: (id, context, cb) => {
-        mongo.PushContext(id, context, cb);
+    Push: (id, conversation, cb) => {
+        mongo.PushContext(id, conversation, cb);
     },
     Get: (data, cb) => {
         mongo.GetContext(data, cb);

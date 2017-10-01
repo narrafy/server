@@ -27,7 +27,7 @@ app.set('views', __dirname + '/views');
 
 app.use(flash()); //use connect-flash for flash messages stored in session
 
-require('./app/routes.js')(app);
+require('./app/modules/router/routes.js')(app);
 
 
 app.use(express.static(__dirname + "/public"));

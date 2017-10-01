@@ -2,7 +2,7 @@
 require('dotenv').config({silent: true});
 
 var md = require('mongodb').MongoClient;
-var sg = require('./sendgrid');
+var sg = require('../email/sendgrid');
 
 
 const chatbot_id = process.env.CHATBOT_ID;
@@ -58,7 +58,7 @@ function pushContext(id, conversation, cb) {
             if (err)
                 return console.log(err);
             if(cb)
-                cb;
+                cb(conversation);
         });
     });
 }

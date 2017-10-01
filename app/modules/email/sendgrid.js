@@ -1,8 +1,8 @@
 "use strict";
 require('dotenv').config({silent: true});
 
-const SendGrid = require('sendgrid')(process.env.SENDGRID_API_KEY);
-const MailHelper = require('sendgrid').mail;
+const SendGrid = require('app/modules/email/sendgrid')(process.env.SENDGRID_API_KEY);
+const MailHelper = require('app/modules/email/sendgrid').mail;
 
 function sendEmail(mail){
     var request = SendGrid.emptyRequest({

@@ -1,11 +1,11 @@
 // app/routes.js
 require('dotenv').config({silent: true});
 
-const Mongo = require('./mongo');
-const Facebook = require('./facebook');
-const Conversation = require('./conversation');
-const Nlu = require('./nlu');
-const Sendgrid = require('./sendgrid');
+const Mongo = require('../db/mongo');
+const Facebook = require('../bots/facebook');
+const Conversation = require('../conversation/conversation');
+const Nlu = require('../natural-language/understanding/nlu');
+const Sendgrid = require('../email/sendgrid');
 
 const fb_verify_token = process.env.FACEBOOK_PAGE_VERIFY_TOKEN;
 const greetingMessage = "Hi! I'm Narrafy, I turn problems into stories. Talk to me!";

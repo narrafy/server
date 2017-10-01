@@ -1,4 +1,4 @@
-var em = require('./emoji');
+var em = require('../utils/emoji');
 const watson = require('watson-developer-cloud/conversation/v1');
 const watson_workspace = process.env.WORKSPACE_ID;
 // Create the service wrapper
