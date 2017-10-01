@@ -1,31 +1,32 @@
 // app/routes.js
 require('dotenv').config({silent: true});
 
-const Mongo = require('./mongo');
-const Facebook = require('./facebook');
-const Conversation = require('./conversation');
-const Nlu = require('./nlu')
-const FbPageAccessToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
-const FbVerifyToken = process.env.FACEBOOK_PAGE_VERIFY_TOKEN;
+const Mongo = require('../db/mongo');
+const Facebook = require('../bots/facebook');
+const Conversation = require('../conversation/conversation');
+const Nlu = require('../natural-language/understanding/nlu');
+const Sendgrid = require('../email/sendgrid');
+
+const fb_verify_token = process.env.FACEBOOK_PAGE_VERIFY_TOKEN;
 const greetingMessage = "Hi! I'm Narrafy, I turn problems into stories. Talk to me!";
 
 module.exports =  (app) => {
 
-    Facebook.Greet(greetingMessage, FbPageAccessToken);
-    Facebook.RemovePersistentMenu(FbPageAccessToken);
-    Facebook.AddPersistentMenu(FbPageAccessToken);
+    Facebook.Greet(greetingMessage);
+    Facebook.RemovePersistentMenu();
+    Facebook.AddPersistentMenu();
 
     app.get('/webhook', function (req, res) {
-        Facebook.VerifyToken(req,res, FbVerifyToken);
+        Facebook.VerifyToken(req,res, fb_verify_token);
     });
 
     app.post('/webhook', function (req, res) {
-        Conversation.ProcessRequest(req.body);
+        Conversation.Messenger(req.body);
         res.sendStatus(200);
     });
 
     app.post('/api/message', function (req, res) {
-        Mongo.WebRequest(req, res);
+        Conversation.Web(req, res);
     });
 
     app.get('/api/parse', function(req, res){
@@ -57,10 +58,43 @@ module.exports =  (app) => {
 
     app.get('/api/gettranscript', (req, res) => {
         var conversation_id = req.query['conversation_id'];
+        if(conversation_id !== null){
+            var cb = (transcript) => {
+                return res.json(transcript);
+            };
+            Mongo.GetTranscript(conversation_id, cb);
+        }else{
+            res.sendStatus(500);
+        }
+    });
+
+    app.get('/api/emailtranscript', (req, res) => {
+        var conversation_id = req.query['conversation_id'];
         var email = req.query['email'];
-        if(conversation_id !== null && email!== null){
-            Mongo.GetTranscript(email, conversation_id);
+        if(conversation_id !== null){
+            var cb = (transcript)=>{
+                Sendgrid.SendTranscript(email, transcript);
+            };
+            Mongo.GetTranscript(conversation_id, cb);
             res.sendStatus(200);
+        } else {
+            res.sendStatus(500);
+        }
+    });
+
+    app.get('/api/getsemanticparse', (req, res) => {
+        var conversation_id = req.query['conversation_id'];
+        if(conversation_id !== null) {
+            var cb = (transcript, err) => {
+                if(err)
+                   return res.sendStatus(500);
+                var callback = (response) => {
+                    res.json(response);
+                };
+                Nlu.GetSemanticRoles(transcript, callback);
+            };
+            Mongo.GetReplies(conversation_id, cb);
+
         }else{
             res.sendStatus(500);
         }

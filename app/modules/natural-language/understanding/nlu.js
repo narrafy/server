@@ -1,13 +1,16 @@
+/* natural language understanding */
+
 var NaturalLanguageUnderstandingV1 = require('watson-developer-cloud/natural-language-understanding/v1.js');
 
 var nlu = new NaturalLanguageUnderstandingV1({
     'username': process.env.NATURAL_LANGUAGE_UNDERSTANDING_USERNAME,
     'password': process.env.NATURAL_LANGUAGE_UNDERSTANDING_PASSWORD,
-    'version_date': '2017-02-27'
+    'version_date': '2017-02-27',
+    'url': process.env.NLU_URL
 });
 
 
-function getSemanticRoles(sentence) {
+function getSemanticRoles(sentence, cb) {
 
     var parameters = {
         'features': {
@@ -15,21 +18,17 @@ function getSemanticRoles(sentence) {
         },
         'text': sentence
     };
-    var semanticRoles = "";
-
     nlu.analyze(parameters, function(err, response) {
         if (err)
             console.log('error:', err);
-        else{
-            semanticRoles = JSON.stringify(response, null, 2);
-            console.log(semanticRoles);
+        else if(cb){
+            cb(response);
         }
     });
-    return semanticRoles;
 }
 
 module.exports = {
-    GetSemanticRoles: (sentence) => {
-        getSemanticRoles(sentence);
+    GetSemanticRoles: (sentence, cb) => {
+        getSemanticRoles(sentence, cb);
     }
 };

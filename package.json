@@ -1,10 +1,14 @@
 {
   "name": "narrafy.io",
   "version": "1.0.0",
+  "engines": {
+    "node": ">=8.0.0",
+    "npm": ">=5.0.0"
+  },
   "description": "narrafy - software for counseling",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "dependencies": {
       "express": "~4.0.0",
       "ejs": "~0.8.5",
@@ -41,9 +45,11 @@
     "ejs": "2.4.2",
     "express": "^4.15.4",
     "express-session": "1.13.0",
+    "mocha": "^3.5.3",
     "mongodb": "^2.2.31",
     "mongoose": "4.4.19",
     "morgan": "1.7.0",
+    "natural": "^0.5.4",
     "request": "^2.82.0",
     "sendgrid": "^4.7.1",
     "watson-developer-cloud": "^2.39.0"
