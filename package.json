@@ -50,7 +50,9 @@
     "mongoose": "4.4.19",
     "morgan": "1.7.0",
     "natural": "^0.5.4",
+    "pino": "^4.7.2",
     "request": "^2.82.0",
+    "request-promise-native": "^1.0.5",
     "sendgrid": "^4.7.1",
     "watson-developer-cloud": "^2.39.0"
   },

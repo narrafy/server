@@ -1,38 +1,51 @@
-var express = require('express');
-var app = express();
+const express = require('express')
+const app = express()
+const logger = require('pino')()
+const flash = require('connect-flash')
+const morgan = require('morgan')
+const cookieParser = require('cookie-parser')
+const bodyParser = require('body-parser')
+const session = require('express-session')
+const db = require('./app/modules/db')
+const config = require('./app/modules/config')
+const Facebook = require('./app/modules/facebook-api')
 
-//require our database connection
-
-var flash = require('connect-flash');
-
-var morgan = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var session = require('express-session');
-
-
-app.use(morgan('dev'));
-app.use(cookieParser());
-app.use(bodyParser());
+/* Bootstrap middleware */
+app.use(morgan('dev'))
+app.use(cookieParser())
+app.use(bodyParser())
 app.use(bodyParser.urlencoded({
-  'extended': 'true'
-})); // parse application/x-www-form-urlencoded
-app.use(bodyParser.json());
+	'extended': 'true'
+}))
+app.use(bodyParser.json())
 app.use(bodyParser.json({
-  type: 'application/vnd.api+json'
-}));
+	type: 'application/vnd.api+json'
+}))
 
-app.set('view engine', 'ejs');
-app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs')
+app.set('views', __dirname + '/views')
+app.use(flash())
+app.use(express.static(__dirname + "/public"))
 
-app.use(flash()); //use connect-flash for flash messages stored in session
+/* Connect to DB */
+db
+	.connect(config.mongoDb.uri)
+	.then(() => logger.info('Connected to DB.'))
+	.catch((error) => {
+		logger.error('Failed to connect to DB.')
+		logger.error(error)
+	})
 
-require('./app/modules/router/routes.js')(app);
+/* Configure Facebook */
+const greetingMessage = "Hi! I'm Narrafy, I turn problems into stories. Talk to me!"
+Facebook.greet(greetingMessage).catch(logger.error)
+Facebook.removePersistentMenu().catch(logger.error)
+Facebook.addPersistentMenu().catch(logger.error)
 
 
-app.use(express.static(__dirname + "/public"));
-var port = process.env.PORT || 3000;
+/* Bootstrap routes*/
+require('./app/modules/router/routes.js')(app)
 
-//launch =========
-app.listen(port);
-console.log('Narrafy happens on port ' + port);
+/* Start server */
+app.listen(config.app.port)
+logger.info(`Narrify listening on port ${config.app.port}`)

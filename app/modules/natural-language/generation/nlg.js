@@ -1,7 +1,3 @@
-
-var mongo = require('../../db/mongo');
-
-
 function getInternalProblemStory(array, template, context_nodes){
 
 

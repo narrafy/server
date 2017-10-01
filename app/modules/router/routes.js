@@ -1,134 +1,117 @@
-// app/routes.js
-require('dotenv').config({silent: true});
+const db = require('../db')
+const log = require('../log')
+const Conversation = require('../conversation/conversation')
+const Nlu = require('../natural-language/understanding/nlu')
+const mailService = require('../email')
+const config = require('../config')
 
-const Mongo = require('../db/mongo');
-const Facebook = require('../bots/facebook');
-const Conversation = require('../conversation/conversation');
-const Nlu = require('../natural-language/understanding/nlu');
-const Sendgrid = require('../email/sendgrid');
+module.exports = (app) => {
 
-const fb_verify_token = process.env.FACEBOOK_PAGE_VERIFY_TOKEN;
-const greetingMessage = "Hi! I'm Narrafy, I turn problems into stories. Talk to me!";
+	app.get('/webhook', function (req, res) {
+		if (req.query['hub.verify_token'] === config.facebook.verifyToken) {
+			res.send(req.query['hub.challenge'])
+		} else {
+			res.send('Invalid verify token!')
+		}
+	})
 
-module.exports =  (app) => {
+	app.post('/webhook', function (req, res) {
+		Conversation.messengerRequest(req.body)
+		res.sendStatus(200)
+	})
 
-    Facebook.Greet(greetingMessage);
-    Facebook.RemovePersistentMenu();
-    Facebook.AddPersistentMenu();
+	app.post('/api/message', async function (req, res) {
+		await Conversation.web(req, res)
+	})
 
-    app.get('/webhook', function (req, res) {
-        Facebook.VerifyToken(req,res, fb_verify_token);
-    });
+	app.get('/api/parse', async function (req, res) {
+		var sentence = req.query['sentence']
+		var roles = await Nlu.getSemanticRoles("I want to break free")
+		res.send(roles)
+	})
 
-    app.post('/webhook', function (req, res) {
-        Conversation.Messenger(req.body);
-        res.sendStatus(200);
-    });
+	app.post('/api/contact', async (req, res) => {
+		await db.addInquiry({
+			email: req.body.email,
+			message: req.body.message,
+			source: "subscribe form",
+			date: new Date()
+		})
+		res.sendStatus(200)
+	})
 
-    app.post('/api/message', function (req, res) {
-        Conversation.Web(req, res);
-    });
+	app.post('/api/subscribe', async (req, res) => {
+		await db.addSubscriber({
+			email: req.body.email,
+			date: new Date(),
+		})
+		res.sendStatus(200)
 
-    app.get('/api/parse', function(req, res){
-        var sentence = req.query['sentence'];
-        var roles = Nlu.GetSemanticRoles("I want to break free");
-        res.send(roles);
-    });
+	})
 
-    app.post('/api/contact',  (req, res) => {
-        var data = {
-            email: req.body.email,
-            message:req.body.message,
-            source: "subscribe form",
-            date: new Date()
-        };
-        Mongo.AddInquiry(data);
-        res.sendStatus(200);
-    });
+	app.get('/api/gettranscript', async (req, res) => {
+		var conversation_id = req.query['conversation_id']
+		if (conversation_id !== null) {
+			const transcript = await db.getTranscript(conversation_id)
+			res.json(transcript)
+		} else {
+			res.sendStatus(500)
+		}
+	})
 
-    app.post('/api/subscribe', (req, res)=>{
+	app.get('/api/emailtranscript', async (req, res) => {
 
-        var data = {
-          email: req.body.email,
-            date: new Date(),
-        };
-        Mongo.AddSubscriber(data);
-        res.sendStatus(200);
-    });
+		var conversation_id = req.query['conversation_id']
+		var email = req.query['email']
+		if (conversation_id !== null) {
+			const transcript = await db.getTranscript(conversation_id)
+			await mailService.sendTranscript(email, transcript)
+			res.sendStatus(200)
+		} else {
+			res.sendStatus(500)
+		}
+	})
 
-    app.get('/api/gettranscript', (req, res) => {
-        var conversation_id = req.query['conversation_id'];
-        if(conversation_id !== null){
-            var cb = (transcript) => {
-                return res.json(transcript);
-            };
-            Mongo.GetTranscript(conversation_id, cb);
-        }else{
-            res.sendStatus(500);
-        }
-    });
+	app.get('/api/getsemanticparse', async (req, res) => {
+		var conversation_id = req.query['conversation_id']
+		if (conversation_id !== null) {
+			const transcript = await db.getReplies(conversation_id)
+			const roles = await Nlu.getSemanticRoles(transcript)
+			res.json(roles)
+		} else {
+			res.sendStatus(500)
+		}
+	})
 
-    app.get('/api/emailtranscript', (req, res) => {
-        var conversation_id = req.query['conversation_id'];
-        var email = req.query['email'];
-        if(conversation_id !== null){
-            var cb = (transcript)=>{
-                Sendgrid.SendTranscript(email, transcript);
-            };
-            Mongo.GetTranscript(conversation_id, cb);
-            res.sendStatus(200);
-        } else {
-            res.sendStatus(500);
-        }
-    });
+	//free ssl encryption
+	app.get('/.well-known/acme-challenge/:content', (req, res) => {
+		res.send(config.sslSecret)
+	})
 
-    app.get('/api/getsemanticparse', (req, res) => {
-        var conversation_id = req.query['conversation_id'];
-        if(conversation_id !== null) {
-            var cb = (transcript, err) => {
-                if(err)
-                   return res.sendStatus(500);
-                var callback = (response) => {
-                    res.json(response);
-                };
-                Nlu.GetSemanticRoles(transcript, callback);
-            };
-            Mongo.GetReplies(conversation_id, cb);
+	app.get('/', (req, res) => {
+		res.render('index.ejs')
+	})
 
-        }else{
-            res.sendStatus(500);
-        }
-    });
+	app.get('/timeline', (req, res) => {
+		res.render('foundation/timeline.ejs')
+	})
 
-    //free ssl encryption
-    app.get('/.well-known/acme-challenge/:content', (req, res) => {
-        res.send(process.env.SSL_SECRET);
-    });
+	app.get('/about', (req, res) => {
+		res.render('foundation/about.ejs')
+	})
 
-    app.get('/', (req, res) => {
-        res.render('index.ejs');
-    });
+	app.get('/careers', (req, res) => {
+		res.render('foundation/careers.ejs')
+	})
 
-    app.get('/timeline', (req,res) => {
-        res.render('foundation/timeline.ejs');
-    });
+	app.get('/privacy-policy', (req, res) => {
+		res.render('privacy.ejs')
+	})
 
-    app.get('/about', (req,res) => {
-        res.render('foundation/about.ejs');
-    });
-
-    app.get('/careers', (req,res) => {
-        res.render('foundation/careers.ejs');
-    });
-
-    app.get('/privacy-policy', (req,res) => {
-        res.render('privacy.ejs');
-    });
-
-    app.get('/terms-of-use', (req, res) =>{
-        res.render('terms.ejs');
-    });
-    app.get('/contact', (req,res)=>{
-        res.render('foundation/contact.ejs');
-    });
+	app.get('/terms-of-use', (req, res) => {
+		res.render('terms.ejs')
+	})
+	app.get('/contact', (req, res) => {
+		res.render('foundation/contact.ejs')
+	})
 }

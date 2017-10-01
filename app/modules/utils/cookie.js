@@ -1,42 +1,32 @@
+const crypto = require('crypto')
+const logger = require('../log')
 
-var cr = require('crypto');
-
-
-function generateCookieValue(){
-
-    var current_date = (new Date()).valueOf().toString();
-    var random = Math.random().toString();
-    var hash = cr.createHash('sha1').update(current_date + random).digest('hex');
-    return hash;
+function generateCookieValue() {
+	const current_date = (new Date()).valueOf().toString()
+	const random = Math.random().toString()
+	return crypto.createHash('sha1').update(current_date + random).digest('hex')
 }
 
+function setCookieIfMissing(req, res) {
 
-function setCookie(req,res)
-{
+	const cookie = req.cookies.conversation_id
 
-    // check if client sent cookie
-    var cookie = req.cookies.conversation_id;
-    if (cookie === undefined)
-    {
-        // no: set a new cookie
-        var hash = generateCookieValue();
-        res.cookie('conversation_id', hash, { maxAge: 900000, httpOnly: true });
-        console.log('cookie created successfully');
-    }
-    else
-    {
-        // yes, cookie was already present
-        console.log('cookie exists', cookie);
-    }
+	if (!cookie) {
+		res.cookie('conversation_id', generateCookieValue(), {maxAge: 900000, httpOnly: true})
+		logger.info('cookie created successfully')
+	} else {
+		logger.info('cookie exists', cookie)
+	}
 
 }
 
-module.exports = {
+module.exports = exports = {
 
-    SetConversationCookie: (req,res) =>{
-        setCookie(req, res)
-    },
-    ReadConversationCookie: (req, res) => {
-        return req.cookies.conversation_id;
-    }
-};
+	setConversationCookie(req, res) {
+		setCookieIfMissing(req, res)
+	},
+	readConversationCookie(req, res) {
+		return req.cookies.conversation_id
+	}
+
+}

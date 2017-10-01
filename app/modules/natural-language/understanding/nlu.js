@@ -1,34 +1,36 @@
-/* natural language understanding */
+const config = require('../../config')
+const NluClient = require('watson-developer-cloud/natural-language-understanding/v1.js')
+const nluClient = new NluClient({
+	'username': config.nlu.username,
+	'password': config.nlu.password,
+	'version_date': '2017-02-27',
+	'url': config.nlu.url
+})
 
-var NaturalLanguageUnderstandingV1 = require('watson-developer-cloud/natural-language-understanding/v1.js');
+async function getSemanticRoles(sentence, cb) {
 
-var nlu = new NaturalLanguageUnderstandingV1({
-    'username': process.env.NATURAL_LANGUAGE_UNDERSTANDING_USERNAME,
-    'password': process.env.NATURAL_LANGUAGE_UNDERSTANDING_PASSWORD,
-    'version_date': '2017-02-27',
-    'url': process.env.NLU_URL
-});
+	const parameters = {
+		'features': {
+			'semantic_roles': {}
+		},
+		'text': sentence
+	}
 
-
-function getSemanticRoles(sentence, cb) {
-
-    var parameters = {
-        'features': {
-            'semantic_roles': {}
-        },
-        'text': sentence
-    };
-    nlu.analyze(parameters, function(err, response) {
-        if (err)
-            console.log('error:', err);
-        else if(cb){
-            cb(response);
-        }
-    });
+	return analyze(parameters)
 }
 
-module.exports = {
-    GetSemanticRoles: (sentence, cb) => {
-        getSemanticRoles(sentence, cb);
-    }
-};
+async function analyze(parameters) {
+	return new Promise((resolve, reject) => {
+		nluClient.analyze(parameters, function (err, response) {
+			if (err) {
+				reject(err)
+			} else {
+				resolve(response)
+			}
+		})
+	})
+}
+
+module.exports = exports = {
+	getSemanticRoles: getSemanticRoles
+}
