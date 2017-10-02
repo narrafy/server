@@ -18,7 +18,7 @@ var ConversationPanel = (function(){
         init: init,
         inputKeyDown: inputKeyDown,
         sendMessage: sendMessage,
-        sendQuickReply: sendUserMessage
+        sendQuickReply: sendQuickReply
     };
 
     //Initialize the module
@@ -184,7 +184,7 @@ var ConversationPanel = (function(){
                     'text': currentText
                 }];
                 if(quick_replies&&quick_replies.length > 0){
-                    quick_replies.forEach((item)=>{
+                    quick_replies.forEach((item) => {
                         secondRankChildren.push({
                             'tagName': 'button',
                             'text': item,
@@ -195,7 +195,7 @@ var ConversationPanel = (function(){
                                 },
                                 {
                                     'name':'onclick',
-                                    'value':'ConversationPanel.sendQuickReply("' + item + '")'
+                                    'value':'ConversationPanel.sendQuickReply("'+ item +'")'
                                 }
                             ]
                         });
@@ -251,9 +251,9 @@ var ConversationPanel = (function(){
         }
     }
 
-    function sendQuickReply(value){
-        Common.deleteDomElements('message-inner', 'button');
-        sendUserMessage(value);
+    function sendQuickReply(text){
+        Common.deleteDomElements('.latest .message-inner', ['BUTTON']);
+        sendUserMessage(text);
     }
 
     function sendUserMessage(value){

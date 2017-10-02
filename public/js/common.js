@@ -56,15 +56,22 @@ var Common = (function () {
         return element;
     }
 
-    function deleteDomElements(elementId, tagName){
-        var domElement = document.querySelector("#" + elementId);
+    function deleteDomElements(classSelectors, tagsToDelete) {
+        var domElement = document.querySelector(classSelectors);
+        var childrenToRemove = [];
         if(domElement.children){
-            for(var j=0; j< domElement.children.length; j++){
-                if(domElement.children[j].tagName===tagName){
-                    domElement.removeChild(domElement.children[j]);
+            Object.keys(tagsToDelete).forEach(tagKey => {
+                for(var j=0; j< domElement.children.length; j++){
+                    if(domElement.children[j].tagName === tagsToDelete[tagKey]){
+                        var child = domElement.children[j];
+                        childrenToRemove.push(child);
+                    }
                 }
-            }
+            });
         }
+        childrenToRemove.forEach(itm => {
+            domElement.removeChild(itm);
+        });
     }
 
     //Trigger an event to fire
