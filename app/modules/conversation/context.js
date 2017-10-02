@@ -28,12 +28,12 @@ async function runContextTasks(conversation) {
 		)
 	}
 
-    var context = conversation.context;
+  /*  var context = conversation.context;
 	if(isRecapNode(context)){
 		var parsedContext = await nlu.semanticParse(context, config.interview.type.internalization.vars);
 		var story = await nlg.story(parsedContext);
 		conversation.output.text = story;
-	}
+	} */
 }
 
 
