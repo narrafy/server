@@ -8,7 +8,6 @@
   "description": "narrafy - software for counseling",
   "main": "server.js",
   "scripts": {
-    "start": "SET NODE_ENV=dev && node server.js",
     "test": "mocha --timeout 10000",
     "dependencies": {
       "express": "~4.0.0",
