@@ -29,7 +29,7 @@ module.exports = exports = {
 	nlu :{
 		username : process.env.NATURAL_LANGUAGE_UNDERSTANDING_USERNAME,
 		password : process.env.NATURAL_LANGUAGE_UNDERSTANDING_PASSWORD,
-		url : process.env.NLU_URL
+		url : process.env.NLU_URL,
 	},
 
 	conversation : {
@@ -39,6 +39,38 @@ module.exports = exports = {
 	},
 
 	sslSecret : process.env.SSL_SECRET,
-	chatBotId: process.env.CHATBOT_ID
+	chatBotId: process.env.CHATBOT_ID,
 
+	interview : {
+		type: {
+            internalization: {
+            	flagName: "recap_internal_problem",
+				vars: [
+                     "internal_problem_context",
+                     "internal_problem_prerequisite",
+                     "internal_problem_influence",
+                     "influence_on_relationships",
+                     "influence_on_relationships_example",
+                     "internal_problems_difficulties",
+                     "internal_problem_invitation_to_unique_outcome",
+				]
+			},
+            externalization: {
+            	flagName: "recap_external_problem",
+                vars: [
+                     "external_problem",
+                     "vulnerable_to_external_problem",
+					 "external_problem_context",
+                     "external_problem_takeover",
+                     "external_problem_jeopardize_judgement",
+                     "external_problem_effect_on_relationships",
+                     "external_problem_cause_difficulties",
+                     "external_problem_blind_resources",
+                     "external_problem_unique_outcome",
+                     "external_problem_invite_action"
+                ]
+			},
+		},
+
+    },
 }

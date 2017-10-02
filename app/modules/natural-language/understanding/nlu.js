@@ -1,4 +1,7 @@
+const natural = require('natural')
 const config = require('../../config')
+const tokenizer = new natural.WordTokenizer()
+const db = require('../db')
 const NluClient = require('watson-developer-cloud/natural-language-understanding/v1.js')
 const nluClient = new NluClient({
 	'username': config.nlu.username,
@@ -7,15 +10,49 @@ const nluClient = new NluClient({
 	'url': config.nlu.url
 })
 
-async function getSemanticRoles(sentence, cb) {
+async function semanticParse(context, array) {
+
+    var conversation_id = context.conversation_id
+    var parsedArray = []
+    for (let i = 0; i < array.length; i++) {
+        var context_var_name = array[i]
+        if (context && context.hasOwnProperty(context_var_name)) {
+            //found the context variable to send to semantic parser
+            var context_var = context[context_var_name]
+            if (context_var) {
+                const item = await parseItem(context_var, context_var_name, conversation_id)
+                parsedArray[context_var_name] = item
+            }
+        }
+    }
+    return parsedArray
+}
+
+async function parseItem(context_var, context_var_name, conversation_id) {
+    if (isSentence(context_var)) {
+        const semantic_data = await parseText(context_var)
+        await db.saveSemantics({
+            conversation_id: conversation_id,
+            context_var: context_var_name,
+            semantics: semantic_data
+        })
+        return semantic_data
+    }
+}
+
+function isSentence(context_variable) {
+    const tokenized_sentence = tokenizer.tokenize(context_variable)
+    return tokenized_sentence.length > 1
+}
+
+async function parseText(text) {
 
 	const parameters = {
 		'features': {
 			'semantic_roles': {}
 		},
-		'text': sentence
+		'text': text
 	}
-
 	return analyze(parameters)
 }
 
@@ -32,5 +69,5 @@ async function analyze(parameters) {
 }
 
 module.exports = exports = {
-	getSemanticRoles: getSemanticRoles
+	semanticParse: semanticParse
 }

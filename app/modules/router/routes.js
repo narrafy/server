@@ -26,7 +26,7 @@ module.exports = (app) => {
 
 	app.get('/api/parse', async function (req, res) {
 		var sentence = req.query['sentence']
-		var roles = await Nlu.getSemanticRoles("I want to break free")
+		var roles = await Nlu.semanticParse("I want to break free")
 		res.send(roles)
 	})
 
@@ -76,7 +76,7 @@ module.exports = (app) => {
 		var conversation_id = req.query['conversation_id']
 		if (conversation_id !== null) {
 			const transcript = await db.getReplies(conversation_id)
-			const roles = await Nlu.getSemanticRoles(transcript)
+			const roles = await Nlu.semanticParse(transcript)
 			res.json(roles)
 		} else {
 			res.sendStatus(500)

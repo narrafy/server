@@ -10,8 +10,7 @@ const collection = {
 	transcript: "transcripts",
 	contact: "contact",
 	context_semantics: "context_semantics",
-	internal_problem: "internal_problems",
-	externarl_stories_: "external_stories"
+	story_template: "story_template",
 }
 
 let dbConnection = null
@@ -59,6 +58,12 @@ async function pushContext(id, conversation) {
 		.save(dbConversation)
 		.then(() => conversation)
 
+}
+
+async function getStoryTemplate(type){
+	await dbConnection.collection(collection.story_templates)
+        .find({$type: type})
+        .sort({$natural: 1}).toArray()
 }
 
 async function clearContext(data) {
@@ -142,6 +147,7 @@ module.exports = exports = {
 	getContext: getContext,
 	clearContext: clearContext,
 	pushContext: pushContext,
+	getStoryTemplate: getStoryTemplate,
 
 	async addInquiry(data) {
 		await saveInquiry(data)

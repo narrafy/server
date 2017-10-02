@@ -4,8 +4,6 @@ const WatsonClient = require('watson-developer-cloud/conversation/v1')
 const watson_workspace = config.watson.workspaceId
 
 const conversation = new WatsonClient({
-	// If unspecified here, the CONVERSATION_USERNAME and CONVERSATION_PASSWORD env properties will be checkedx
-	// After that, the SDK will fall back to the bluemix-provided VCAP_SERVICES environment property
 	username: config.conversation.username,
 	password: config.conversation.password,
 	url: config.conversation.url,
