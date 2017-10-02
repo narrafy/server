@@ -18,6 +18,7 @@ var ConversationPanel = (function(){
         init: init,
         inputKeyDown: inputKeyDown,
         sendMessage: sendMessage,
+        sendQuickReply: sendUserMessage
     };
 
     //Initialize the module
@@ -150,10 +151,57 @@ var ConversationPanel = (function(){
         if (Object.prototype.toString.call( textArray ) !== '[object Array]') {
             textArray = [textArray];
         }
+        var quick_replies = [];
+        if(newPayload.context.quick_replies!=null)
+        {
+            for(var key in newPayload.context.quick_replies)
+            {
+                if(!newPayload.context.quick_replies.hasOwnProperty(key)) continue;
+
+                var obj = newPayload.context.quick_replies[key];
+                for (var prop in obj) {
+                    // skip loop if the property is from prototype
+                    if(!obj.hasOwnProperty(prop)) continue;
+
+                    // your code
+                    if(prop==="title"){
+                        quick_replies.push(obj[prop]);
+                        console.log(prop + " = " + obj[prop]);
+                    }
+                }
+
+            }
+        }
+
         var messageArray = [];
 
         textArray.forEach(function(currentText) {
             if (currentText) {
+
+                var secondRankChildren = [{
+                    // <p>{messageText}</p>
+                    'tagName': 'p',
+                    'text': currentText
+                }];
+                if(quick_replies&&quick_replies.length > 0){
+                    quick_replies.forEach((item)=>{
+                        secondRankChildren.push({
+                            'tagName': 'button',
+                            'text': item,
+                            'attributes':[
+                                {
+                                    'name':'class',
+                                    'value':'button btn badge'
+                                },
+                                {
+                                    'name':'onclick',
+                                    'value':'ConversationPanel.sendQuickReply("' + item + '")'
+                                }
+                            ]
+                        });
+                    });
+                }
+
                 var messageJson = {
                     // <div class='segments'>
                     'tagName': 'div',
@@ -166,14 +214,11 @@ var ConversationPanel = (function(){
                             // <div class='message-inner'>
                             'tagName': 'div',
                             'classNames': ['message-inner'],
-                            'children': [{
-                                // <p>{messageText}</p>
-                                'tagName': 'p',
-                                'text': currentText
-                            }]
+                            'children': secondRankChildren
                         }]
                     }]
                 };
+
                 messageArray.push(Common.buildDomElement(messageJson));
             }
         });
@@ -199,20 +244,27 @@ var ConversationPanel = (function(){
 
     function fireChatEvent(inputBox){
         if(inputBox.value){
-            // Retrieve the context from the previous server response
-            var context;
-            var latestResponse = Api.getResponsePayload();
-            if (latestResponse) {
-                context = latestResponse.context;
-            }
-
-            // Send the user message
-            Api.sendRequest(inputBox.value, context);
-
+            sendUserMessage(inputBox.value);
             // Clear input box for further messages
             inputBox.value = '';
             Common.fireEvent(inputBox, 'input');
         }
+    }
+
+    function sendQuickReply(value){
+        Common.deleteDomElements('message-inner', 'button');
+        sendUserMessage(value);
+    }
+
+    function sendUserMessage(value){
+        // Retrieve the context from the previous server response
+        var context;
+        var latestResponse = Api.getResponsePayload();
+        if (latestResponse) {
+            context = latestResponse.context;
+        }
+        // Send the user message
+        Api.sendRequest(value, context);
     }
 
     // Handles the submission of input

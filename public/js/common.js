@@ -5,7 +5,8 @@ var Common = (function () {
     return {
         buildDomElement: buildDomElementFromJson,
         fireEvent: fireEvent,
-        listForEach: listForEach
+        listForEach: listForEach,
+        deleteDomElements: deleteDomElements
     };
     // Take in JSON object and build a DOM element out of it
     // (Limited in scope, cannot necessarily create arbitrary DOM elements)
@@ -53,6 +54,17 @@ var Common = (function () {
             }
         }
         return element;
+    }
+
+    function deleteDomElements(elementId, tagName){
+        var domElement = document.querySelector("#" + elementId);
+        if(domElement.children){
+            for(var j=0; j< domElement.children.length; j++){
+                if(domElement.children[j].tagName===tagName){
+                    domElement.removeChild(domElement.children[j]);
+                }
+            }
+        }
     }
 
     //Trigger an event to fire

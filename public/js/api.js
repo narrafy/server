@@ -38,6 +38,7 @@ var Api = (function(){
             };
         }
         if(context){
+            context.quick_replies = '';
             payloadToWatson.context = context;
         }
 
