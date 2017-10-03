@@ -75,8 +75,8 @@ module.exports = (app) => {
 	app.get('/api/getsemanticparse', async (req, res) => {
 		var conversation_id = req.query['conversation_id']
 		if (conversation_id !== null) {
-			const transcript = await db.getReplies(conversation_id)
-			const roles = await Nlu.semanticParse(transcript)
+			var context = {};
+			const roles = await Nlu.semanticParse(context, config.interview.type.internalization.vars);
 			res.json(roles)
 		} else {
 			res.sendStatus(500)

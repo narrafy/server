@@ -1,6 +1,6 @@
-const config = require('../config')
-const db = require('../db')
-const nlu = require('../natural-language/understanding/nlu')
+const config = require('../../config')
+const db = require('../../db')
+const nlu = require('../../natural-language/understanding/nlu')
 
 
 async function generateStory(parsedArray) {

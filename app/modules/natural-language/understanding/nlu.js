@@ -1,7 +1,7 @@
 const natural = require('natural')
 const config = require('../../config')
 const tokenizer = new natural.WordTokenizer()
-const db = require('../db')
+const db = require('../../db')
 const NluClient = require('watson-developer-cloud/natural-language-understanding/v1.js')
 const nluClient = new NluClient({
 	'username': config.nlu.username,
