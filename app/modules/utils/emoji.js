@@ -41,7 +41,6 @@ function checkForEmoji(input) {
 	return input
 }
 
-
 module.exports = exports = {
 	replaceEmojiKey: replaceEmojiKey
 }

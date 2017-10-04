@@ -1,4 +1,4 @@
-const emojiReplacer = require('../utils/emoji')
+
 const config = require('../config')
 const WatsonClient = require('watson-developer-cloud/conversation/v1')
 const watson_workspace = config.watson.workspaceId
@@ -54,17 +54,6 @@ async function ask(data) {
 
 }
 
-function mineResponse(data) {
-	var text = ''
-	if (data) {
-		if (data.length > 0 && data[1]) {
-			text = data[0] + ' ' + data[1]
-		} else if (data[0]) {
-			text = data[0]
-		}
-	}
-	return emojiReplacer.replaceEmojiKey(text)
-}
 
 function populateRequest(input, stored_log) {
 	var request = {
@@ -78,7 +67,6 @@ function populateRequest(input, stored_log) {
 }
 
 module.exports = {
-	mineResponse: mineResponse,
 	populateRequest: populateRequest,
 	ask: ask,
 }

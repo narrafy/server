@@ -19,7 +19,8 @@ module.exports = exports = {
 	facebook: {
 		pageToken: process.env.FACEBOOK_PAGE_ACCESS_TOKEN,
 		graphUrl: process.env.FB_GRAPH_MSG_URL,
-		verifyToken : process.env.FACEBOOK_PAGE_VERIFY_TOKEN
+		verifyToken : process.env.FACEBOOK_PAGE_VERIFY_TOKEN,
+		admin_id: process.env.ADMIN_FB_ID
 	},
 
 	watson : {
@@ -41,36 +42,29 @@ module.exports = exports = {
 	sslSecret : process.env.SSL_SECRET,
 	chatBotId: process.env.CHATBOT_ID,
 
-	interview : {
-		type: {
-            internalization: {
-            	flagName: "recap_internal_problem",
-				vars: [
-                     "internal_problem_context",
-                     "internal_problem_prerequisite",
-                     "internal_problem_influence",
-                     "influence_on_relationships",
-                     "influence_on_relationships_example",
-                     "internal_problems_difficulties",
-                     "internal_problem_invitation_to_unique_outcome",
-				]
-			},
-            externalization: {
-            	flagName: "recap_external_problem",
-                vars: [
-                     "external_problem",
-                     "vulnerable_to_external_problem",
-					 "external_problem_context",
-                     "external_problem_takeover",
-                     "external_problem_jeopardize_judgement",
-                     "external_problem_effect_on_relationships",
-                     "external_problem_cause_difficulties",
-                     "external_problem_blind_resources",
-                     "external_problem_unique_outcome",
-                     "external_problem_invite_action"
-                ]
-			},
-		},
+	interviewNodes : {
 
-    },
+        "internalization" : [
+            "problem",
+            "context",
+            "trigger",
+            "influence",
+            "influence_on_relationships",
+            "influence_on_relationships_example",
+            "difficulties",
+            "invitation_to_exception",
+        ],
+        "externalization": [
+            "problem_story",
+            "vulnerable_to",
+            "story_context",
+            "takeover",
+            "jeopardize_judgement",
+            "effect_on_relationships",
+            "cause_difficulties",
+            "blind_resources",
+            "unique_outcome",
+            "invite_action"
+        ]
+    }
 }

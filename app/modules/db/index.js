@@ -11,6 +11,7 @@ const collection = {
 	contact: "contact",
 	context_semantics: "context_semantics",
 	story_template: "story_template",
+	subscribers: "subscribers"
 }
 
 let dbConnection = null
@@ -40,6 +41,16 @@ async function getContext(input) {
 	}
 }
 
+async function getContextVars(conversation_id){
+	return dbConnection.collection(collection.log)
+		.find({conversation_id: conversation_id})
+		.sort({date: -1})
+		.limit(1)
+		.toArray()
+		.then(stored_log => stored_log[0])
+		.catch((err)=>{console.log(err)});
+}
+
 async function pushContext(id, conversation) {
 
 	const dbConversation = {
@@ -56,14 +67,13 @@ async function pushContext(id, conversation) {
 	return dbConnection
 		.collection(collection.log)
 		.save(dbConversation)
-		.then(() => conversation)
-
 }
 
-async function getStoryTemplate(type){
-	await dbConnection.collection(collection.story_templates)
-        .find({$type: type})
+async function getParsedContext(conversation_id, interview_type){
+	await dbConnection.collection(collection.context_semantics)
+        .find({conversation_id: conversation_id, interview_type: interview_type})
         .sort({$natural: 1}).toArray()
+        .then((stored_context) => ({stored_context}))
 }
 
 async function clearContext(data) {
@@ -128,7 +138,7 @@ async function getReplies(conversation_id) {
 
 async function saveSubscriber(data) {
 	return dbConnection
-		.collection('subscribers')
+		.collection(collection.subscribers)
 		.save(data)
 }
 
@@ -145,9 +155,10 @@ module.exports = exports = {
 	getTranscript: getTranscript,
 	getReplies: getReplies,
 	getContext: getContext,
+	getContextVars: getContextVars,
 	clearContext: clearContext,
 	pushContext: pushContext,
-	getStoryTemplate: getStoryTemplate,
+	getSemanticParsedContext: getParsedContext,
 
 	async addInquiry(data) {
 		await saveInquiry(data)
