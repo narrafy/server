@@ -56,7 +56,6 @@ async function SemanticParse(context) {
                 var context_var = context[context_var_name]
                 if (context_var && context_var.parsed === false) {
 
-
                         await nlu.semanticParse({
                             item: context_var,
                             label: context_var_name,

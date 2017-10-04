@@ -72,12 +72,12 @@ module.exports = (app) => {
 			let data = {
 				template: "$user_name you say you are too $problem.text. " +
                 "And this is what it does to your life. You are too $problem.text about $context.text. " +
-                "There is a trigger that launches it: trigger.text. This does affect your life, because it makes you do things you wouldn’t do otherwise. " +
+                "There is a trigger that launches it: $trigger.text. This does affect your life, because it makes you do things you wouldn’t do otherwise. " +
                 "If I am to quote you ... $influence.text. It affects the people and relationships you care about. " +
                 "$influence_on_relationships_example.text. It makes your life difficult. $difficulties.text " +
                 "But, there is a hope. You see it. One day, you will wake up in the morning and... $invitation_to_exception.text",
 				conversation_id: conversation_id,
-				interview_type: "recap_problem"
+				interview_type: "internalization"
 			}
 			const story = await Nlg.story(data);
 			res.json(story);

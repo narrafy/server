@@ -66,5 +66,168 @@ module.exports = exports = {
             "unique_outcome",
             "invite_action"
         ]
-    }
-}
+    },
+
+	pos: {
+		CC: {
+			def: "Coord Conjuncn",
+			ex: "and,but,or"
+		},
+		CD: {
+			def: "Cardinal number",
+			ex: "one, two"
+		},
+		DT: {
+			def: "Determiner",
+			ex: "the, some"
+		},
+		EX: {
+			def: "Existential",
+			ex: "there"
+		},
+		FW: {
+			def:"Foreign Word",
+			ex: "mon dieu"
+		},
+		IN: {
+			def: "Preposition",
+			ex: "of,in,by"
+		},
+		JJ: {
+            def: "Adjective",
+            ex: "big"
+		},
+		JJR: {
+			def:"comparative",
+			ex: "bigger"
+		},
+		JJS: {
+			def: "superlative",
+			ex: "biggest"
+		},
+		LS: {
+			def: "item marker",
+			ex: "1, One"
+		},
+		MD: {
+			def: "Modal",
+			ex: "can, should"
+		},
+		NN: {
+			def: "Noun singular or masc",
+			ex: "dog"
+		},
+		NNP: {
+			def: "Proper noun, sing.",
+			ex: "Edinburgh"
+		},
+		NNPS: {
+			def: "Proper noun, plural",
+			ex: "Smiths"
+		},
+		NNS: {
+			def: "Noun plural",
+			ex: "dogs"
+		},
+		POS: {
+			def: "Possessive ending",
+			ex: "'s"
+		},
+		PDT: {
+			def: "Predeterminer",
+			ex: "all, both"
+		},
+        PP$: {
+			def: "Possessive pronoun",
+			ex: " my,one's"
+		},
+        PRP: {
+			def: "Personal pronoun",
+			ex: "I,you,she"
+		},
+        RB:{
+			def: "Adverb",
+			ex: "quickly"
+		},
+        RBR: {
+			def: "Adverb, comparative",
+			ex: "faster"
+		},
+        RBS: {
+			def: " Adverb, superlative",
+			ex: "fastest"
+		},
+		RP: {
+			def:"Particle",
+			ex: "up,off"
+		},
+        SYM: {
+			def:"Symbol",
+			ex: "+,%,&"
+		},
+        TO: {
+			def: "to",
+			ex: "to"
+		},
+		UH: {
+			def: "Interjection",
+			ex: "oh, oops"
+		},
+		URL: {
+			def:"url",
+			ex: "http://www.google.com/"
+		},
+		VB: {
+			def: "verb",
+			ex: "eat"
+		},
+		VBD: {
+			def: "verb, past tense",
+			ex: "ate"
+		},
+        VBG: {
+			def: "verb, gerund",
+			ex: "eating"
+		},
+		VBN: {
+			def: "verb, past part",
+			ex: "eaten"
+		},
+		VBP: {
+			def: "Verb, present",
+			ex: "eat"
+		},
+        VBZ: {
+			def: "Verb, present",
+			ex: "eats"
+		},
+		WDT: {
+			def: "Wh-determiner",
+			ex: "which,that"
+		},
+		WP: {
+			def: "Wh pronoun",
+			ex: "who,what"
+		},
+        WP$: {
+			def: "Possessive-Wh",
+			ex: "whose"
+		},
+        WRB: {
+				def: "Wh-adverb",
+				ex: "how,where"
+		},
+	}
+
+	}
+
+
+/* , Comma                     ,
+. Sent-final punct          . ! ?
+    : Mid-sent punct.           : ; Ñ
+$ Dollar sign               $
+# Pound sign                #
+" quote                     "
+( Left paren                (
+) Right paren               )
+   */

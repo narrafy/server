@@ -2,6 +2,7 @@ const natural = require('natural')
 const config = require('../../config')
 const tokenizer = new natural.WordTokenizer()
 const db = require('../../db')
+const log = require('../../log')
 const NluClient = require('watson-developer-cloud/natural-language-understanding/v1.js')
 const nluClient = new NluClient({
 	'username': config.nlu.username,
@@ -10,48 +11,108 @@ const nluClient = new NluClient({
 	'url': config.nlu.url
 })
 
-const log = require('../../log')
+const pos = require('pos');
 
 async function parseContextItem(data) {
     let itemText = data.item.text;
-    try {
-        if (isSentence(itemText)) {
-            let semantic_data = await parseText(itemText)
-            data.semantic_data = semantic_data
-            await db.saveSemantics(data)
-            return semantic_data
-            }
-        }catch(e){
-            log.error(e)
-            return null
-    }
+    let semantic_data = await parseText(itemText)
+    data.semantic_data = semantic_data
+    await db.saveSemantics(data)
+    return semantic_data
 }
 
-function isSentence(sentence) {
+
+function isOneWord(sentence) {
     const tokenizedSentence = tokenizer.tokenize(sentence)
-    return tokenizedSentence.length > 1
+    return tokenizedSentence.length === 1
 }
 
 async function parseText(text) {
-    const parameters = {
-        'features': {
-            'semantic_roles': {}
-        },
-        'text': text
+    if(isOneWord(text)){
+        return parseTextV2(text)
     }
-    return analyze(parameters)
+    try{
+        const parameters = {
+            'features': {
+                'semantic_roles': {}
+            },
+            'text': text
+        }
+        return analyze(parameters)
+
+    }catch (e) {
+        return parseTextV2(text);
+    }
 }
 
+function parseTextV2(sentence){
+
+    let words = new pos.Lexer().lex(sentence);
+    let taggedWords = new pos.Tagger().tag(words);
+    let semantic_data= {
+        usage:  {
+            text_units: 0,
+            text_characters: 0,
+            features: 1
+        },
+        semantic_roles: [
+            {
+                sentence: sentence,
+                subject: {
+                    text: ""
+                },
+                object: {
+                    text: ""
+                },
+                action: {
+                    text: "",
+                    normalized: "",
+                    verb: {
+                        text:"",
+                        tense:""
+                    }
+                }
+            }
+        ]
+    };
+    for (let i in taggedWords) {
+        var taggedWord = taggedWords[i];
+        var word = taggedWord[0];
+        var tag = taggedWord[1];
+        if(isActionPOS(tag))
+        {
+            semantic_data.semantic_roles.action.text = word;
+            semantic_data.semantic_roles.action.verb.text = word;
+            semantic_data.semantic_roles.action.verb.tense = tag;
+        }
+    }
+    return semantic_data;
+}
+
+function isActionPOS(word) {
+    return word=== config.pos.VB ||
+        word === config.pos.VBD ||
+        word === config.pos.VBG ||
+        word === config.pos.VBN ||
+        word === config.pos.VBZ ||
+        word === config.pos.VBP
+
+}
+function isObjectPOS() {
+    
+}
+
+
 async function analyze(parameters) {
-	return new Promise((resolve, reject) => {
-		nluClient.analyze(parameters, function (err, response) {
-			if (err) {
-				reject(err)
-			} else {
-				resolve(response)
-			}
-		})
-	})
+    return new Promise((resolve, reject) => {
+        nluClient.analyze(parameters, function (err, response) {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(response)
+            }
+        })
+    })
 }
 
 module.exports = exports = {

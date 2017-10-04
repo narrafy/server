@@ -66,14 +66,13 @@ async function pushContext(id, conversation) {
 
 	return dbConnection
 		.collection(collection.log)
-		.save(dbConversation)
+		.insertOne(dbConversation)
 }
 
 async function getParsedContext(conversation_id, interview_type){
-	await dbConnection.collection(collection.context_semantics)
+	return dbConnection.collection(collection.context_semantics)
         .find({conversation_id: conversation_id, interview_type: interview_type})
         .sort({$natural: 1}).toArray()
-        .then((stored_context) => ({stored_context}))
 }
 
 async function clearContext(data) {
@@ -158,7 +157,7 @@ module.exports = exports = {
 	getContextVars: getContextVars,
 	clearContext: clearContext,
 	pushContext: pushContext,
-	getSemanticParsedContext: getParsedContext,
+	getSemanticParse: getParsedContext,
 
 	async addInquiry(data) {
 		await saveInquiry(data)
