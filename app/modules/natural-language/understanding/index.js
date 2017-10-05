@@ -1,4 +1,5 @@
 const natural = require('natural')
+const pos = require('pos')
 const config = require('../../config')
 const tokenizer = new natural.WordTokenizer()
 const db = require('../../db')
@@ -11,7 +12,7 @@ const nluClient = new NluClient({
 	'url': config.nlu.url
 })
 
-const pos = require('pos');
+
 
 async function parseContextItem(data) {
     let itemText = data.item.text;
