@@ -1,5 +1,5 @@
 const natural = require('natural')
-const pos = require('pos')
+const postag = require('pos')
 const config = require('../../config')
 const tokenizer = new natural.WordTokenizer()
 const db = require('../../db')
@@ -48,8 +48,8 @@ async function parseText(text) {
 
 function parseTextV2(sentence){
 
-    let words = new pos.Lexer().lex(sentence);
-    let taggedWords = new pos.Tagger().tag(words);
+    let words = new postag.Lexer().lex(sentence);
+    let taggedWords = new postag.Tagger().tag(words);
     let semantic_data= {};
     for (let i in taggedWords) {
         var taggedWord = taggedWords[i];
