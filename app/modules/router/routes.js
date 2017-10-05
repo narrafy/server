@@ -67,24 +67,49 @@ module.exports = (app) => {
 	})
 
 	app.get('/api/story/get', async (req, res) => {
-		var conversation_id = req.query['conversation_id']
+		let conversation_id = req.query['conversation_id'];
+		let interview_type = req.query['interview_type'];
+
+		let templateArray = {
+			"internalization" : "$user_name you say you are too _problem.object about _context.sentence. " +
+            "It usually happens when you are _trigger.object. This does affect your life, because it makes " +
+            "you do things you would not do otherwise. _influence.sentence. It affects " +
+            "people and relationships you care about. _influence_on_relationships_example.sentence. " +
+            "It makes your life difficult. _difficulties.sentence. " +
+            "But, there is a a fountain of hope! You see it. One day, you will wake up in the morning, and your life life will be " +
+            "different. _invitation_to_exception.sentence.",
+
+			"externalization" : "$user_name, let's look back and see what kind of villain you are fighting with." +
+            " His name is $problem_story. Something happened and it was possible for him to dominate your life. " +
+            "You it's: $vulnerable_to_external_problem. The villain appears in specific contexts. " +
+            "In your case is when $story_context. It is a bad guy. It even managed to get you to do things " +
+            "against your better judgement - $jeopardize_judgement. $external_problem takes over when $takeover. " +
+            "It has an effect on your relationships. You say it $problem_effect_on_relationships. " +
+            "And it makes your life hard: \\\"$external_problem_cause_difficulties\\\". " +
+            "But you managed to fight back - $unique_outcome. Several times! And you are prepared to take a position against it."
+		}
+
+
 		if (conversation_id !== null) {
 			let data = {
-				template: "$user_name you say you are too $problem.text. " +
-                "And this is what it does to your life. You are too $problem.text about $context.text. " +
-                "There is a trigger that launches it: $trigger.text. This does affect your life, because it makes you do things you wouldn’t do otherwise. " +
-                "If I am to quote you ... $influence.text. It affects the people and relationships you care about. " +
-                "$influence_on_relationships_example.text. It makes your life difficult. $difficulties.text " +
-                "But, there is a hope. You see it. One day, you will wake up in the morning and... $invitation_to_exception.text",
+				template: templateArray[interview_type],
 				conversation_id: conversation_id,
-				interview_type: "internalization"
+				interview_type: interview_type
+			};
+
+			try {
+                const story = await Nlg.story(data);
+                res.json(story);
+			} catch (e) {
+				console.log(e.stack);
 			}
-			const story = await Nlg.story(data);
-			res.json(story);
+
 		} else {
 			res.sendStatus(500)
 		}
 	})
+
+
 
 	//free ssl encryption
 	app.get('/.well-known/acme-challenge/:content', (req, res) => {

@@ -69,151 +69,151 @@ module.exports = exports = {
     },
 
 	pos: {
-		CC: {
+		"CC": {
 			def: "Coord Conjuncn",
 			ex: "and,but,or"
 		},
-		CD: {
+		"CD": {
 			def: "Cardinal number",
 			ex: "one, two"
 		},
-		DT: {
+		"DT": {
 			def: "Determiner",
 			ex: "the, some"
 		},
-		EX: {
+		"EX": {
 			def: "Existential",
 			ex: "there"
 		},
-		FW: {
+		"FW": {
 			def:"Foreign Word",
 			ex: "mon dieu"
 		},
-		IN: {
+		"IN": {
 			def: "Preposition",
 			ex: "of,in,by"
 		},
-		JJ: {
+		"JJ": {
             def: "Adjective",
             ex: "big"
 		},
-		JJR: {
+		"JJR": {
 			def:"comparative",
 			ex: "bigger"
 		},
-		JJS: {
+		"JJS": {
 			def: "superlative",
 			ex: "biggest"
 		},
-		LS: {
+		"LS": {
 			def: "item marker",
 			ex: "1, One"
 		},
-		MD: {
+		"MD": {
 			def: "Modal",
 			ex: "can, should"
 		},
-		NN: {
+		"NN": {
 			def: "Noun singular or masc",
 			ex: "dog"
 		},
-		NNP: {
+		"NNP": {
 			def: "Proper noun, sing.",
 			ex: "Edinburgh"
 		},
-		NNPS: {
+		"NNPS": {
 			def: "Proper noun, plural",
 			ex: "Smiths"
 		},
-		NNS: {
+		"NNS": {
 			def: "Noun plural",
 			ex: "dogs"
 		},
-		POS: {
+		"POS": {
 			def: "Possessive ending",
 			ex: "'s"
 		},
-		PDT: {
+		"PDT": {
 			def: "Predeterminer",
 			ex: "all, both"
 		},
-        PP$: {
+        "PP$": {
 			def: "Possessive pronoun",
 			ex: " my,one's"
 		},
-        PRP: {
+        "PRP": {
 			def: "Personal pronoun",
 			ex: "I,you,she"
 		},
-        RB:{
+        "RB":{
 			def: "Adverb",
 			ex: "quickly"
 		},
-        RBR: {
+        "RBR": {
 			def: "Adverb, comparative",
 			ex: "faster"
 		},
-        RBS: {
+        "RBS": {
 			def: " Adverb, superlative",
 			ex: "fastest"
 		},
-		RP: {
+		"RP": {
 			def:"Particle",
 			ex: "up,off"
 		},
-        SYM: {
+        "SYM": {
 			def:"Symbol",
 			ex: "+,%,&"
 		},
-        TO: {
+        "TO": {
 			def: "to",
 			ex: "to"
 		},
-		UH: {
+		"UH": {
 			def: "Interjection",
 			ex: "oh, oops"
 		},
-		URL: {
+		"URL": {
 			def:"url",
 			ex: "http://www.google.com/"
 		},
-		VB: {
+		"VB": {
 			def: "verb",
 			ex: "eat"
 		},
-		VBD: {
+		"VBD": {
 			def: "verb, past tense",
 			ex: "ate"
 		},
-        VBG: {
+        "VBG": {
 			def: "verb, gerund",
 			ex: "eating"
 		},
-		VBN: {
+		"VBN": {
 			def: "verb, past part",
 			ex: "eaten"
 		},
-		VBP: {
+		"VBP": {
 			def: "Verb, present",
 			ex: "eat"
 		},
-        VBZ: {
+        "VBZ": {
 			def: "Verb, present",
 			ex: "eats"
 		},
-		WDT: {
+		"WDT": {
 			def: "Wh-determiner",
 			ex: "which,that"
 		},
-		WP: {
+		"WP": {
 			def: "Wh pronoun",
 			ex: "who,what"
 		},
-        WP$: {
+        "WP$": {
 			def: "Possessive-Wh",
 			ex: "whose"
 		},
-        WRB: {
+        "WRB": {
 				def: "Wh-adverb",
 				ex: "how,where"
 		},

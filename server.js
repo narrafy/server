@@ -38,9 +38,9 @@ db
 
 /* Configure Facebook */
 const greetingMessage = "Hi! I'm Narrafy, I turn problems into stories. Talk to me!"
-Facebook.greet(greetingMessage).catch(logger.error)
-Facebook.removePersistentMenu().catch(logger.error)
-Facebook.addPersistentMenu().catch(logger.error)
+//Facebook.greet(greetingMessage).catch(logger.error)
+//Facebook.removePersistentMenu().catch(logger.error)
+//Facebook.addPersistentMenu().catch(logger.error)
 
 
 /* Bootstrap routes*/

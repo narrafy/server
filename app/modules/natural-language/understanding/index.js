@@ -49,57 +49,87 @@ function parseTextV2(sentence){
 
     let words = new pos.Lexer().lex(sentence);
     let taggedWords = new pos.Tagger().tag(words);
-    let semantic_data= {
-        usage:  {
-            text_units: 0,
-            text_characters: 0,
-            features: 1
-        },
-        semantic_roles: [
-            {
-                sentence: sentence,
-                subject: {
-                    text: ""
-                },
-                object: {
-                    text: ""
-                },
-                action: {
-                    text: "",
-                    normalized: "",
-                    verb: {
-                        text:"",
-                        tense:""
-                    }
-                }
-            }
-        ]
-    };
+    let semantic_data= {};
     for (let i in taggedWords) {
         var taggedWord = taggedWords[i];
         var word = taggedWord[0];
         var tag = taggedWord[1];
         if(isActionPOS(tag))
         {
-            semantic_data.semantic_roles.action.text = word;
-            semantic_data.semantic_roles.action.verb.text = word;
-            semantic_data.semantic_roles.action.verb.tense = tag;
+            return semantic_data = {
+                usage:  {
+                    text_units: 0,
+                    text_characters: 0,
+                    features: 1
+                },
+                semantic_roles: [
+                    {
+                        sentence: sentence,
+                        subject: {
+                            text: ""
+                        },
+                        object: {
+                            text: ""
+                        },
+                        action: {
+                            text: word,
+                            normalized: "",
+                            verb: {
+                                text: word,
+                                tense: tag
+                            }
+                        }
+                    }
+                ]
+            };
+        }
+        if(isObjectPOS(tag))
+        {
+            return semantic_data = {
+                usage:  {
+                    text_units: 0,
+                    text_characters: 0,
+                    features: 1
+                },
+                semantic_roles: [
+                    {
+                        sentence: sentence,
+                        subject: {
+                            text: ""
+                        },
+                        object: {
+                            text: word
+                        },
+                        action: {
+                            text: "",
+                            normalized: "",
+                            verb: {
+                                text: "",
+                                tense: ""
+                            }
+                        }
+                    }
+                ]
+            };
         }
     }
-    return semantic_data;
+    return null;
 }
 
 function isActionPOS(word) {
-    return word=== config.pos.VB ||
-        word === config.pos.VBD ||
-        word === config.pos.VBG ||
-        word === config.pos.VBN ||
-        word === config.pos.VBZ ||
-        word === config.pos.VBP
-
+    return word === "VB" ||
+        word === "VBD" ||
+        word === "VBG" ||
+        word === "VBN" ||
+        word === "VBZ" ||
+        word ===  "VBP"
 }
-function isObjectPOS() {
-    
+
+function isObjectPOS(tag)
+{
+    return tag === "JJ" ||
+        tag === "JJR" ||
+        tag === "JJS";
 }
 
 
