@@ -54,15 +54,14 @@
     "request-promise-native": "^1.0.5",
     "sendgrid": "^4.7.1",
     "watson-developer-cloud": "^2.40.0",
-    "pos": "^0.4.2"
+    "pos": "^0.4.2",
+    "compromise": "^10.7.2"
   },
   "devDependencies": {
     "chai": "^4.1.2",
     "chai-http": "^3.0.0",
-    "compromise": "^10.7.2",
     "grunt": "^1.0.1",
     "mocha": "^3.5.3",
-    "nodemon": "^1.12.1",
-    "replaceall": "^0.1.6"
+    "nodemon": "^1.12.1"
   }
 }
