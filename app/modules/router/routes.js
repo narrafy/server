@@ -53,13 +53,14 @@ module.exports = (app) => {
 		}
 	})
 
-	app.get('/api/transcript/email',  (req, res) => {
+	app.get('/api/transcript/email',  async (req, res) => {
 
 		var conversation_id = req.query['conversation_id']
 		var email = req.query['email']
 		if (conversation_id !== null) {
-			const transcript = db.getTranscript(conversation_id)
-			mailService.sendTranscript(email, transcript)
+			const transcript = await db.getTranscript(conversation_id)
+			if(transcript)
+				mailService.send(email, transcript)
 			res.sendStatus(200)
 		} else {
 			res.sendStatus(500)

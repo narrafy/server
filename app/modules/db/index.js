@@ -11,7 +11,8 @@ const collection = {
 	contact: "contact",
 	context_semantics: "context_semantics",
 	story_template: "story_template",
-	subscribers: "subscribers"
+	subscribers: "subscribers",
+	stories: "stories"
 }
 
 let dbConnection = null
@@ -117,7 +118,6 @@ async function getTranscript(conversation_id) {
 		}
 		await dbConnection.collection(collection.transcript).save(data)
 	}
-
 }
 
 async function getReplies(conversation_id) {
@@ -148,6 +148,18 @@ async function saveSemantics(data) {
 		.then(() => data)
 }
 
+async function saveStory(data) {
+	return dbConnection.collection(collection.stories)
+		.insertOne(data)
+		.then(() => data)
+}
+
+async function getStory(story) {
+	return dbConnection.collection(collection.stories)
+		.findOne({conversation_id: story.conversation_id, interview_type: story.interview_type})
+		.then((story) => ({story}))
+}
+
 module.exports = exports = {
 	connect: connect,
 	saveSemantics: saveSemantics,
@@ -158,6 +170,8 @@ module.exports = exports = {
 	clearContext: clearContext,
 	pushContext: pushContext,
 	getSemanticParse: getParsedContext,
+	saveStory: saveStory,
+	getStory: getStory,
 
 	async addInquiry(data) {
 		await saveInquiry(data)

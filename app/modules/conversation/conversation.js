@@ -3,7 +3,6 @@ const watson = require('./watson')
 const context = require('./context')
 const config = require('../config')
 const nlg = require('../natural-language/generation')
-const nlu = require('../natural-language/understanding')
 
 //callback after the message was received by the backend
 async function receiveMessage(input, stored_log) {
@@ -36,7 +35,12 @@ async function receiveMessage(input, stored_log) {
             if(currentContext && currentContext.quick_replies) {
                 message.quick_replies = currentContext.quick_replies
             }
-			await facebookApi.sendMessage(request.id, message)
+            if(currentContext && currentContext.web_view) {
+                await facebookApi.sendWebView(request.id, currentContext.web_view)
+                currentContext.web_view = ""
+            }
+            else
+                await facebookApi.sendMessage(request.id, message)
 			console.log("Watson replies with: " + message.text + " " + request.id)
 
 		} else {
@@ -47,8 +51,7 @@ async function receiveMessage(input, stored_log) {
 		}
 
 	} catch (err) {
-		console.log("error in the facebook callback function " + err)
-		await facebookApi.sendMessage(request.id, {text: err})
+		console.log("error in the facebook callback function " + err.stack)
 	}
 }
 

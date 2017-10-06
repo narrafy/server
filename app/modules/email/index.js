@@ -40,6 +40,15 @@ function sendTranscript(email, transcript) {
 	const mail = new MailHelper.Mail(fromEmail, subject, toEmail, content)
 	return sendEmail(mail)
 }
+function sendStory(email, story) {
+    let fromEmail = new MailHelper.Email(config.sendGrid.adminEmail)
+    let toEmail = new MailHelper.Email(email)
+    let subject = "A story of hope"
+    let emailBody = getStoryEmail(story)
+    let content = new MailHelper.Content('text/html', emailBody)
+    let mail = new MailHelper.Mail(fromEmail, subject, toEmail, content)
+	return sendEmail(mail)
+}
 
 function notifySubscriber(email) {
 	const fromEmail = new MailHelper.Email(config.sendGrid.adminEmail)
@@ -70,6 +79,10 @@ function getTranscriptEmailBody(transcript) {
 	return `<html><body><ul>{transcriptHtml}</ul><body/></html>`
 }
 
+function getStoryEmail(story) {
+    return "<html><body><ul>" + story + "</ul><body/></html>"
+}
+
 function getSubscriberReplyEmailBody() {
 	return "<html><body><p>" + "Hey! We received your email." +
 		" We will contact you when we have something important to share." +
@@ -88,7 +101,8 @@ module.exports = {
 
 	notifyUser: notifyUser,
 	notifySubscriber: notifySubscriber,
-	sendTranscript: sendTranscript,
+	send: sendTranscript,
+	sendStory: sendStory,
 
 	notifyAdmin(data) {
 		return notifyAdmin(data.email, data.message)

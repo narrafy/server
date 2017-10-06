@@ -1,8 +1,6 @@
-
 const db = require('../db')
 const emailService = require('../email')
 const nlu = require('../natural-language/understanding')
-const nlg = require('../natural-language/generation')
 
 const config = require('../config')
 const adminEmail = config.sendGrid.adminEmail
@@ -14,10 +12,24 @@ async function runContextTasks(conversation) {
 
     const conversation_id = conversation.context.conversation_id;
 	if (isEmailNode(conversation)) {
-		const email = conversation.input.text
-		const transcript = await db.getTranscript(conversation_id)
-		emailService.sendTranscript(email, transcript)
+		let email = getEmailFromContext(conversation);
+		let interview_type = conversation.context.interview_type;
+        if(email && isSendStoryNode(conversation))
+        {
+            let story = await db.getStory({
+                    conversation_id: conversation_id,
+                    interview_type: interview_type })
+            if(story)
+                emailService.sendStory(email, story)
+
+
+        }
+
+		let transcript = await db.getTranscript(conversation_id)
+        if(transcript)
+		    emailService.send(email, transcript)
 	}
+
 
 	/*if (is3RdNode(conversation)) {
 		emailService.notifyAdmin(
@@ -31,11 +43,28 @@ async function runContextTasks(conversation) {
 	await SemanticParse(conversation.context);
 }
 
+function getEmailFromContext(conversation){
+    let email = conversation.input.text;
+    if(validateEmail(email))
+        return email
+    return null
+}
+
+function validateEmail(email) {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+}
+
 
 function isEmailNode(conversation) {
 	return conversation.entities &&
 		conversation.entities[0] &&
 		conversation.entities[0].entity === "email"
+}
+
+function isSendStoryNode(conversation) {
+    return conversation.context && conversation.context.send_story;
+
 }
 
 function is3RdNode(conversation) {

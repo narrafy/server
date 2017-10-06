@@ -33,7 +33,7 @@ async function generateStory(data) {
         const nodes =  config.interviewNodes[data.interview_type]
         nodes.forEach(key => {
             var sentence = mapArray[key];
-            if(sentence)
+            if(sentence && data.template)
                 return data.template = getNormalizedStory(sentence, key, data.template);
         });
         return data.template
@@ -132,7 +132,7 @@ function getSemanticRole(sentence) {
 
 
 async function message(conversation){
-    let text = conversation.output.text
+    let text = mineResponse(conversation.output.text)
     //declare local variables
     let currentContext = conversation.context
 
@@ -143,17 +143,21 @@ async function message(conversation){
             let story = await generateStory({
                 conversation_id: currentContext.conversation_id,
                 interview_type: currentContext.interview_type,
-                template: conversation.output.text
+                template: text
             })
-            if(story!==null)
-                text = story
-
+            if(story){
+                text = story;
+                currentContext.recap_node = false;
+                await db.saveStory({
+                    conversation_id: currentContext.conversation_id,
+                    interview_type: currentContext.interview_type,
+                    story: story})
+            }
         }catch (e){
             log.error(e)
         }
-
     }
-    return mineResponse(text)
+    return text
 }
 
 module.exports = {

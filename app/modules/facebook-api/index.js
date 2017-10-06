@@ -2,9 +2,15 @@ const Request = require('request-promise-native')
 const config = require('../config')
 const log = require('../log')
 
-const page_token = config.facebook.pageToken
+
 const chatBotId = config.chatBotId
 const graphUrl = config.facebook.graphUrl
+const pageToken = config.facebook.pageToken
+
+async function sendWebView(id, data) {
+	let webView = createWebView(id, data)
+	return sendMessage(id, webView)
+}
 
 async function sendMessage(id, message) {
 
@@ -15,10 +21,10 @@ async function sendMessage(id, message) {
 	try {
 		await Request({
 			url: graphUrl,
-			qs: {access_token: page_token},
+			qs: { access_token: pageToken },
 			method: 'POST',
 			json: {
-				recipient: {id: id},
+				recipient: { id: id},
 				message: message
 			}
 		})
@@ -29,6 +35,56 @@ async function sendMessage(id, message) {
 
 }
 
+function createWebView(id, data) {
+	
+    return {
+        "attachment":{
+            "type":"template",
+                "payload":{
+                "template_type":"generic",
+                    "elements":[
+                    {
+                        "title": data.title,
+                        "subtitle": data.subtitle,
+                        "image_url": data.image_url,
+                        "buttons": [
+                            {
+                                "type": "element_share",
+                                "share_contents": {
+                                    "attachment": {
+                                        "type": "template",
+                                        "payload": {
+                                            "template_type": "generic",
+                                            "elements": [
+                                                {
+                                                    "title": "I figured out that I'm too " + data.problem,
+                                                    "subtitle": "And I have a fountain of hope",
+                                                    "image_url": data.image_url,
+                                                    "default_action": {
+                                                        "type": "web_url",
+                                                         "url": data.share_url + "?ref=" + id
+                                                    },
+                                                    "buttons": [
+                                                    	{
+                                                    		"type": "web_url",
+                                                            "url": data.share_url + "?ref=" + id,
+                                                            "title": "I figured out that I'm too " + data.problem
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+}
+
 async function startTyping(id) {
 
 	if (id === chatBotId) return
@@ -36,7 +92,7 @@ async function startTyping(id) {
 	try {
 		await Request({
 			url: graphUrl,
-			qs: {access_token: page_token},
+			qs: {access_token: pageToken},
 			method: 'POST',
 			json: {
 				recipient: {id: id},
@@ -58,7 +114,7 @@ async function typingOff(id) {
 
 		await Request({
 			url: graphUrl,
-			qs: {access_token: page_token},
+			qs: {access_token: pageToken},
 			method: 'POST',
 			json: {
 				recipient: {id: id},
@@ -76,7 +132,7 @@ async function greet(text) {
 	try {
 		await Request({
 			url: 'https://graph.facebook.com/v2.8/me/thread_settings',
-			qs: {access_token: page_token},
+			qs: {access_token: pageToken},
 			method: 'POST',
 			json: {
 				setting_type: "greeting",
@@ -98,26 +154,26 @@ async function addPersistentMenu() {
 	try {
 		Request({
 			url: 'https://graph.facebook.com/v2.8/me/thread_settings',
-			qs: {access_token: page_token},
+			qs: {access_token: pageToken},
 			method: 'POST',
 			json: {
 				setting_type: "call_to_actions",
 				thread_state: "existing_thread",
 				call_to_actions: [
+                    {
+                        "title": "I want to talk to Alicia",
+                        "type": "postback",
+                        "payload": "CONTACT_REQUEST"
+                    },
 					{
 						type: "web_url",
-						title: "some thoughts  📖",
-						url: "https://blog.isegoria.com"
+						title: "Our website 📖",
+						url: "http://www.fountainofhope.no"
 					},
 					{
 						"title": "Let's try again",
 						"type": "postback",
 						"payload": "CLEAR_CONTEXT"
-					},
-					{
-						"title": "I want to talk to a person",
-						"type": "postback",
-						"payload": "CONTACT_REQUEST"
 					}
 				]
 			}
@@ -134,7 +190,7 @@ async function removePersistentMenu() {
 
 		await Request({
 			url: 'https://graph.facebook.com/v2.8/me/thread_settings',
-			qs: {access_token: page_token},
+			qs: {access_token: pageToken},
 			method: 'POST',
 			json: {
 				setting_type: "call_to_actions",
@@ -159,5 +215,9 @@ module.exports = exports = {
 		await startTyping(id)
 		await sendMessage(id, message)
 	},
+	async sendWebView(id, data){
+		await startTyping(id)
+		await sendWebView(id, data)
+	}
 
 }

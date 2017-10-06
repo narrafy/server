@@ -133,7 +133,6 @@ function isObjectPOS(tag)
         tag === "JJS";
 }
 
-
 async function analyze(parameters) {
     return new Promise((resolve, reject) => {
         nluClient.analyze(parameters, function (err, response) {
