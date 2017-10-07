@@ -157,7 +157,7 @@ async function saveStory(data) {
 async function getStory(story) {
 	return dbConnection.collection(collection.stories)
 		.findOne({conversation_id: story.conversation_id, interview_type: story.interview_type})
-		.then((story) => ({story}))
+		.then(() => story)
 }
 
 module.exports = exports = {

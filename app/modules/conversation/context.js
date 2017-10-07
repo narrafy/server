@@ -13,11 +13,11 @@ async function runContextTasks(conversation) {
 		let interview_type = conversation.context.interview_type;
         if(email && isSendStoryNode(conversation))
         {
-            let story = await db.getStory({
+            let userStory = await db.getStory({
                     conversation_id: conversation_id,
                     interview_type: interview_type })
-            if(story)
-                emailService.sendStory(email, story)
+            if(userStory)
+                emailService.sendStory(email, userStory.story)
 
 
         }
