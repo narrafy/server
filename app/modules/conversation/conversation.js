@@ -3,6 +3,7 @@ const watson = require('./watson')
 const context = require('./context')
 const config = require('../config')
 const nlg = require('../natural-language/generation')
+const email = require('../email')
 
 //callback after the message was received by the backend
 async function receiveMessage(input, stored_log) {
@@ -114,8 +115,10 @@ async function messengerRequest(body) {
                 }
                     break
                 case 'CONTACT_REQUEST':
-                    await facebookApi.sendMessage(data.sender, "Human on the way. We will contact you as soon as possible!")
-                    await facebookApi.sendMessage(config.facebook.admin_id, "Check the facebook page!")
+                    await facebookApi.sendMessage(data.sender, {text: "Human on the way. We will contact you as soon as possible!"})
+                    let adminMessage = "Check the facebook page!";
+                    email.notifyAdmin(adminMessage)
+                    await facebookApi.sendMessage(config.facebook.admin_id, {text: adminMessage })
                     break
                 //clear context button was pressed
                 case 'CLEAR_CONTEXT': {

@@ -22,8 +22,8 @@ function sendEmail(mail) {
 	// console.info(response.statusCode)
 }
 
-function notifyAdmin(email, message) {
-	const fromEmail = new MailHelper.Email(email)
+function notifyAdmin(message) {
+	const fromEmail = new MailHelper.Email(config.sendGrid.contactEmail)
 	const toEmail = new MailHelper.Email(config.sendGrid.adminEmail)
 	const subject = config.app.name
 	const content = new MailHelper.Content('text/plain', message)
@@ -104,8 +104,8 @@ module.exports = {
 	send: sendTranscript,
 	sendStory: sendStory,
 
-	notifyAdmin(data) {
-		return notifyAdmin(data.email, data.message)
+	notifyAdmin(message) {
+		return notifyAdmin(message)
 	}
 
 }

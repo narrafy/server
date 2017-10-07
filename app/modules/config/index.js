@@ -13,7 +13,8 @@ module.exports = exports = {
 
 	sendGrid: {
 		apiKey: process.env.SENDGRID_API_KEY,
-		adminEmail: process.env.ADMIN_EMAIL
+		adminEmail: process.env.ADMIN_EMAIL,
+		contactEmail: process.env.CONTACT_EMAIL
 	},
 
 	facebook: {
