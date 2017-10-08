@@ -18,8 +18,6 @@ async function runContextTasks(conversation) {
                     interview_type: interview_type })
             if(userStory)
                 emailService.sendStory(email, userStory.story)
-
-
         }
 
 		let transcript = await db.getTranscript(conversation_id)
