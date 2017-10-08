@@ -17,7 +17,7 @@ async function sendMessage(data) {
 
 	if (data.id === chatBotId) return
 
-	await typingOff(data.id)
+	await typingOff(data)
 
 	try {
 		await Request({
@@ -25,7 +25,7 @@ async function sendMessage(data) {
 			qs: { access_token: data.access_token },
 			method: 'POST',
 			json: {
-				recipient: { id: id},
+				recipient: { id: data.id },
 				message: data.message
 			}
 		})
@@ -33,7 +33,6 @@ async function sendMessage(data) {
 		log.error('Error sending message: ')
 		log.error(error)
 	}
-
 }
 
 function createWebView(data) {
