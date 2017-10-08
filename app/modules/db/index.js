@@ -12,7 +12,8 @@ const collection = {
 	context_semantics: "context_semantics",
 	story_template: "story_template",
 	subscribers: "subscribers",
-	stories: "stories"
+	stories: "stories",
+	customer: "customer"
 }
 
 let dbConnection = null
@@ -160,6 +161,17 @@ async function getStory(story) {
 		.then(() => story)
 }
 
+async function getCustomerConfig(customer_id){
+    return dbConnection.collection(collection.customer)
+        .findOne({"customer_id": customer_id})
+}
+
+async function getCustomerConfigByToken(verifyToken){
+    return dbConnection.collection(collection.customer)
+        .findOne({ "facebook.verify_token" : verifyToken})
+}
+
+
 module.exports = exports = {
 	connect: connect,
 	saveSemantics: saveSemantics,
@@ -172,6 +184,8 @@ module.exports = exports = {
 	getSemanticParse: getParsedContext,
 	saveStory: saveStory,
 	getStory: getStory,
+	getCustomerConfig: getCustomerConfig,
+    getCustomerConfigByToken: getCustomerConfigByToken,
 
 	async addInquiry(data) {
 		await saveInquiry(data)

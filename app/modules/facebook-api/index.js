@@ -5,27 +5,28 @@ const log = require('../log')
 
 const chatBotId = config.chatBotId
 const graphUrl = config.facebook.graphUrl
-const pageToken = config.facebook.pageToken
+const threadSettingUrl = config.facebook.threadSettingUrl
 
-async function sendWebView(id, data) {
-	let webView = createWebView(id, data)
-	return sendMessage(id, webView)
+
+async function sendWebView(data, webView) {
+	data.message = createWebView(webView)
+	return sendMessage(data)
 }
 
-async function sendMessage(id, message) {
+async function sendMessage(data) {
 
-	if (id === chatBotId) return
+	if (data.id === chatBotId) return
 
-	await typingOff(id)
+	await typingOff(data.id)
 
 	try {
 		await Request({
 			url: graphUrl,
-			qs: { access_token: pageToken },
+			qs: { access_token: data.access_token },
 			method: 'POST',
 			json: {
 				recipient: { id: id},
-				message: message
+				message: data.message
 			}
 		})
 	} catch (error) {
@@ -35,7 +36,7 @@ async function sendMessage(id, message) {
 
 }
 
-function createWebView(id, data) {
+function createWebView(data) {
 	
     return {
         "attachment":{
@@ -62,12 +63,12 @@ function createWebView(id, data) {
                                                     "image_url": data.image_url,
                                                     "default_action": {
                                                         "type": "web_url",
-                                                         "url": data.share_url + "?ref=" + id
+                                                         "url": data.share_url + "?ref=" + data.id
                                                     },
                                                     "buttons": [
                                                     	{
                                                     		"type": "web_url",
-                                                            "url": data.share_url + "?ref=" + id,
+                                                            "url": data.share_url + "?ref=" + data.id,
                                                             "title": "I figured out that I'm too " + data.problem
                                                         }
                                                     ]
@@ -85,17 +86,17 @@ function createWebView(id, data) {
     }
 }
 
-async function startTyping(id) {
+async function startTyping(data) {
 
-	if (id === chatBotId) return
+	if (data.id === chatBotId) return
 
 	try {
 		await Request({
 			url: graphUrl,
-			qs: {access_token: pageToken},
+			qs: {access_token: data.access_token},
 			method: 'POST',
 			json: {
-				recipient: {id: id},
+				recipient: {id: data.id},
 				sender_action: "typing_on"
 			}
 		})
@@ -106,18 +107,18 @@ async function startTyping(id) {
 
 }
 
-async function typingOff(id) {
+async function typingOff(data) {
 
-	if (id === chatBotId) return
+	if (data.id === chatBotId) return
 
 	try {
 
 		await Request({
 			url: graphUrl,
-			qs: {access_token: pageToken},
+			qs: { access_token: data.access_token },
 			method: 'POST',
 			json: {
-				recipient: {id: id},
+				recipient: {id: data.id},
 				sender_action: "typing_off"
 			}
 		})
@@ -128,69 +129,60 @@ async function typingOff(id) {
 	}
 }
 
-async function greet(text) {
+async function init(data) {
+
+	await greet(data)
+    await removePersistentMenu(data).catch(log.error)
+    await addPersistentMenu(data).catch(log.error)
+
+}
+
+async function greet(data) {
 	try {
 		await Request({
-			url: 'https://graph.facebook.com/v2.8/me/thread_settings',
-			qs: {access_token: pageToken},
+
+			url: threadSettingUrl,
+			qs: { access_token: data.access_token },
 			method: 'POST',
 			json: {
 				setting_type: "greeting",
 				greeting: {
-					text: text
+					text: data.greeting
 				},
 				thread_state: "existing_thread"
 			}
 
 		})
 	} catch (error) {
-		log.error('Error sending message: ')
-		log.error(error)
+		log.error(error.stack)
 	}
 }
 
-async function addPersistentMenu() {
+async function addPersistentMenu(data) {
 
 	try {
 		Request({
-			url: 'https://graph.facebook.com/v2.8/me/thread_settings',
-			qs: {access_token: pageToken},
+			url: threadSettingUrl,
+			qs: { access_token: data.access_token },
 			method: 'POST',
 			json: {
 				setting_type: "call_to_actions",
 				thread_state: "existing_thread",
-				call_to_actions: [
-                    {
-                        "title": "I want to talk to Alicia",
-                        "type": "postback",
-                        "payload": "CONTACT_REQUEST"
-                    },
-					{
-						type: "web_url",
-						title: "Our website 📖",
-						url: "http://www.fountainofhope.no"
-					},
-					{
-						"title": "Let's try again",
-						"type": "postback",
-						"payload": "CLEAR_CONTEXT"
-					}
-				]
+				call_to_actions: data.cta
 			}
 		})
 	} catch (error) {
-		log.error('Error sending message: ')
-		log.error(error)
+		log.error(error.stack)
 	}
 }
 
 /* it will remove the persistent menu that appears on facebook */
-async function removePersistentMenu() {
+async function removePersistentMenu(data) {
 	try {
 
 		await Request({
-			url: 'https://graph.facebook.com/v2.8/me/thread_settings',
-			qs: {access_token: pageToken},
+			url: threadSettingUrl,
+			qs: { access_token: data.access_token },
 			method: 'POST',
 			json: {
 				setting_type: "call_to_actions",
@@ -198,26 +190,22 @@ async function removePersistentMenu() {
 				call_to_actions: []
 			}
 		})
-
 	} catch (error) {
-		log.error('Error sending message: ')
-		log.error(error)
+		log.error(error.stack)
 	}
 }
 
 module.exports = exports = {
 
-	removePersistentMenu: removePersistentMenu,
-	addPersistentMenu: addPersistentMenu,
-	greet: greet,
+	init: init,
 
-	async sendMessage(id, message) {
-		await startTyping(id)
-		await sendMessage(id, message)
+	async sendMessage(data) {
+		await startTyping(data)
+		await sendMessage(data)
 	},
-	async sendWebView(id, data){
-		await startTyping(id)
-		await sendWebView(id, data)
+	async sendWebView(data, webviewData){
+		await startTyping(data)
+		await sendWebView(data, webviewData)
 	}
 
 }

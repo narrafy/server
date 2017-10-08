@@ -18,14 +18,9 @@ module.exports = exports = {
 	},
 
 	facebook: {
-		pageToken: process.env.FACEBOOK_PAGE_ACCESS_TOKEN,
 		graphUrl: process.env.FB_GRAPH_MSG_URL,
-		verifyToken : process.env.FACEBOOK_PAGE_VERIFY_TOKEN,
-		admin_id: process.env.ADMIN_FB_ID
-	},
-
-	watson : {
-		workspaceId : process.env.WORKSPACE_ID
+		threadSettingUrl: process.env.FB_THREAD_SETTINGS_URL,
+		admin_id: process.env.ADMIN_FB_ID,
 	},
 
 	nlu :{
@@ -221,14 +216,3 @@ module.exports = exports = {
 	}
 
 	}
-
-
-/* , Comma                     ,
-. Sent-final punct          . ! ?
-    : Mid-sent punct.           : ; Ñ
-$ Dollar sign               $
-# Pound sign                #
-" quote                     "
-( Left paren                (
-) Right paren               )
-   */

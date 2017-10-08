@@ -4,6 +4,7 @@ const context = require('./context')
 const config = require('../config')
 const nlg = require('../natural-language/generation')
 const email = require('../email')
+const db = require('../db')
 
 //callback after the message was received by the backend
 async function receiveMessage(input, stored_log) {
@@ -37,18 +38,22 @@ async function receiveMessage(input, stored_log) {
                 message.quick_replies = currentContext.quick_replies
             }
             if(currentContext && currentContext.web_view) {
-                await facebookApi.sendWebView(request.id, currentContext.web_view)
+                let reqData = {
+                    id: request.id,
+                    access_token: currentContext.fb_access_token
+                };
+                await facebookApi.sendWebView(reqData, currentContext.web_view)
                 currentContext.web_view = ""
+            } else {
+                await facebookApi.sendMessage({
+                    id: request.id,
+                    message: message,
+                    access_token: currentContext.fb_access_token
+                })
             }
-            else
-                await facebookApi.sendMessage(request.id, message)
+
 			console.log("Watson replies with: " + message.text + " " + request.id)
 
-		} else {
-			await facebookApi.sendMessage(request.id, {
-				text: 'I am probably training again.' +
-				'Please write me later!'
-			})
 		}
 
 	} catch (err) {
@@ -96,33 +101,70 @@ async function updateMessage(id, conversation) {
     return conversation
 }
 
-async function messengerRequest(body) {
+async function setContextConfig(customer_id, input)
+{
+    let customerConfig = await db.getCustomerConfig(customer_id)
+    input.fb_access_token = customerConfig.facebook.access_token
+    input.workspace = customerConfig.conversation.workspace
+}
+
+async function messengerRequest(body, customer_id) {
     var events = body.entry[0].messaging
     for (var i = 0; i < events.length; i++) {
         var event = events[i]
-        var data = {
+        let data = {
             sender: event.sender.id,
-            text: ""
+            text: "",
+            customer_id: customer_id
         }
 
         //user interacts with the page for the first time
         if (event.optin || event.postback) {
+
             switch (event.postback.payload) {
                 //user interacts with the page for the first time.
                 case 'optin': {
+
                     const {input, stored_log} = await context.getContext(data)
+
+                    await setContextConfig(data.customer_id, input)
+
                     await receiveMessage(input, stored_log)
+
+                   }
+                   break
+                case 'CONTACT_REQUEST':{
+                    let customerConfig = await db.getCustomerConfig(customer_id)
+                    //reply to the user
+                    let user_message = {
+                        id: data.sender,
+                        message: {
+                            text: "Human on the way. We will contact you as soon as possible!"
+                        },
+                        access_token: customerConfig.access_token
+                    }
+                    await facebookApi.sendMessage(user_message)
+
+                    //notify admin
+                    let admin_message = {
+                        id: config.facebook.admin_id,
+                        message: {
+                            text: "Check the facebook page!"
+                        }
+                    }
+                    email.notifyAdmin(admin_message.message.text)
+
+                    await facebookApi.sendMessage(admin_message)
                 }
                     break
-                case 'CONTACT_REQUEST':
-                    await facebookApi.sendMessage(data.sender, {text: "Human on the way. We will contact you as soon as possible!"})
-                    let adminMessage = "Check the facebook page!";
-                    email.notifyAdmin(adminMessage)
-                    await facebookApi.sendMessage(config.facebook.admin_id, {text: adminMessage })
-                    break
+
                 //clear context button was pressed
                 case 'CLEAR_CONTEXT': {
+
                     const {input, stored_log} = await context.clearContext(data)
+
+                    await setContextConfig(data.customer_id, input)
+
                     await receiveMessage(input, stored_log)
                 }
                     break
