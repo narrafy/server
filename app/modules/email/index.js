@@ -22,8 +22,8 @@ function sendEmail(mail) {
 	// console.info(response.statusCode)
 }
 
-function notifyAdmin(email, message) {
-	const fromEmail = new MailHelper.Email(email)
+function notifyAdmin(message) {
+	const fromEmail = new MailHelper.Email(config.sendGrid.contactEmail)
 	const toEmail = new MailHelper.Email(config.sendGrid.adminEmail)
 	const subject = config.app.name
 	const content = new MailHelper.Content('text/plain', message)
@@ -43,7 +43,7 @@ function sendTranscript(email, transcript) {
 function sendStory(email, story) {
     let fromEmail = new MailHelper.Email(config.sendGrid.adminEmail)
     let toEmail = new MailHelper.Email(email)
-    let subject = "A story of hope"
+    let subject = "A story of hope from Alice"
     let emailBody = getStoryEmail(story)
     let content = new MailHelper.Content('text/html', emailBody)
     let mail = new MailHelper.Mail(fromEmail, subject, toEmail, content)
@@ -80,14 +80,16 @@ function getTranscriptEmailBody(transcript) {
 }
 
 function getStoryEmail(story) {
-    return "<html><body><ul>" + story + "</ul><body/></html>"
+    return "<html><body>" + story +
+		"<hr/><p>Have a nice day! <a href='https://www.narrafy.io'>Narrafy Team</a></p>" +
+		"<body/></html>"
 }
 
 function getSubscriberReplyEmailBody() {
 	return "<html><body><p>" + "Hey! We received your email." +
 		" We will contact you when we have something important to share." +
 		" Otherwise, we don't bother innocent people!" + "</p>" +
-		"<p>Have a nice day! <a href='https://www.narrafy.io'>Narrafy</a> Team</p></body></html>"
+		"<p>Have a nice day! <a href='https://www.narrafy.io'>Narrafy Team</a></p></body></html>"
 }
 
 function getUserReplyEmailBody() {
@@ -104,8 +106,8 @@ module.exports = {
 	send: sendTranscript,
 	sendStory: sendStory,
 
-	notifyAdmin(data) {
-		return notifyAdmin(data.email, data.message)
+	notifyAdmin(message) {
+		return notifyAdmin(message)
 	}
 
 }

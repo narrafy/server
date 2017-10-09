@@ -157,7 +157,7 @@ async function saveStory(data) {
 async function getStory(story) {
 	return dbConnection.collection(collection.stories)
 		.findOne({conversation_id: story.conversation_id, interview_type: story.interview_type})
-		.then((story) => ({story}))
+		.then(() => story)
 }
 
 module.exports = exports = {
@@ -176,15 +176,14 @@ module.exports = exports = {
 	async addInquiry(data) {
 		await saveInquiry(data)
 
-		mailService.notifyAdmin(data)
+		mailService.notifyAdmin(data.message)
 		mailService.notifyUser(data.email)
 	},
 
 	async addSubscriber(data) {
 		await saveSubscriber(data)
 
-		data.message = "Congrats, another user just subscribed!"
-		mailService.notifyAdmin(data)
+		mailService.notifyAdmin("Congrats, another user just subscribed!")
 		mailService.notifySubscriber(data.email)
 	},
 }

@@ -1,10 +1,7 @@
 const db = require('../db')
 const emailService = require('../email')
 const nlu = require('../natural-language/understanding')
-
 const config = require('../config')
-const adminEmail = config.sendGrid.adminEmail
-
 
 /* tasks to run after the context of a conversation is pushed to the database
  * it's usually to send an email or parse the context variable */
@@ -16,11 +13,11 @@ async function runContextTasks(conversation) {
 		let interview_type = conversation.context.interview_type;
         if(email && isSendStoryNode(conversation))
         {
-            let story = await db.getStory({
+            let userStory = await db.getStory({
                     conversation_id: conversation_id,
                     interview_type: interview_type })
-            if(story)
-                emailService.sendStory(email, story)
+            if(userStory)
+                emailService.sendStory(email, userStory.story)
 
 
         }
@@ -30,15 +27,9 @@ async function runContextTasks(conversation) {
 		    emailService.send(email, transcript)
 	}
 
-
-	/*if (is3RdNode(conversation)) {
-		emailService.notifyAdmin(
-			{
-				email: adminEmail,
-				message: "Someone is talking to the bot. Remember to train on the input!"
-			}
-		)
-	}*/
+	if (is3RdNode(conversation)) {
+		emailService.notifyAdmin("Someone is talking to the bot. Remember to train on the input!")
+	}
 
 	await SemanticParse(conversation.context);
 }

@@ -110,8 +110,6 @@ module.exports = (app) => {
 		}
 	})
 
-
-
 	//free ssl encryption
 	app.get('/.well-known/acme-challenge/:content', (req, res) => {
 		res.send(config.sslSecret)
