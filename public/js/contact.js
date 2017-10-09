@@ -7,7 +7,7 @@ var ContactInput = (function(){
             messageBox: '#contact-box',
             contactForm: '#contact-form',
             notification: '#email-notification',
-            subscribeForm: '#subscribe-form',
+            subscribeForm: '#subscribe-div',
             subscribeNotification: '#subscribe-notification'
         },
         authorTypes: {
@@ -251,7 +251,7 @@ var ContactInput = (function(){
         var contactForm = document.querySelector(settings.selectors.subscribeForm);
         contactForm.className = 'hide';
         var notification = document.querySelector(settings.selectors.subscribeNotification);
-        notification.className = 'slider';
+        notification.className = 'text-center';
     }
 
 }());

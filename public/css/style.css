@@ -15,6 +15,9 @@
     position: relative;
     overflow: hidden;
 }
+.hide{
+    display: none;
+}
 
 .slider:before {
     content: '';
@@ -59,11 +62,34 @@ h2,
     margin-top: 80px;
 }
 
+.btn:hover {
+    cursor: pointer;
+}
+
 .btn-secondary {
+    line-height: 1.3rem;
     border-radius: 0px;
     background-color: #EF6263;
     color: #fff;
     border: none;
+}
+
+.inputOutline {
+    line-height: 1.8rem;
+}
+
+#textInput {
+    width: 350px !important;
+}
+
+@media (max-width: 600px) {
+    #textInput {
+        width: auto;
+    }
+    button.navbar-toggler {
+        position: absolute;
+        left: 5rem;
+    }
 }
 
 .btn-secondary:hover {
@@ -77,6 +103,10 @@ h2,
     background-color: #EF6263;
     color: #fff;
     border-radius: 1rem;
+    margin-left: 30px;
+}
+.from-user{
+    text-align: left;
 }
 
 .btn-default:hover {
@@ -124,7 +154,7 @@ h2,
     border-radius: 0px;
 }
 
-input#signup-form {
+input#subscribe-box {
     width: 100%;
 }
 
@@ -201,6 +231,7 @@ footer i.fa {
     line-height: 18px;
 }
 
+
 /*-----------*/
 
 .quote {
@@ -226,8 +257,4 @@ footer i.fa {
 
 ol.carousel-indicators {
     bottom: -20px;
-}
-
-button:hover {
-    cursor: pointer;
 }

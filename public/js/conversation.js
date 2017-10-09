@@ -210,7 +210,7 @@ var ConversationPanel = (function(){
                         },
                     ],
                     'children': secondRankChildren
-            }
+                }
 
                 var messageJson = {
                     // <div class='segments'>
@@ -224,7 +224,7 @@ var ConversationPanel = (function(){
                             // <div class='message-inner'>
                             'tagName': 'div',
                             'classNames': ['message-inner'],
-                            'children': quickReplyWrapper
+                            'children': secondRankChildren
                         }]
                     }]
                 };
@@ -263,7 +263,7 @@ var ConversationPanel = (function(){
     }
 
     function sendQuickReply(text){
-        Common.deleteDomElements('.latest .message-inner', ['BUTTON']);
+      //  Common.deleteDomElements('.latest .message-inner', ['BUTTON']);
         sendUserMessage(text);
     }
 
