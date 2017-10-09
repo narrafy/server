@@ -169,7 +169,6 @@ var ConversationPanel = (function(){
                         console.log(prop + " = " + obj[prop]);
                     }
                 }
-
             }
         }
 
@@ -191,7 +190,7 @@ var ConversationPanel = (function(){
                             'attributes':[
                                 {
                                     'name':'class',
-                                    'value':'button btn badge'
+                                    'value':'btn btn-default btn-outline quick-reply'
                                 },
                                 {
                                     'name':'onclick',
@@ -200,6 +199,17 @@ var ConversationPanel = (function(){
                             ]
                         });
                     });
+                }
+                var quickReplyWrapper = {
+                    'tagName': 'div',
+                    'classNames': ['chat-body', 'quick-replies'],
+                    'attributes': [
+                        {
+                            'name':'style',
+                            'value': 'margin: 0px 0px 10px 20px;'
+                        },
+                    ],
+                    'children': secondRankChildren
                 }
 
                 var messageJson = {
@@ -222,6 +232,7 @@ var ConversationPanel = (function(){
                 messageArray.push(Common.buildDomElement(messageJson));
             }
         });
+
 
         return messageArray;
     }
@@ -252,7 +263,7 @@ var ConversationPanel = (function(){
     }
 
     function sendQuickReply(text){
-        Common.deleteDomElements('.latest .message-inner', ['BUTTON']);
+      //  Common.deleteDomElements('.latest .message-inner', ['BUTTON']);
         sendUserMessage(text);
     }
 
