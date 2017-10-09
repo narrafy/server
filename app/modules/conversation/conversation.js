@@ -101,11 +101,10 @@ async function updateMessage(id, conversation) {
     return conversation
 }
 
-async function setContextConfig(customer_id, input)
+async function setContextConfig(customer_id)
 {
     let customerConfig = await db.getCustomerConfig(customer_id)
-    input.fb_access_token = customerConfig.facebook.access_token
-    input.workspace = customerConfig.conversation.workspace
+    return { access_token: customerConfig.facebook.access_token, workspace:customerConfig.conversation.workspace}
 }
 
 async function messengerRequest(body, customer_id) {
@@ -127,8 +126,9 @@ async function messengerRequest(body, customer_id) {
 
                     const {input, stored_log} = await context.getContext(data)
 
-                    await setContextConfig(data.customer_id, input)
-
+                    const {access_token, workspace} = await setContextConfig(data.customer_id)
+                    stored_log.access_token = access_token
+                    stored_log.workspace = workspace
                     await receiveMessage(input, stored_log)
 
                    }
@@ -163,7 +163,10 @@ async function messengerRequest(body, customer_id) {
 
                     const {input, stored_log} = await context.clearContext(data)
 
-                    await setContextConfig(data.customer_id, input)
+                    const {access_token, workspace} = await setContextConfig(data.customer_id)
+
+                    stored_log.access_token = access_token
+                    stored_log.workspace = workspace
 
                     await receiveMessage(input, stored_log)
                 }
@@ -198,6 +201,10 @@ async function webRequest(id, body, res) {
         }
         if (body.context) {
             data.context = body.context
+
+            const { access_token, workspace } = await setContextConfig(body.customer_id)
+            data.context.access_token = access_token
+            data.context.workspace = workspace
         }
     }
 

@@ -8,7 +8,7 @@ module.exports = exports = {
 	},
 
 	mongoDb: {
-		uri: process.env.MONGODB_URI || 'mongodb://localhost:27017/narrafy'
+		uri: 'mongodb://localhost:27017/narrafy'
 	},
 
 	sendGrid: {
