@@ -39,9 +39,8 @@ var Api = (function(){
         }
         if(context){
             context.quick_replies = '';
-            context.customer_id = "10324";
+            context.customer_id = "10324"
             payloadToWatson.context = context;
-
         }else{
             payloadToWatson.context = {
                 customer_id : "10324"

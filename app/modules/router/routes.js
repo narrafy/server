@@ -4,19 +4,32 @@ const Conversation = require('../conversation/conversation')
 const Nlg = require('../natural-language/generation')
 const mailService = require('../email')
 const config = require('../config')
+const fb = require('../facebook-api')
 
 module.exports = (app) => {
 
-	app.get('/webhook', function (req, res) {
-		if (req.query['hub.verify_token'] === config.facebook.verifyToken) {
+	app.get('/webhook', async function (req, res) {
+		let customerVerifyToken =  req.query['hub.verify_token'];
+		let customerConfig = await db.getCustomerConfigByToken(customerVerifyToken);
+		if (customerConfig && (customerConfig.facebook.verify_token === customerVerifyToken)) {
 			res.send(req.query['hub.challenge'])
+            let data = {
+                greeting: customerConfig.facebook.greeting_message,
+                cta: customerConfig.facebook.cta,
+                access_token: customerConfig.facebook.access_token
+            };
+
+            /* Configure Facebook */
+
+            fb.init(data).catch(log.error)
 		} else {
 			res.send('Invalid verify token!')
 		}
 	})
 
 	app.post('/webhook', async function (req, res) {
-		await Conversation.messengerRequest(req.body)
+		let customer_id = req.query["customer_id"];
+		await Conversation.messengerRequest(req.body, customer_id)
 		res.sendStatus(200)
 	})
 
@@ -40,7 +53,6 @@ module.exports = (app) => {
 			date: new Date(),
 		})
 		res.sendStatus(200)
-
 	})
 
 	app.get('/api/transcript/get', async (req, res) => {
@@ -52,6 +64,16 @@ module.exports = (app) => {
 			res.sendStatus(500)
 		}
 	})
+
+    app.get('/api/customer/get', async (req, res) => {
+        var customer_id = req.query['customer_id']
+        if (customer_id) {
+            const customer_data = await db.getCustomerConfig(customer_id)
+            res.json(customer_data)
+        } else {
+            res.sendStatus(500)
+        }
+    })
 
 	app.get('/api/transcript/email',  async (req, res) => {
 

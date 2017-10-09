@@ -1,7 +1,6 @@
 
 const config = require('../config')
 const WatsonClient = require('watson-developer-cloud/conversation/v1')
-const watson_workspace = config.watson.workspaceId
 
 const conversation = new WatsonClient({
 	username: config.conversation.username,
@@ -11,8 +10,8 @@ const conversation = new WatsonClient({
 	version: 'v1'
 })
 
-function createPayload(data, workspace) {
-	if (!workspace) {
+function createPayload(data) {
+	if (!data.workspace) {
 		return {
 			'output': {
 				'text': 'The app has not been configured with a <b>WORKSPACE_ID</b> environment variable. Please refer to the ' +
@@ -23,8 +22,11 @@ function createPayload(data, workspace) {
 		}
 	}
 	var payload = {
-		workspace_id: workspace,
-		context: {},
+		workspace_id: data.workspace,
+		context: {
+			fb_access_token: data.fb_access_token,
+			workspace: data.workspace
+		},
 		input: {}
 	}
 
@@ -34,13 +36,14 @@ function createPayload(data, workspace) {
 	if (data && data.context) {
 		// The client must maintain context/state
 		payload.context = data.context
+		payload.context.workspace = data.workspace
 	}
 	return payload
 }
 
 async function ask(data) {
 
-	const payload = createPayload(data, watson_workspace)
+	const payload = createPayload(data)
 
 	return new Promise((resolve, reject) => {
 		conversation.message(payload, function (err, response) {
@@ -58,10 +61,13 @@ async function ask(data) {
 function populateRequest(input, stored_log) {
 	var request = {
 		id: input.sender,
-		text: input.text
+		text: input.text,
+		workspace: input.workspace,
+		fb_access_token: input.fb_access_token
 	}
 	if (stored_log[0] && stored_log[0].context) {
-		request.context = stored_log[0].context
+		request.context = stored_log[0].context;
+		request.workspace = stored_log[0].context.workspace;
 	}
 	return request
 }

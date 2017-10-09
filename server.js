@@ -36,12 +36,6 @@ db
 		logger.error(error)
 	})
 
-/* Configure Facebook */
-const greetingMessage = "Hi! I'm Alicia's chatbot! Talk to me!"
-Facebook.greet(greetingMessage).catch(logger.error)
-Facebook.removePersistentMenu().catch(logger.error)
-Facebook.addPersistentMenu().catch(logger.error)
-
 
 /* Bootstrap routes*/
 require('./app/modules/router/routes.js')(app)
