@@ -1,28 +1,32 @@
-<section id="signup" class="section-primary">
+<section id="subscribe">
     <div class="container">
-        <h2>Sign up for news and updates</h2>
-        <div id="mc_embed_signup">
-                <div id="mc_embed_signup_scroll">
-                    <div class="row" id="subscribe-form">
-                        <div class="col-md-6">
-                            <div class="mc-field-group">
-                                <input id="subscribe-box" onkeydown="ContactInput.subscribeKeyDown(event, this)" type="email"  placeholder="Your Email" name="EMAIL" class="inputline" >
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <input type="submit" onclick="ContactInput.subscribeSubmit('subscribe-box')" value="Subscribe"
-                                   name="subscribe" id="mc-embedded-subscribe" class="button btn btn-primary" />
-                        </div>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h2 class="title">Sign up for news and updates</h2>
+                <div class="form-inline col-md-6 offset-md-3 text-center" role="form">
+                    <div class="form-group">
+                        <input type="text"
+                               class="form-control"
+                               id="subscribe-box"
+                               onkeydown="ContactInput.subscribeKeyDown(event, this)"
+                               type="email"  placeholder="Your Email" name="EMAIL">
                     </div>
-                    <div class="row">
-                        <div id="subscribe-notification" class="hide">
-                            <p class="leave-email">
-                                we will contact you when there is something important.
-                            </p>
-                        </div>
-                    </div>
+                    <button href="" type="submit"
+                            class="btn btn-secondary btn-signup"
+                            onclick="ContactInput.subscribeSubmit('subscribe-box')" >
+                        <i class="fa fa-paper-plane"></i>
+                    </button>
                 </div>
+            </div>
+        </div>
+        <div class="row">
+            <div id="subscribe-notification" class="hide">
+                <p class="leave-email">
+                    we will contact you when there is something important.
+                </p>
+            </div>
         </div>
     </div>
 </section>
+
 
