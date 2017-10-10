@@ -184,7 +184,7 @@ module.exports = exports = {
 	getSemanticParse: getParsedContext,
 	saveStory: saveStory,
 	getStory: getStory,
-	getCustomerConfig: getCustomerConfig,
+	getConfig: getCustomerConfig,
     getCustomerConfigByToken: getCustomerConfigByToken,
 
 	async addInquiry(data) {

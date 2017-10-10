@@ -67,7 +67,6 @@ function populateRequest(input, stored_log) {
 	}
 	if (stored_log[0] && stored_log[0].context) {
 		request.context = stored_log[0].context;
-		request.workspace = stored_log[0].context.workspace;
 	}
 	return request
 }

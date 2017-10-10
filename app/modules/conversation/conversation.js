@@ -12,6 +12,13 @@ async function receiveMessage(input, stored_log) {
 	//populate the request object to send to watson
 	const request = watson.populateRequest(input, stored_log)
 
+    if(!request.workspace)
+    {
+        const { access_token, workspace } = await setContextConfig(input.customer_id)
+        request.fb_access_token = access_token
+        request.workspace = workspace
+    }
+
 	//Send the input to the conversation service
 	try {
 
@@ -21,6 +28,8 @@ async function receiveMessage(input, stored_log) {
 
 		    //run tasks first, context might change here
             await context.runContextTasks(conversation)
+
+            
 
             //then push to db
 			await context.pushContext(request.id, conversation)
@@ -103,8 +112,9 @@ async function updateMessage(id, conversation) {
 
 async function setContextConfig(customer_id)
 {
-    let customerConfig = await db.getCustomerConfig(customer_id)
-    return { access_token: customerConfig.facebook.access_token, workspace:customerConfig.conversation.workspace}
+    //refactor use projection to return only this two fields
+    let customerConfig = await db.getConfig(customer_id)
+    return { access_token: customerConfig.facebook.access_token, workspace: customerConfig.conversation.workspace}
 }
 
 async function messengerRequest(body, customer_id) {
@@ -124,24 +134,21 @@ async function messengerRequest(body, customer_id) {
                 //user interacts with the page for the first time.
                 case 'optin': {
 
-                    const {input, stored_log} = await context.getContext(data)
+                    const { input, stored_log } = await context.getContext(data)
 
-                    const {access_token, workspace} = await setContextConfig(data.customer_id)
-                    stored_log.access_token = access_token
-                    stored_log.workspace = workspace
                     await receiveMessage(input, stored_log)
 
                    }
                    break
                 case 'CONTACT_REQUEST':{
-                    let customerConfig = await db.getCustomerConfig(customer_id)
+                    let config = await db.getConfig(customer_id)
                     //reply to the user
                     let user_message = {
                         id: data.sender,
                         message: {
                             text: "Human on the way. We will contact you as soon as possible!"
                         },
-                        access_token: customerConfig.access_token
+                        access_token: config.facebook.access_token
                     }
                     await facebookApi.sendMessage(user_message)
 
@@ -163,11 +170,6 @@ async function messengerRequest(body, customer_id) {
 
                     const {input, stored_log} = await context.clearContext(data)
 
-                    const {access_token, workspace} = await setContextConfig(data.customer_id)
-
-                    stored_log.access_token = access_token
-                    stored_log.workspace = workspace
-
                     await receiveMessage(input, stored_log)
                 }
                     break
@@ -180,14 +182,9 @@ async function messengerRequest(body, customer_id) {
         if (event.message) {
             //user picks from quick replies
             if (event.message.text) {
-                if (event.message.text === "Let's try again") {
-                    const {input, stored_log} = await context.clearContext(data)
-                    await receiveMessage(input, stored_log)
-                } else {
                     data.text = event.message.text
                     const {input, stored_log} = await context.getContext(data)
                     await receiveMessage(input, stored_log)
-                }
             }
         }
     }

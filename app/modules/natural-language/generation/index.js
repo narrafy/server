@@ -6,6 +6,10 @@ const natural = require('natural')
 const tokenizer = new natural.WordTokenizer()
 const nlp = require('compromise')
 
+const placeHolders = {
+    welcome_message: "_welcome_message"
+}
+
 function mineResponse(data) {
     var text = ''
     if (data) {
@@ -133,6 +137,7 @@ function getSemanticRole(sentence) {
 
 async function message(conversation){
     let text = mineResponse(conversation.output.text)
+
     //declare local variables
     let currentContext = conversation.context
 
@@ -157,6 +162,7 @@ async function message(conversation){
             log.error(e)
         }
     }
+
     return text
 }
 

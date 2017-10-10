@@ -68,7 +68,7 @@ module.exports = (app) => {
     app.get('/api/customer/get', async (req, res) => {
         var customer_id = req.query['customer_id']
         if (customer_id) {
-            const customer_data = await db.getCustomerConfig(customer_id)
+            const customer_data = await db.getConfig(customer_id)
             res.json(customer_data)
         } else {
             res.sendStatus(500)
