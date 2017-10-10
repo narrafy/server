@@ -24,7 +24,7 @@ function createPayload(data) {
 	var payload = {
 		workspace_id: data.workspace,
 		context: {
-			fb_access_token: data.fb_access_token,
+			access_token: data.access_token,
 			workspace: data.workspace
 		},
 		input: {}
@@ -63,7 +63,7 @@ function populateRequest(input, stored_log) {
 		id: input.sender,
 		text: input.text,
 		workspace: input.workspace,
-		fb_access_token: input.fb_access_token
+		access_token: input.access_token
 	}
 	if (stored_log[0] && stored_log[0].context) {
 		request.context = stored_log[0].context;

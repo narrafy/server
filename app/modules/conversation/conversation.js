@@ -15,7 +15,7 @@ async function receiveMessage(input, stored_log) {
     if(!request.workspace)
     {
         const { access_token, workspace } = await setContextConfig(input.customer_id)
-        request.fb_access_token = access_token
+        request.access_token = access_token
         request.workspace = workspace
     }
 
@@ -28,8 +28,6 @@ async function receiveMessage(input, stored_log) {
 
 		    //run tasks first, context might change here
             await context.runContextTasks(conversation)
-
-            
 
             //then push to db
 			await context.pushContext(request.id, conversation)
@@ -49,7 +47,7 @@ async function receiveMessage(input, stored_log) {
             if(currentContext && currentContext.web_view) {
                 let reqData = {
                     id: request.id,
-                    access_token: currentContext.fb_access_token
+                    access_token: currentContext.access_token
                 };
                 await facebookApi.sendWebView(reqData, currentContext.web_view)
                 currentContext.web_view = ""
@@ -57,7 +55,7 @@ async function receiveMessage(input, stored_log) {
                 await facebookApi.sendMessage({
                     id: request.id,
                     message: message,
-                    access_token: currentContext.fb_access_token
+                    access_token: currentContext.access_token
                 })
             }
 
@@ -199,9 +197,10 @@ async function webRequest(id, body, res) {
         if (body.context) {
             data.context = body.context
 
-            const { access_token, workspace } = await setContextConfig(body.customer_id)
-            data.context.access_token = access_token
-            data.context.workspace = workspace
+            let customer_id = body.context.customer_id
+            const { access_token, workspace } = await setContextConfig(customer_id)
+            data.access_token = access_token
+            data.workspace = workspace
         }
     }
 
