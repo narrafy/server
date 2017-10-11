@@ -263,7 +263,7 @@ var ConversationPanel = (function(){
     }
 
     function sendQuickReply(text){
-        Common.deleteDomElements('.quick-reply', ['BUTTON']);
+        Common.deleteDomElements('.quick-reply');
         sendUserMessage(text);
     }
 

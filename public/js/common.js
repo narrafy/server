@@ -56,22 +56,8 @@ var Common = (function () {
         return element;
     }
 
-    function deleteDomElements(classSelectors, tagsToDelete) {
-        var domElement = document.querySelector(classSelectors);
-        var childrenToRemove = [];
-        if(domElement.children){
-            Object.keys(tagsToDelete).forEach(tagKey => {
-                for(var j=0; j< domElement.children.length; j++){
-                    if(domElement.children[j].tagName === tagsToDelete[tagKey]){
-                        var child = domElement.children[j];
-                        childrenToRemove.push(child);
-                    }
-                }
-            });
-        }
-        childrenToRemove.forEach(itm => {
-            domElement.removeChild(itm);
-        });
+    function deleteDomElements(classSelectors) {
+        document.querySelectorAll(classSelectors).forEach(itm=> itm.parentNode.removeChild(itm))
     }
 
     //Trigger an event to fire
