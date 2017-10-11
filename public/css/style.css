@@ -189,6 +189,13 @@ footer p {
     }
 }
 
+@media (max-width: 800px)
+{
+    input#textInput {
+        max-width: 240px;
+    }
+}
+
 #subscribe {
     margin-bottom: 80px;
 }
