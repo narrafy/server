@@ -7,7 +7,7 @@ const email = require('../email')
 const db = require('../db')
 
 //callback after the message was received by the backend
-async function receiveMessage(input, stored_log) {
+async function reply(input, stored_log) {
 
 	//populate the request object to send to watson
 	const request = watson.populateRequest(input, stored_log)
@@ -134,7 +134,7 @@ async function messengerRequest(body, customer_id) {
 
                     const { input, stored_log } = await context.getContext(data)
 
-                    await receiveMessage(input, stored_log)
+                    await reply(input, stored_log)
 
                    }
                    break
@@ -168,7 +168,7 @@ async function messengerRequest(body, customer_id) {
 
                     const {input, stored_log} = await context.clearContext(data)
 
-                    await receiveMessage(input, stored_log)
+                    await reply(input, stored_log)
                 }
                     break
                 default:
@@ -178,11 +178,10 @@ async function messengerRequest(body, customer_id) {
 
         //a conversation starts
         if (event.message) {
-            //user picks from quick replies
             if (event.message.text) {
                     data.text = event.message.text
                     const {input, stored_log} = await context.getContext(data)
-                    await receiveMessage(input, stored_log)
+                    await reply(input, stored_log)
             }
         }
     }
