@@ -26,6 +26,7 @@ app.set('view engine', 'ejs')
 app.set('views', __dirname + '/views')
 app.use(flash())
 app.use(express.static(__dirname + "/public"))
+app.use('/whitepaper', express.static(__dirname + '/views/foundation/whitepaper_en.pdf'));
 
 /* Connect to DB */
 db
