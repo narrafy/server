@@ -52,10 +52,13 @@ module.exports = (app) => {
 	})
 
 	app.post('/api/subscribe', async (req, res) => {
-		await db.addSubscriber({
-			email: req.body.email,
-			date: new Date(),
-		})
+		let data = {
+            email: req.body.email,
+            date: new Date(),
+        };
+		await db.addSubscriber(data)
+        mailService.notifyAdmin("Congrats, another user just subscribed!")
+        mailService.notifySubscriber(data.email)
 		res.sendStatus(200)
 	})
 

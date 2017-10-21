@@ -193,8 +193,5 @@ module.exports = exports = {
 
 	async addSubscriber(data) {
 		await saveSubscriber(data)
-
-		mailService.notifyAdmin("Congrats, another user just subscribed!")
-		mailService.notifySubscriber(data.email)
 	},
 }
