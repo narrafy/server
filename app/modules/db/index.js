@@ -189,9 +189,6 @@ module.exports = exports = {
 
 	async addInquiry(data) {
 		await saveInquiry(data)
-
-		mailService.notifyAdmin(data.message)
-		mailService.notifyUser(data.email)
 	},
 
 	async addSubscriber(data) {

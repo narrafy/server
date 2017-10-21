@@ -38,12 +38,16 @@ module.exports = (app) => {
 	})
 
 	app.post('/api/contact', async (req, res) => {
-		await db.addInquiry({
-			email: req.body.email,
-			message: req.body.message,
-			source: "subscribe form",
-			date: new Date()
-		})
+
+		let data = {
+            email: req.body.email,
+            message: req.body.message,
+            source: "contact form",
+            date: new Date()
+        };
+		await db.addInquiry(data)
+        mailService.notifyAdmin(data.message)
+        mailService.notifyUser(data.email)
 		res.sendStatus(200)
 	})
 

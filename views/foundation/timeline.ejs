@@ -3,32 +3,47 @@
 <html lang="en">
 <head>
     <% include ../partials/head %>
+    <link href="css/timeline.css" rel="stylesheet">
 </head>
 
 <body id="page-top" data-gr-c-s-loaded="true">
 
 <% include ../partials/navbar %>
 
-<section id="roadmap">
-
+<section class="section slider bg-pr">
     <div class="container">
-        <header class="page-header">
-            <h1>Timeline</h1>
-            <h3 class="text-center"> how we started, what was done so far and where we are going. </h3>
-        </header>
+        <div class="row">
+            <div class="col-lg-10 m-auto">
+                <div class="block">
+                    <!-- Heading -->
+                    <h1>Timeline</h1>
+                    <!-- Sub-heading -->
+                    <h3>How we started, what was done so far and where we are going. </h3>
+                    <!-- Image -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section id="roadmap">
+    <div class="container">
         <ul class="timeline">
 
-            <li><div class="tldate">2015</div></li>
+            <li>
+                <div class="tldate">2015</div>
+            </li>
             <li id="counseling-training-psiterra">
                 <div class="tl-circ"></div>
                 <div class="timeline-panel">
                     <div class="tl-heading">
-                        <h4>Narrative Counseling Training Level One</h4>
+                        <h4> Counseling Training </h4>
                         <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i>November</small></p>
                     </div>
                     <div class="tl-body">
-                        <p>Founder Ion Dronic joins a counseling training organized
-                            by <a href="www.psiterra.ro">Psiterra</a>.
+                        <p>Founder Ion Dronic joins a counseling training organized by <a href="www.psiterra.ro">Psiterra</a>.
 
                         </p>
                         <p>
@@ -36,13 +51,15 @@
                                 <img src="/img/november-2.jpg" alt="psiterra" /> </a>
                         </p>
                         <p class="text-right">
-                            <a type="button" class="btn" href="https://blog.isegoria.com/a-software-engineer-among-counselors-19d4576e65c5">Read more</a>
+                            <a class="btn btn-primary" href="https://blog.isegoria.com/a-software-engineer-among-counselors-19d4576e65c5">Read more</a>
                         </p>
                     </div>
                 </div>
             </li>
 
-            <li><div class="tldate">2016</div></li>
+            <li>
+                <div class="tldate">2016</div>
+            </li>
             <li id="draper-university-of-heroes" class="timeline-inverted">
                 <div class="tl-circ"></div>
                 <div class="timeline-panel">
@@ -61,24 +78,24 @@
                             </a>
                         </p>
                         <p class="text-right">
-                            <a type="button" class="btn" href="https://medium.com/@draper_u/alumni-spotlight-ion-dronic-ac363406d67a">Read more</a>
+                            <a class="btn btn-primary" href="https://medium.com/@draper_u/alumni-spotlight-ion-dronic-ac363406d67a">Read more</a>
                         </p>
                     </div>
                 </div>
             </li>
 
-            <li><div class="tldate">2017</div></li>
+            <li>
+                <div class="tldate">2017</div>
+            </li>
             <li id="innovation-norway-funded">
                 <div class="tl-circ"></div>
                 <div class="timeline-panel">
                     <div class="tl-heading">
-                        <h4>iSegoria(former Narrafy) funded by Innovation Norway</h4>
+                        <h4>Narrafy funded by Innovation Norway</h4>
                         <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i> June</small></p>
                     </div>
                     <div class="tl-body">
-                        <p> Norwegian government fund offers
-                            a grant for the market research phase of a counseling network - the prerequisite of an
-                            intelligent system.
+                        <p> Norwegian government fund offers a grant for the market research phase of a counseling network - the prerequisite of an intelligent system.
                         </p>
                         <p>
                             <a href="https://blog.isegoria.com/ycombinator-online-school-alumni-funded-by-innovation-norway-d4cf3d814fbb">
@@ -86,7 +103,7 @@
                             </a>
                         </p>
                         <p class="text-right">
-                            <a type="button" class="btn" href="https://blog.isegoria.com/ycombinator-online-school-alumni-funded-by-innovation-norway-d4cf3d814fbb">Read more</a>
+                            <a class="btn btn-primary" href="">Read more</a>
                         </p>
                     </div>
                 </div>
@@ -95,20 +112,22 @@
                 <div class="tl-circ"></div>
                 <div class="timeline-panel">
                     <div class="tl-heading">
-                        <h4>Token Crowd sale</h4>
+                        <h4>Alicia joins as a co-founder</h4>
                         <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i> October</small></p>
                     </div>
                     <div class="tl-body">
-                        <p>The network launches a token crowd sale event to fund its research and development.
+                        <p>Alicia Partee of Fountain of Hope joins the team.
                         </p>
                         <p class="text-right">
-                            <a type="button" class="btn" href="https://blog.isegoria.com/token-crowd-sale-d2ab2de2e3b5">Read more</a>
+                            <a class="btn btn-primary" href="">Read more</a>
                         </p>
                     </div>
                 </div>
             </li>
 
-            <li><div class="tldate">2018</div></li>
+            <li>
+                <div class="tldate">2018</div>
+            </li>
             <li id="bootcamp-year">
                 <div class="tl-circ"></div>
                 <div class="timeline-panel">
@@ -117,18 +136,20 @@
                         <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i> January - December</small></p>
                     </div>
                     <div class="tl-body">
-                        <p>iSegoria and its <a href="/partners">partners</a> will run counseling trainings with
-                            the people that participated in the fundraiser. The network would select its development and
-                            research team from people that went through training.
+                        <p>Narrafy and its <a href="/partners">partners</a> will run counseling trainings with the people that
+                            participated in the fundraiser. The network would select its development and research team from
+                            people that went through training.
                         </p>
                         <p class="text-right">
-                            <a type="button" class="btn" href="/">Read more</a>
+                            <a class="btn btn-primary" href="/">Read more</a>
                         </p>
                     </div>
                 </div>
             </li>
 
-            <li><div class="tldate">2019</div></li>
+            <li>
+                <div class="tldate">2019</div>
+            </li>
             <li id="network-launch" class="timeline-inverted">
                 <div class="tl-circ"></div>
                 <div class="timeline-panel">
@@ -137,18 +158,20 @@
                         <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i> January</small></p>
                     </div>
                     <div class="tl-body">
-                        <p> iSegoria launches the counseling network.
-                            People that went through counseling boot camps will assume counseling roles
-                            on the network. Our <a href="/partners"> partners </a>  will supervise the process.
+                        <p> Narrafy launches the counseling network.
+                            People that went through counseling boot camps will assume counseling roles on the network.
+                            Our <a href="/partners"> partners </a> will supervise the process.
                         </p>
                         <p class="text-right">
-                            <a type="button" class="btn" href="/">Read more</a>
+                            <a class="btn btn-primary" href="/">Read more</a>
                         </p>
                     </div>
                 </div>
             </li>
 
-            <li><div class="tldate">2021</div></li>
+            <li>
+                <div class="tldate">2021</div>
+            </li>
             <li id="network-exchange" class="timeline">
                 <div class="tl-circ"></div>
                 <div class="timeline-panel">
@@ -157,18 +180,20 @@
                         <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i> Q1</small></p>
                     </div>
                     <div class="tl-body">
-                        <p> iSegoria launches its own currency exchange service. It would allow
-                            to buy, sell and trade <a href="/token">NAR</a> - the network token.
+                        <p> Narrafy launches its own currency exchange service.
+                            It would allow to buy, sell and trade <a href="/token">NAR</a> - the network token.
                             A perfect "excuse" to join the network.
                         </p>
                         <p class="text-right">
-                            <a type="button" class="btn" href="/">Read more</a>
+                            <a class="btn btn-primary" href="/">Read more</a>
                         </p>
                     </div>
                 </div>
             </li>
 
-            <li><div class="tldate">2023</div></li>
+            <li>
+                <div class="tldate">2023</div>
+            </li>
             <li id="ai-phase-I" class="timeline-inverted">
                 <div class="tl-circ"></div>
                 <div class="timeline-panel">
@@ -178,19 +203,19 @@
                     </div>
                     <div class="tl-body">
                         <p>
-                            AI development kickstarts with building the objective module.
-                            The module would ensure the system won't harm its creators
-                            and has its values aligned with the ones of humans.
+                            AI development kickstarts with building the objective module. The module would ensure the system won't harm its creators and has its values aligned with the ones of humans.
                         </p>
                         <p class="text-right">
-                            <a type="button" class="btn" href="/ai#objective-module">Read more</a>
+                            <a class="btn btn-primary" href="/whitepaper">Read more</a>
                         </p>
 
                     </div>
                 </div>
             </li>
 
-            <li><div class="tldate">2025</div></li>
+            <li>
+                <div class="tldate">2025</div>
+            </li>
             <li id="ai-phase-II" class="timeline">
                 <div class="tl-circ"></div>
                 <div class="timeline-panel">
@@ -199,17 +224,19 @@
                         <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i> Q1</small></p>
                     </div>
                     <div class="tl-body">
-                        <p>The <a href="">social construction of reality</a> and network data would help
-                            building a world simulator - the missing link of a truly intelligent system.
+                        <p>The <a href="/whitepaper">social construction of reality</a> and network data would help building a world simulator -
+                            the missing link of a truly intelligent system.
                         </p>
                         <p class="text-right">
-                            <a type="button" class="btn" href="/">Read more</a>
+                            <a class="btn btn-primary" href="/whitepaper">Read more</a>
                         </p>
                     </div>
                 </div>
             </li>
 
-            <li><div class="tldate">...</div></li>
+            <li>
+                <div class="tldate">...</div>
+            </li>
             <li id="human-machine-symbiosis" class="timeline-inverted">
                 <div class="tl-circ"></div>
                 <div class="timeline-panel">
@@ -219,10 +246,9 @@
                     </div>
                     <div class="tl-body">
                         <p>
-                            A thriving partnership between an artificial general intelligence system and humanity
-                            begins. Most of the problems current society is dealing with: poverty, hunger,
-                            corruption, climate change -- go away. Humanity enters an era
-                            that transcends convenience.
+                            A thriving partnership between an artificial general intelligence system and humanity begins.
+                            Most of the problems current society is dealing with: poverty, hunger, corruption,
+                            climate change -- go away. Humanity enters an era that transcends convenience.
                         </p>
                     </div>
                 </div>

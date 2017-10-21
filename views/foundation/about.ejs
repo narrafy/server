@@ -11,27 +11,45 @@
     <% include ../partials/navbar %>
 </header>
 
-<% include about-us.ejs %>
+<section class="section slider bg-pr">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 m-auto">
+                <div class="block">
+                    <!-- Heading -->
+                    <h1>About Us</h1>
+                    <!-- Sub-heading -->
+                    <h3> We are building a path to artificial general intelligence. <br>
+                        Mental health is our first stop. </h3>
+                    <div class="download">
+                        <a href="/whitepaper" class="btn btn-default">
+                            Read more
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 <section id="team" class="section-white">
     <div class="container">
-        <h2><strong> Narrafy Foundation </strong></h2>
+        <h2 class="text-center"> Team </h2>
         <div class="row row-eq-height">
-            <div class="col-md-2 col-md-offset-2 member-image">
-                <img src="img/ion-dronic.jpg" width="150px" height="150px" alt="icon" class="team img-responsive" />
+            <div class="col-md-2 col-md-offset-3 member-image">
+                <img src="img/headshot.jpg" alt="icon" class="team img-responsive" />
 
             </div>
-            <div class="col-md-8 member-text">
+            <div class="col-md-6  member-text">
                 <h4>Ion Dronic</h4>
-                <p><strong>Ceo </strong> <br/>
-                    Draper University alumni and a software engineer with 6+ years in developing .NET solutions.
-                    Recently shifted his interest towards narrative counseling, artificial intelligence and
-                    blockchain technology.
+                <p><strong>Founder </strong> <br/> Draper University alumni and a software engineer with 6+ years in developing .NET solutions.
+                    Recently shifted his interest towards counseling and
+                    artificial intelligence.
                 </p>
-                <ul class="social-network social-circle">
-                    <li><a href="https://www.linkedin.com/in/ion-dronic-94446337/" target="_blank" title="Linkedin"><i class="fa fa-linkedin"></i></a></li>
 
-                </ul>
+                <a href="https://www.linkedin.com/in/ion-dronic-94446337/" class="fa fa-linkedin" target="_blank" title="Linkedin"></a>
+
             </div>
         </div>
 
@@ -40,57 +58,50 @@
         <div class="container">
             <div class="row row-eq-height">
                 <div class="col-md-2 col-md-offset-2 member-image">
-                    <img src="img/aliona-dronic.jpg" width="150px" height="150px" alt="icon" class="team img-responsive" />
+                    <img src="img/Alicia.jpg" alt="icon" class="team img-responsive" />
 
                 </div>
                 <div class="col-md-8 member-text">
-                    <h4>Aliona Dronic</h4>
-                    <p><strong>Foundation Council</strong> <br/>
-                        Aliona is a couple counselor working at <a href="www.psiterra.ro"> Psiterra. </a>  </p>
-                    <ul class="social-network social-circle">
-                        <li><a href="https://blog.isegoria.com/" target="_blank" title="Linkedin"><i class="fa fa-linkedin"></i></a></li>
-                    </ul>
+                    <h4>Alicia Partee</h4>
+                    <p><strong>Co-Founder</strong> <br/> Alicia is the president of <a href="https://pwnoslo.net/">PWN Norway</a>
+                        and a counselor giving <a href="www.fountainofhope.no"> hope </a> to people on a regular basis. </p>
+                    <a href="https://www.linkedin.com/in/alicia-partee-76722017" target="_blank" class="fa fa-linkedin" title="Linkedin"></a>
                 </div>
             </div>
-
         </div>
     </div>
 </section>
 
 <section id="partners" class="section-white">
     <div class="container">
-        <h2><strong> Partners </strong></h2>
+        <h2 class="text-center"> Partners </h2>
         <div class="row row-eq-height">
-            <div class="col-md-2 col-md-offset-2 member-image">
-                <img src="img/partners/psiterra.png" width="150px" height="150px" alt="icon" class="team img-responsive">
-
-            </div>
-            <div class="col-md-8 member-text">
-                <h4>Psiterra</h4>
-                <p><strong>Romanian Narrative Therapy Association</strong> <br/>
-                    Romanian narrative therapy association, specialized in running narrative counseling trainings
-                    and offering psychological services.
-                </p>
-                <ul class="social-network social-circle">
-                    <li><a href="www.psiterra.ro" target="_blank" class="fa-link" title="Linkedin"><i class="fa-link"></i></a></li>
-
-                </ul>
-            </div>
-        </div>
-        <div class="row row-eq-height">
-            <div class="col-md-2 col-md-offset-2 member-image">
-                <img src="img/partners/innovation-norway.jpg" width="150px" height="150px" alt="icon" class="team img-responsive">
+            <div class="col-md-4 col-md-offset-2 member-image">
+                <img src="img/innovation-norway.jpg" width="250px" height="100px" alt="icon" class="team img-responsive">
 
             </div>
             <div class="col-md-8 member-text">
                 <h4>Innovation Norway</h4>
-                <p><strong> Government Fund </strong> <br/>
-                    It is the Norwegian Government’s most important instrument for innovation and development of Norwegian enterprises and industry.
+                <p><strong> Government Fund </strong> <br/> It is the Norwegian Government’s most important instrument for innovation and development of Norwegian enterprises and industry.
                 </p>
-                <ul class="social-network social-circle">
-                    <li><a href="www.psiterra.ro" target="_blank" class="fa-link" title="Linkedin"><i class="fa-link"></i></a></li>
 
-                </ul>
+                <a href="http://www.innovasjonnorge.no/" target="_blank" class="fa fa-link" title="Linkedin"></a>
+
+            </div>
+        </div>
+        <div class="row row-eq-height">
+            <div class="col-md-4 member-image">
+                <img src="img/psiterra.png" width="250px" height="150px" alt="icon" class="img-responsive">
+
+            </div>
+            <div class="col-md-8 member-text">
+                <h4>Psiterra</h4>
+                <p><strong>Romanian Narrative Therapy Association</strong> <br/> Romanian narrative therapy association, specialized in running counseling trainings
+                    and offering psychological services.
+                </p>
+
+                <a href="http://www.psiterra.ro" target="_blank" class="fa fa-link" title="Linkedin"></a>
+
             </div>
         </div>
     </div>
@@ -101,6 +112,9 @@
 <% include ../partials/footer %>
 
 <% include ../partials/script %>
+
+<% include ../partials/bot-script %>
+
 
 </body>
 </html>
