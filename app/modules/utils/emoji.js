@@ -20,7 +20,11 @@ const emojiDictionary = {
 	emoji_sing: "🎤",
 	emoji_clock: "🕰️",
 	emoji_sad: "😞",
-	emoji_ok: "👌"
+	emoji_ok: "👌",
+	emoji_hero: "😎",
+	emoji_villain: "👺"
+
+
 }
 
 function replaceEmojiKey(input) {
