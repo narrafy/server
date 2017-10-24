@@ -13,7 +13,7 @@ const emojiDictionary = {
 	emoji_smile: "😊",
 	emoji_thinking: "🤔",
 	emoji_party: "🎉",
-	emoji_dance: "💃🏿",
+	emoji_dance: "💃",
 	emoji_relax: "🛀",
 	emoji_smile_tears: "😂",
 	emoji_grin: "😀",

@@ -2,34 +2,37 @@ const db = require('../db')
 const emailService = require('../email')
 const nlu = require('../natural-language/understanding')
 const config = require('../config')
+const logger = require('pino')()
 
 /* tasks to run after the context of a conversation is pushed to the database
  * it's usually to send an email or parse the context variable */
 async function runContextTasks(conversation) {
-
-    const conversation_id = conversation.context.conversation_id;
-	if (isEmailNode(conversation)) {
-		let email = getEmailFromContext(conversation);
-		let interview_type = conversation.context.interview_type;
-        if(email && isSendStoryNode(conversation))
-        {
-            let userStory = await db.getStory({
+    try{
+        const conversation_id = conversation.context.conversation_id;
+        if (isEmailNode(conversation)) {
+            let email = getEmailFromContext(conversation);
+            let interview_type = conversation.context.interview_type;
+            if(email && isSendStoryNode(conversation))
+            {
+                let userStory = await db.getStory({
                     conversation_id: conversation_id,
                     interview_type: interview_type })
-            if(userStory)
-                emailService.sendStory(email, userStory.story)
+                if(userStory)
+                    emailService.sendStory(email, userStory.story)
+            }
+            let transcript = await db.getTranscript(conversation_id)
+            if(transcript)
+                emailService.send(email, transcript)
         }
+        if (is3RdNode(conversation)) {
+            emailService.notifyAdmin("Someone is talking to the bot. Remember to train on the input!")
+        }
+        await SemanticParse(conversation.context);
 
-		let transcript = await db.getTranscript(conversation_id)
-        if(transcript)
-		    emailService.send(email, transcript)
-	}
+    }catch (e){
+        logger.error(e)
+    }
 
-	if (is3RdNode(conversation)) {
-		emailService.notifyAdmin("Someone is talking to the bot. Remember to train on the input!")
-	}
-
-	await SemanticParse(conversation.context);
 }
 
 function getEmailFromContext(conversation){
@@ -74,19 +77,24 @@ async function SemanticParse(context) {
                 var context_var = context[context_var_name]
                 if (context_var && context_var.parsed === false) {
 
+                    try{
                         await nlu.semanticParse({
                             item: context_var,
                             label: context_var_name,
                             interview_type: context.interview_type,
                             conversation_id: context.conversation_id
                         });
+                    }catch (e)
+                    {
+                        logger.error(e)
+                    }
+
                 	context_var.parsed = true;
                 }
             }
         }
     }
 }
-
 
 module.exports = {
 	runContextTasks: runContextTasks,

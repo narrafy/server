@@ -42,11 +42,12 @@ module.exports = (app) => {
 		let data = {
             email: req.body.email,
             message: req.body.message,
+			name: req.body.name,
             source: "contact form",
             date: new Date()
         };
 		await db.addInquiry(data)
-        mailService.notifyAdmin(data.message)
+        mailService.contact(data)
         mailService.notifyUser(data.email)
 		res.sendStatus(200)
 	})

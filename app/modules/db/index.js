@@ -1,5 +1,4 @@
 const log = require('../log')
-const mailService = require('../email')
 const config = require('../config')
 const mongoClient = require('mongodb')
 

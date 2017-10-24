@@ -31,6 +31,16 @@ function notifyAdmin(message) {
 	return sendEmail(mail)
 }
 
+
+function contact(data) {
+    const fromEmail = new MailHelper.Email(data.email)
+    const toEmail = new MailHelper.Email(config.sendGrid.contactEmail)
+    const subject = "Message from " + data.name
+    const content = new MailHelper.Content('text/plain', data.message)
+    const mail = new MailHelper.Mail(fromEmail, subject, toEmail, content)
+    return sendEmail(mail)
+}
+
 function sendTranscript(email, transcript) {
 	const fromEmail = new MailHelper.Email(email)
 	const toEmail = new MailHelper.Email(config.sendGrid.adminEmail)
@@ -93,7 +103,7 @@ function getSubscriberReplyEmailBody() {
 }
 
 function getUserReplyEmailBody() {
-	return "<html><body><p>" + "Hey! We received your email." +
+	return "<html><body><p>" + "Hi! We received your email." +
 		" We will contact as soon as possible. Thank you for your interest!" +
 		"</p>" +
 		"<p><a href='https://www.narrafy.io'>Narrafy</a> Team</p></body></html>"
@@ -108,6 +118,8 @@ module.exports = {
 
 	notifyAdmin(message) {
 		return notifyAdmin(message)
+	},
+	contact(data){
+		return contact(data)
 	}
-
 }

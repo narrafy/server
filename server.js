@@ -8,7 +8,6 @@ const bodyParser = require('body-parser')
 const session = require('express-session')
 const db = require('./app/modules/db')
 const config = require('./app/modules/config')
-const Facebook = require('./app/modules/facebook-api')
 
 /* Bootstrap middleware */
 app.use(morgan('dev'))
