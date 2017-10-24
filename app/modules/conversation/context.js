@@ -7,7 +7,7 @@ const logger = require('pino')()
 /* tasks to run after the context of a conversation is pushed to the database
  * it's usually to send an email or parse the context variable */
 async function runContextTasks(conversation) {
-    try{
+
         const conversation_id = conversation.context.conversation_id;
         if (isEmailNode(conversation)) {
             let email = getEmailFromContext(conversation);
@@ -29,9 +29,7 @@ async function runContextTasks(conversation) {
         }
         await SemanticParse(conversation.context);
 
-    }catch (e){
-        logger.error(e)
-    }
+
 
 }
 
@@ -77,18 +75,16 @@ async function SemanticParse(context) {
                 var context_var = context[context_var_name]
                 if (context_var && context_var.parsed === false) {
 
-                    try{
+                    try {
                         await nlu.semanticParse({
                             item: context_var,
                             label: context_var_name,
                             interview_type: context.interview_type,
                             conversation_id: context.conversation_id
                         });
-                    }catch (e)
-                    {
+                    } catch(e){
                         logger.error(e)
                     }
-
                 	context_var.parsed = true;
                 }
             }

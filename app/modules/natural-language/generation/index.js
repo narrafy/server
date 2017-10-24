@@ -110,6 +110,10 @@ function to2PRPForm(text){
             arr.push("you")
         } else if(token ==="myself") {
             arr.push("yourself")
+
+        } else if(token ==="am" || token ==="m")
+        {
+          arr.push("are")
         } else {
             arr.push(token)
         }
