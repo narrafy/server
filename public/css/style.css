@@ -77,7 +77,7 @@ h2,
 }
 
 #textInput {
-    width: 350px;
+    width: 350px !important;
 }
 
 @media (max-width: 600px) {
@@ -101,6 +101,11 @@ h2,
     background-color: #EF6263;
     color: #fff;
     border-radius: 1rem;
+    margin-left: 30px;
+}
+
+.from-user{
+    text-align: right;
 }
 
 .btn-default:hover {
