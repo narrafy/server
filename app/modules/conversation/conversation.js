@@ -18,7 +18,7 @@ async function reply(input, stored_log) {
         request.access_token = access_token
         request.workspace = workspace
     }
-    if(request.context.pause_watson){
+    if(request.context && request.context.pause_watson){
 	    return
     }
 
