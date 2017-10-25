@@ -18,9 +18,6 @@ async function reply(input, stored_log) {
         request.access_token = access_token
         request.workspace = workspace
     }
-    if(request.context && request.context.pause_watson === true){
-	    return
-    }
 
 	//Send the input to the conversation service
 	try {
@@ -34,6 +31,10 @@ async function reply(input, stored_log) {
 
             //then push to db
 			await context.pushContext(request.id, conversation)
+
+            if(request.context && request.context.pause_watson === true){
+                return
+            }
 
 
             let message = {}
