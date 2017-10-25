@@ -27,9 +27,11 @@ async function runContextTasks(conversation) {
         if (is3RdNode(conversation)) {
             emailService.notifyAdmin("Someone is talking to the bot. Remember to train on the input!")
         }
+        if(conversation.context.help_request){
+            emailService.notifyAdmin("Help is needed! Check the facebook page ASAP!")
+        }
+
         await SemanticParse(conversation.context);
-
-
 
 }
 

@@ -18,6 +18,9 @@ async function reply(input, stored_log) {
         request.access_token = access_token
         request.workspace = workspace
     }
+    if(request.context.pause_watson){
+	    return
+    }
 
 	//Send the input to the conversation service
 	try {
@@ -64,7 +67,7 @@ async function reply(input, stored_log) {
 		}
 
 	} catch (err) {
-		console.log("error in the facebook callback function " + err.stack)
+		console.log("error in the reply function " + err.stack)
 	}
 }
 
