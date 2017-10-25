@@ -102,13 +102,11 @@ module.exports = (app) => {
 		let interview_type = req.query['interview_type'];
 
 		let templateArray = {
-			"internalization" : "$user_name you say you are too _problem.object about _context.sentence. " +
-            "It usually happens when you are _trigger.object. This does affect your life, because it makes " +
-            "you do things you would not do otherwise. _influence.sentence. It affects " +
-            "people and relationships you care about. _influence_on_relationships_example.sentence. " +
-            "It makes your life difficult. _difficulties.sentence. " +
-            "But, there is a a fountain of hope! You see it. One day, you will wake up in the morning, and your life life will be " +
-            "different. _invitation_to_exception.sentence.",
+			"internalization" : "$user_name you say you are too _problem.sentence about _context.sentence. " +
+			"It usually happens when you are _trigger.sentence. This does affect your life, because it makes you " +
+			"do things you would not do otherwise. _influence.sentence. It affects people and relationships you care about." +
+			" _influence_on_relationships_example.sentence. It makes your life difficult. _difficulties.sentence. " +
+			"But, there is a hope! You see it. _invitation_to_exception.sentence. You are in the right place. I will help you!",
 
 			"externalization" : "$user_name, let's look back and see what kind of villain you are fighting with." +
             " His name is $problem_story. Something happened and it was possible for him to dominate your life. " +

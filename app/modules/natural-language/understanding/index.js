@@ -114,7 +114,32 @@ function parseTextV2(sentence){
             };
         }
     }
-    return null;
+    return {
+        usage:  {
+            text_units: 0,
+            text_characters: 0,
+            features: 1
+        },
+        semantic_roles: [
+            {
+                sentence: sentence,
+                subject: {
+                    text: ""
+                },
+                object: {
+                    text: ""
+                },
+                action: {
+                    text: "",
+                    normalized: "",
+                    verb: {
+                        text: "",
+                        tense: ""
+                    }
+                }
+            }
+        ]
+    };
 }
 
 function isActionPOS(word) {
