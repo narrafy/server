@@ -36,7 +36,6 @@ async function reply(input, stored_log) {
                 return
             }
 
-
             let message = {}
 
             //get a response from natural language generation
