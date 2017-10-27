@@ -82,7 +82,7 @@ h2,
 
 @media (max-width: 600px) {
     #textInput {
-        width: 200px;
+        width: 200px !important;
     }
     button.navbar-toggler {
         position: absolute;
