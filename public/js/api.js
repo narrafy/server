@@ -18,13 +18,18 @@ var Api = (function(){
             return requestPayload;
         },
         setRequestPayload: function(newPayloadStr){
-            requestPayload = JSON.parse(newPayloadStr);
+
+            var newPayloadArray = JSON.parse(newPayloadStr)
+            requestPayload = newPayloadArray;
+            console.log(requestPayload)
         },
         getResponsePayload: function(){
             return responsePayload;
         },
         setResponsePayload: function (newPayloadStr) {
-            responsePayload = JSON.parse(newPayloadStr);
+            var responsePayloadArray = JSON.parse(newPayloadStr);
+            responsePayload = responsePayloadArray;
+            console.log(responsePayload)
         }
     };
 
@@ -61,7 +66,7 @@ var Api = (function(){
 
         //stored in a variable (publicly visible through Api.getResponsPayload)
         //to be used throughout the application
-        if(Object.getOwnPropertyNames(payloadToWatson).length!==0){
+        if(Object.getOwnPropertyNames(payloadToWatson).length !== 0){
             Api.setRequestPayload(params);
         }
 

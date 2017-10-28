@@ -8,27 +8,32 @@ const logger = require('pino')()
  * it's usually to send an email or parse the context variable */
 async function runContextTasks(conversation) {
 
-        const conversation_id = conversation.context.conversation_id;
+        const conversation_id = conversation.context.conversation_id
         if (isEmailNode(conversation)) {
-            let email = getEmailFromContext(conversation);
-            let interview_type = conversation.context.interview_type;
+            let email = getEmailFromContext(conversation)
             if(email && isSendStoryNode(conversation))
             {
-                let userStory = await db.getStory({
-                    conversation_id: conversation_id,
-                    interview_type: interview_type })
-                if(userStory)
-                    emailService.sendStory(email, userStory.story)
+                let stories = await db.getStories({
+                    conversation_id: conversation_id })
+                if(stories.length > 0)
+                    emailService.story(email, stories)
             }
             let transcript = await db.getTranscript(conversation_id)
             if(transcript)
-                emailService.send(email, transcript)
+                emailService.transcript(email, transcript)
         }
+
+        if(shouldEnableBot(conversation))
+            conversation.bot_active = true
+
+        if(shouldPauseBot(conversation))
+            conversation.bot_active = false
+        
         if (is3RdNode(conversation)) {
-            emailService.notifyAdmin("Someone is talking to the bot. Remember to train on the input!")
+            emailService.admin("Someone is talking to the bot. Remember to train on the input!")
         }
         if(conversation.context.help_request){
-            emailService.notifyAdmin("Help is needed! Check the facebook page ASAP!")
+            emailService.admin("Help is needed! Check the facebook page ASAP!")
         }
         await SemanticParse(conversation.context);
 }
@@ -52,6 +57,19 @@ function isEmailNode(conversation) {
 		conversation.entities[0].entity === "email"
 }
 
+function shouldPauseBot(conversation) {
+    return conversation.intents &&
+        conversation.intents[0] &&
+        conversation.intents[0].intent === "pause_watson"
+}
+
+function shouldEnableBot(conversation) {
+    return conversation.intents &&
+        conversation.intents[0] &&
+        conversation.intents[0].intent === "enable_watson"
+}
+
+
 function isSendStoryNode(conversation) {
     return conversation.context && conversation.context.send_story;
 
@@ -64,9 +82,7 @@ function is3RdNode(conversation) {
 }
 
 async function SemanticParse(context) {
-
     if (context.interview_type) {
-
         var nodes_array = config.interviewNodes[context.interview_type]
         for (let i = 0; i < nodes_array.length; i++) {
             var context_var_name = nodes_array[i]

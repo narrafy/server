@@ -24,14 +24,6 @@ async function connect(uri) {
 }
 
 async function getContext(input) {
-	if (input.sender === config.chatBotId) {
-		//if it's an echo from the facebook page
-		// we catch the message when a counsellor takes over
-		log.info("page echo: " + input.sender + " says  " + input.text)
-		return null
-	} else {
-		//it's a text from a user
-		log.info("user: " + input.sender + " says  " + input.text)
 		return dbConnection
 			.collection(collection.log)
 			.find({id: input.sender})
@@ -39,7 +31,6 @@ async function getContext(input) {
 			.limit(1)
 			.toArray()
 			.then((stored_log) => ({input, stored_log}))
-	}
 }
 
 async function getContextVars(conversation_id){
@@ -77,11 +68,25 @@ async function getParsedContext(conversation_id, interview_type){
 }
 
 async function clearContext(data) {
+    const ids = await dbConnection
+        .collection(collection.log)
+        .find({id: data.sender})
+        .sort({date: -1})
+        .limit(data.limit)
+        .toArray()
+		//.map(function(doc) { return doc._id })
 
-	await dbConnection
-		.collection(collection.log)
-		.deleteMany({id: data.sender})
+	let idArray = []
+	if(ids && ids.length > 0)
+	{
+		ids.forEach(item => {
+			idArray.push(item._id)
+		})
 
+	}
+	 await dbConnection
+         .collection(collection.log)
+         .remove({_id: {$in: idArray}})
 	return getContext(data)
 }
 
@@ -156,13 +161,14 @@ async function saveStory(data) {
 
 async function getStory(story) {
 	return dbConnection.collection(collection.stories)
-		.findOne({conversation_id: story.conversation_id, interview_type: story.interview_type})
-		.then(() => story)
+		.find({conversation_id: story.conversation_id})
+        .sort({$natural: 1})
+        .toArray()
 }
 
 async function getCustomerConfig(customer_id){
     return dbConnection.collection(collection.customer)
-        .findOne({"customer_id": customer_id})
+        .findOne({customer_id : customer_id})
 }
 
 async function getCustomerConfigByToken(verifyToken){
@@ -182,7 +188,7 @@ module.exports = exports = {
 	pushContext: pushContext,
 	getSemanticParse: getParsedContext,
 	saveStory: saveStory,
-	getStory: getStory,
+	getStories: getStory,
 	getConfig: getCustomerConfig,
     getCustomerConfigByToken: getCustomerConfigByToken,
 

@@ -2,8 +2,9 @@ const config = require('../config')
 const SendGrid = require('sendgrid')(config.sendGrid.apiKey)
 const MailHelper = require('sendgrid').mail
 const log = require('../log')
+const body = require('./body')
 
-function sendEmail(mail) {
+function send(mail) {
 
 	const request = SendGrid.emptyRequest({
 		method: 'POST',
@@ -18,13 +19,13 @@ function sendEmail(mail) {
     });
 }
 
-function notifyAdmin(message) {
+function admin(message) {
 	const fromEmail = new MailHelper.Email(config.sendGrid.contactEmail)
 	const toEmail = new MailHelper.Email(config.sendGrid.adminEmail)
 	const subject = config.app.name
 	const content = new MailHelper.Content('text/plain', message)
 	const mail = new MailHelper.Mail(fromEmail, subject, toEmail, content)
-	return sendEmail(mail)
+	return send(mail)
 }
 
 
@@ -34,86 +35,57 @@ function contact(data) {
     const subject = "Message from " + data.name
     const content = new MailHelper.Content('text/plain', data.message)
     const mail = new MailHelper.Mail(fromEmail, subject, toEmail, content)
-    return sendEmail(mail)
+    return send(mail)
 }
 
-function sendTranscript(email, transcript) {
+function transcript(email, transcript) {
 	const fromEmail = new MailHelper.Email(email)
 	const toEmail = new MailHelper.Email(config.sendGrid.adminEmail)
 	const subject = "Exercise Transcript"
-	const emailBody = getTranscriptEmailBody(transcript)
+	const emailBody = body.transcript(transcript)
 	const content = new MailHelper.Content('text/html', emailBody)
 	const mail = new MailHelper.Mail(fromEmail, subject, toEmail, content)
-	return sendEmail(mail)
+	return send(mail)
 }
-function sendStory(email, story) {
+function story(email, story) {
     let fromEmail = new MailHelper.Email(config.sendGrid.adminEmail)
     let toEmail = new MailHelper.Email(email)
     let subject = "A story of hope from Narrafy"
-    let emailBody = getStoryEmail(story)
+    let emailBody = body.story(story)
     let content = new MailHelper.Content('text/html', emailBody)
     let mail = new MailHelper.Mail(fromEmail, subject, toEmail, content)
-	return sendEmail(mail)
+	return send(mail)
 }
 
-function notifySubscriber(email) {
+function subscriber(email) {
 	const fromEmail = new MailHelper.Email(config.sendGrid.adminEmail)
 	const toEmail = new MailHelper.Email(email)
 	const subject = "Narrafy got your email"
-	const emailBody = getSubscriberReplyEmailBody()
+	const emailBody = body.subscriberReply()
 	const content = new MailHelper.Content('text/html', emailBody)
 	const mail = new MailHelper.Mail(fromEmail, subject, toEmail, content)
-	return sendEmail(mail)
+	return send(mail)
 }
 
-function notifyUser(email) {
+function user(email) {
 	const fromEmail = new MailHelper.Email(config.sendGrid.adminEmail)
 	const toEmail = new MailHelper.Email(email)
 	const subject = "We've got your message!"
-	const emailBody = getUserReplyEmailBody()
+	const emailBody = body.userReply()
 	const content = new MailHelper.Content('text/html', emailBody)
 	const mail = new MailHelper.Mail(fromEmail, subject, toEmail, content)
-	return sendEmail(mail)
-}
-
-function getTranscriptEmailBody(transcript) {
-
-	const transcriptHtml = transcript.map(record => {
-		return i % 2 ? `<li>${record}</li>` : `<li><strong>${record}</strong></li>`
-	}).join('')
-
-	return `<html><body><ul>{transcriptHtml}</ul><body/></html>`
-}
-
-function getStoryEmail(story) {
-    return "<html><body>" + story +
-		"<hr/><p>Have a nice day! <a href='https://www.narrafy.io'>Narrafy Team</a></p>" +
-		"<body/></html>"
-}
-
-function getSubscriberReplyEmailBody() {
-	return "<html><body><p>" + "Hey! We received your email." +
-		" We will contact you when we have something important to share." +
-		" Otherwise, we don't bother innocent people!" + "</p>" +
-		"<p>Have a nice day! <a href='https://www.narrafy.io'>Narrafy Team</a></p></body></html>"
-}
-
-function getUserReplyEmailBody() {
-	return "<html><body><p>" + "Hi! We received your email." +
-		" We will contact as soon as possible. Thank you for your interest!" +
-		"</p>" +
-		"<p><a href='https://www.narrafy.io'>Narrafy</a> Team</p></body></html>"
+	return send(mail)
 }
 
 module.exports = {
 
-	notifyUser: notifyUser,
-	notifySubscriber: notifySubscriber,
-	send: sendTranscript,
-	sendStory: sendStory,
+	user: user,
+	subscriber: subscriber,
+	transcript: transcript,
+	story: story,
 
-	notifyAdmin(message) {
-		return notifyAdmin(message)
+	admin(message) {
+		return admin(message)
 	},
 	contact(data){
 		return contact(data)

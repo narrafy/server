@@ -6,7 +6,6 @@ const nlg = require('../natural-language/generation')
 const email = require('../email')
 const db = require('../db')
 
-//callback after the message was received by the backend
 async function reply(input, stored_log) {
 
 	//populate the request object to send to watson
@@ -32,44 +31,50 @@ async function reply(input, stored_log) {
             //then push to db
 			await context.pushContext(request.id, conversation)
 
-            let message = {}
-
-            //get a response from natural language generation
-            message.text = await nlg.message(conversation)
-
-            //augment facebook message
-            //add quick replies
-            let currentContext = conversation.context;
-            if(currentContext && currentContext.quick_replies) {
-                message.quick_replies = currentContext.quick_replies
+            //get a response from natural language generation service
+            let messageArray = await nlg.message(conversation)
+            for(let k =0 ; k < messageArray.length; k++)
+            {
+                await sendReplyToFacebook(request.id, conversation, messageArray[k])
             }
-            if(currentContext && currentContext.web_view) {
-                let reqData = {
-                    id: request.id,
-                    access_token: currentContext.access_token
-                };
-                await facebookApi.sendWebView(reqData, currentContext.web_view)
-                currentContext.web_view = ""
-            } else {
-                await facebookApi.sendMessage({
-                    id: request.id,
-                    message: message,
-                    access_token: currentContext.access_token
-                })
-            }
-
-			console.log("Watson replies with: " + message.text + " " + request.id)
-
 		}
-
 	} catch (err) {
 		console.log("error in the reply function " + err.stack)
 	}
 }
 
+async function sendReplyToFacebook(id, conversation, text) {
+
+    let message = {}
+
+    message.text = text
+    //augment facebook message
+    //add quick replies
+    let currentContext = conversation.context;
+
+    if(currentContext && currentContext.quick_replies) {
+        message.quick_replies = currentContext.quick_replies
+    }
+    if(currentContext && currentContext.web_view) {
+        let reqData = {
+            id: id,
+            access_token: currentContext.access_token
+        };
+        await facebookApi.sendWebView(reqData, currentContext.web_view)
+        currentContext.web_view = ""
+    } else {
+        await facebookApi.sendMessage({
+            id: id,
+            message: message,
+            access_token: currentContext.access_token
+        })
+    }
+    console.log("Watson replies with: " + message.text + " " + id)
+}
 
 async function updateMessage(id, conversation) {
     var responseText = null
+
     if (conversation.output) {
 
         //run context tasks first
@@ -79,10 +84,8 @@ async function updateMessage(id, conversation) {
         await context.pushContext(id, conversation)
 
         if (conversation.output.text && conversation.output.text[0]) {
-
-            conversation.output.text = await nlg.message(conversation)
-
-            return conversation
+            let messages = await nlg.message(conversation)
+            return  { conversation , messages }
         }
     } else {
         conversation.output = {}
@@ -101,20 +104,29 @@ async function updateMessage(id, conversation) {
 
     await context.pushContext(id, conversation)
 
-    conversation.output.text = await nlg.message(responseText)
+    let messages = await nlg.message(responseText)
 
-    return conversation
+    return { conversation, messages }
 }
 
-async function setContextConfig(customer_id)
-{
+async function setContextConfig(customer_id) {
     //refactor use projection to return only this two fields
     let customerConfig = await db.getConfig(customer_id)
     return { access_token: customerConfig.facebook.access_token, workspace: customerConfig.conversation.workspace}
 }
 
-async function messengerRequest(body, customer_id) {
+async function getContextAndReply(data){
+    const {input, stored_log} = await context.getContext(data)
+    //if the bot is disabled return
+    if(stored_log &&
+        stored_log.length > 0 &&
+        stored_log[0].bot_active === false ) return
+    await reply(input, stored_log)
+}
+
+async function messengerRequest(body) {
     var events = body.entry[0].messaging
+    let customer_id = body.enable[0]
     for (var i = 0; i < events.length; i++) {
         var event = events[i]
         let data = {
@@ -129,13 +141,9 @@ async function messengerRequest(body, customer_id) {
             switch (event.postback.payload) {
                 //user interacts with the page for the first time.
                 case 'optin': {
-
-                    const { input, stored_log } = await context.getContext(data)
-
-                    await reply(input, stored_log)
-
-                   }
-                   break
+                    await getContextAndReply(data)
+                }
+                    break
                 case 'CONTACT_REQUEST':{
                     let config = await db.getConfig(customer_id)
                     //reply to the user
@@ -155,7 +163,7 @@ async function messengerRequest(body, customer_id) {
                             text: "Check the facebook page!"
                         }
                     }
-                    email.notifyAdmin(admin_message.message.text)
+                    email.admin(admin_message.message.text)
 
                     await facebookApi.sendMessage(admin_message)
                 }
@@ -163,6 +171,7 @@ async function messengerRequest(body, customer_id) {
 
                 //clear context button was pressed
                 case 'CLEAR_CONTEXT': {
+                    data.limit = 1
 
                     const {input, stored_log} = await context.clearContext(data)
 
@@ -177,15 +186,14 @@ async function messengerRequest(body, customer_id) {
         //a conversation starts
         if (event.message) {
             if (event.message.text) {
-                    data.text = event.message.text
-                    const {input, stored_log} = await context.getContext(data)
-                    await reply(input, stored_log)
+                data.text = event.message.text
+                await getContextAndReply(data)
             }
         }
     }
 }
 
-async function webRequest(id, body, res) {
+async function webRequest(id, body) {
     var data = {};
     if (body) {
         if (body.input) {
@@ -203,15 +211,15 @@ async function webRequest(id, body, res) {
 
     //Send the input to the conversation service
     data = await watson.ask(data);
-    const response = await updateMessage(id, data)
-    return res.json(response)
+
+    return updateMessage(id, data)
 }
 
 module.exports = {
 
 	messengerRequest: messengerRequest,
 
-	async web(req, res) {
-		return webRequest(req.sessionID, req.body, res)
+	async web(req) {
+		return webRequest(req.sessionID, req.body)
 	},
 }

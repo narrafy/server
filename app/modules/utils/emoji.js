@@ -22,9 +22,9 @@ const emojiDictionary = {
 	emoji_sad: "😞",
 	emoji_ok: "👌",
 	emoji_hero: "😎",
-	emoji_villain: "👺"
-
-
+	emoji_villain: "👺",
+	emoji_train:"💪",
+	emoji_robot:"🤖"
 }
 
 function replaceEmojiKey(input) {

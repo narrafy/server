@@ -13,7 +13,8 @@ module.exports = (app) => {
 		let customerConfig = await db.getCustomerConfigByToken(customerVerifyToken);
 		if (customerConfig && (customerConfig.facebook.verify_token === customerVerifyToken)) {
 			res.send(req.query['hub.challenge'])
-            let data = {
+
+			let data = {
                 greeting: customerConfig.facebook.greeting_message,
                 cta: customerConfig.facebook.cta,
                 access_token: customerConfig.facebook.access_token
@@ -28,13 +29,23 @@ module.exports = (app) => {
 	})
 
 	app.post('/webhook', async function (req, res) {
-		let customer_id = req.query["customer_id"];
-		await Conversation.messengerRequest(req.body, customer_id)
+		await Conversation.messengerRequest(req.body)
 		res.sendStatus(200)
 	})
 
 	app.post('/api/message', async function (req, res) {
-		await Conversation.web(req, res)
+
+		const {conversation, messages} = await Conversation.web(req)
+
+		let messageArray = []
+
+		if(messages){
+            messages.forEach(item => {
+                messageArray.push(item)
+            })
+		}
+        conversation.output.text = messageArray.join(" ")
+        res.json(conversation)
 	})
 
 	app.post('/api/contact', async (req, res) => {
@@ -48,7 +59,7 @@ module.exports = (app) => {
         };
 		await db.addInquiry(data)
         mailService.contact(data)
-        mailService.notifyUser(data.email)
+        mailService.user(data.email)
 		res.sendStatus(200)
 	})
 
@@ -58,8 +69,8 @@ module.exports = (app) => {
             date: new Date(),
         };
 		await db.addSubscriber(data)
-        mailService.notifyAdmin("Congrats, another user just subscribed!")
-        mailService.notifySubscriber(data.email)
+        mailService.admin("Congrats, another user just subscribed!")
+        mailService.subscriber(data.email)
 		res.sendStatus(200)
 	})
 
@@ -90,12 +101,27 @@ module.exports = (app) => {
 		if (conversation_id !== null) {
 			const transcript = await db.getTranscript(conversation_id)
 			if(transcript)
-				mailService.send(email, transcript)
+				mailService.transcript(email, transcript)
 			res.sendStatus(200)
 		} else {
 			res.sendStatus(500)
 		}
 	})
+
+    app.get('/api/story/send', async (req, res) => {
+        let conversation_id = req.query['conversation_id']
+        let email = "iondronic@gmail.com"
+        if (conversation_id !== null) {
+            let stories = await db.getStories({
+                conversation_id: conversation_id })
+            if(stories.length > 0) {
+            	mailService.story(email, stories)
+                res.sendStatus(200)
+			}
+        } else {
+            res.sendStatus(500)
+        }
+    })
 
 	app.get('/api/story/get', async (req, res) => {
 		let conversation_id = req.query['conversation_id'];

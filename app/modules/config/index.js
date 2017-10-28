@@ -38,6 +38,11 @@ module.exports = exports = {
 	sslSecret : process.env.SSL_SECRET,
 	chatBotId: process.env.CHATBOT_ID,
 
+	interviewTypes: {
+        internalization : "internalization",
+		externalization: "externalization"
+	},
+
 	interviewNodes : {
 
         "internalization" : [
@@ -58,7 +63,7 @@ module.exports = exports = {
             "jeopardize_judgement",
             "effect_on_relationships",
             "cause_difficulties",
-            "blind_resources",
+            "blind_skills",
             "unique_outcome",
             "invite_action"
         ]
