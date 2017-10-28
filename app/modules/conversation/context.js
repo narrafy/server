@@ -30,9 +30,7 @@ async function runContextTasks(conversation) {
         if(conversation.context.help_request){
             emailService.notifyAdmin("Help is needed! Check the facebook page ASAP!")
         }
-
         await SemanticParse(conversation.context);
-
 }
 
 function getEmailFromContext(conversation){

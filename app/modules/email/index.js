@@ -16,10 +16,6 @@ function sendEmail(mail) {
             return console.log(error);
         console.log(response.statusCode);
     });
-
-
-    // const [response, body] = await SendGrid.API(request)
-	// console.info(response.statusCode)
 }
 
 function notifyAdmin(message) {
@@ -53,7 +49,7 @@ function sendTranscript(email, transcript) {
 function sendStory(email, story) {
     let fromEmail = new MailHelper.Email(config.sendGrid.adminEmail)
     let toEmail = new MailHelper.Email(email)
-    let subject = "A story of hope from Alice"
+    let subject = "A story of hope from Narrafy"
     let emailBody = getStoryEmail(story)
     let content = new MailHelper.Content('text/html', emailBody)
     let mail = new MailHelper.Mail(fromEmail, subject, toEmail, content)

@@ -32,10 +32,6 @@ async function reply(input, stored_log) {
             //then push to db
 			await context.pushContext(request.id, conversation)
 
-            if(request.context && request.context.pause_watson === true){
-                return
-            }
-
             let message = {}
 
             //get a response from natural language generation
@@ -100,7 +96,6 @@ async function updateMessage(id, conversation) {
             responseText = "I didn't get that. Sometimes only a human can help. Do you want to talk to one?"
         }
     }
-
 
     await context.runContextTasks(conversation)
 
