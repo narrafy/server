@@ -99,6 +99,13 @@ h2,
         position: absolute;
         left: 16rem;
     }
+
+    .slider-chat {
+        padding: 100px 20px 30px 35px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
 }
 
 .btn-secondary:hover {
