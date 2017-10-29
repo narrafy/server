@@ -23,7 +23,7 @@ async function sendWebView(data, webView) {
 
 async function sendMessage(data) {
 
-	//if (data.id === chatBotId) return
+	if (data.id === chatBotId) return
 
 	await typingOff(data)
 
@@ -95,7 +95,7 @@ function createWebView(data) {
 
 async function startTyping(data) {
 
-	//if (data.id === chatBotId) return
+	if (data.id === chatBotId) return
 
 	try {
 		await Request({
@@ -116,7 +116,7 @@ async function startTyping(data) {
 
 async function typingOff(data) {
 
-	//if (data.id === chatBotId) return
+	if (data.id === chatBotId) return
 
 	try {
 
