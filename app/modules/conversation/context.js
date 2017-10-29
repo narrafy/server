@@ -18,9 +18,6 @@ async function runContextTasks(conversation) {
                 if(stories.length > 0)
                     emailService.story(email, stories)
             }
-            let transcript = await db.getTranscript(conversation_id)
-            if(transcript)
-                emailService.transcript(email, transcript)
         }
 
         if(shouldEnableBot(conversation))

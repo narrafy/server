@@ -50,7 +50,8 @@ async function sendReplyToFacebook(id, conversation, text) {
     message.text = text
     //augment facebook message
     //add quick replies
-    let currentContext = conversation.context;
+    let currentContext = conversation.context
+    currentContext.fb_user = true
 
     if(currentContext && currentContext.quick_replies) {
         message.quick_replies = currentContext.quick_replies
@@ -124,15 +125,14 @@ async function getContextAndReply(data){
     await reply(input, stored_log)
 }
 
-async function messengerRequest(body, customer_id) {
+async function messengerRequest(body) {
     var events = body.entry[0].messaging
-    let customer_id = customer_id //body.entry[0].id
     for (var i = 0; i < events.length; i++) {
         var event = events[i]
         let data = {
             sender: event.sender.id,
             text: "",
-            customer_id: customer_id
+            customer_id: event.sender.id
         }
 
         //user interacts with the page for the first time
@@ -145,7 +145,7 @@ async function messengerRequest(body, customer_id) {
                 }
                     break
                 case 'CONTACT_REQUEST':{
-                    let config = await db.getConfig(customer_id)
+                    let config = await db.getConfig(data.customer_id)
                     //reply to the user
                     let user_message = {
                         id: data.sender,

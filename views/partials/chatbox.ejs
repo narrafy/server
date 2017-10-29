@@ -1,59 +1,26 @@
-<section id="chatbot" class="section slider-chat">
-    <div class="container">
-        <div class="row">
-            <!-- Feature Mockup
+<section id="chatbot">
+    <div class="chat-container">
 
-            <div class="col-lg-6 ml-auto justify-content-center">
-
-                <div class="image-content">
-                    <img class="img-fluid" src="img/chat2.png" alt="iphone">
-                </div>
-            </div>-->
-
-
-            <div class="col-md-8 text-center justify-content-center">
-              <!--  <h2 class="title">Try it</h2> -->
-                <div class="col-md-10">
-                    <div id="scrollingChat">
-                        <div class="segments load">
-                            <div class="from-watson top">
-                                <div class="message-inner">
-                                    <div id="scrollingChat"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="segments load">
-                            <div class="from-watson latest top">
-                                <div class="message-inner">
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-
-                <div class="inputgroup">
-                    <label for="textInput" class="inputOutline">
-                        <input id="textInput" class="input responsive-column"
-                               placeholder="Type something"
-                               onkeydown="ConversationPanel.inputKeyDown(event, this)">
-                    </label>
-                    <input type="submit" onclick="ConversationPanel.sendMessage('textInput')"
-                           value="enter" name="enter" id="enter"
-                            class="btn btn-secondary">
-                </div>
-
-                <div style="display: none" id="payload-column" class="fixed-column content-column">
-                    <div id="payload-initial-message">
-                        Type something to see the output
-                    </div>
-                    <div id="payload-request" class="payload"></div>
-                    <div id="payload-response" class="payload"></div>
-                </div>
-            </div>
+        <div id="scrollingChat">
         </div>
+
+        <div class="inputgroup chat-input">
+
+                <input id="textInput"
+                       placeholder="Type something"
+                       onkeydown="ConversationPanel.inputKeyDown(event, this)">
+            <input type="submit" onclick="ConversationPanel.sendMessage('textInput')"
+                   value="enter" name="enter" id="enter">
+        </div>
+
+        <div style="display: none" id="payload-column" class="fixed-column content-column">
+            <div id="payload-initial-message">
+                Type something to see the output
+            </div>
+            <div id="payload-request" class="payload"></div>
+            <div id="payload-response" class="payload"></div>
+        </div>
+
     </div>
 </section>
 

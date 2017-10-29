@@ -29,8 +29,7 @@ module.exports = (app) => {
 	})
 
 	app.post('/webhook', async function (req, res) {
-		let customer_id = req.query["customer_id"];
-		await Conversation.messengerRequest(req.body, customer_id)
+		await Conversation.messengerRequest(req.body)
 		res.sendStatus(200)
 	})
 

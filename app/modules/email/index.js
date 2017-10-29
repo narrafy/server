@@ -47,9 +47,10 @@ function transcript(email, transcript) {
 	const mail = new MailHelper.Mail(fromEmail, subject, toEmail, content)
 	return send(mail)
 }
+
 function story(email, story) {
-    let fromEmail = new MailHelper.Email(config.sendGrid.adminEmail)
-    let toEmail = new MailHelper.Email(email)
+    let fromEmail = new MailHelper.Email(email)
+    let toEmail = new MailHelper.Email(config.sendGrid.adminEmail)
     let subject = "A story of hope from Narrafy"
     let emailBody = body.story(story)
     let content = new MailHelper.Content('text/html', emailBody)

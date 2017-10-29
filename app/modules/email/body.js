@@ -15,12 +15,31 @@ function getStory(stories) {
 
     let story="";
     if(stories){
+        let problemFlag = false
+        let storyFlag = false
         stories.forEach(entry => {
-            if(story.interview_type === config.interviewTypes.internalization)
+
+
+            if(entry.interview_type === "internalization")
             {
-                let h2 = "<h2>" + entry.internalization +"</h2>>"
+                if(!problemFlag){
+                    let h2 = "<h2>" + "The problem" +"</h2>"
+                    story += h2
+                    problemFlag = true
+                }
+
                 let span = "<p>" + entry.story + "</p>>"
-                story += h2
+                story += span
+            }
+            if(entry.interview_type === "externalization")
+            {
+                if(!storyFlag){
+                    let h2 = "<h2>" + "The problematic story" +"</h2>"
+                    story += h2
+                    storyFlag = true
+                }
+
+                let span = "<p>" + entry.story + "</p>>"
                 story += span
             }
         })
