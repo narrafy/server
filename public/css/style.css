@@ -23,9 +23,6 @@
     position: relative;
     overflow: hidden;
 }
-.inputgroup{
-    padding-top: 20px;
-}
 
 .slider:before {
     content: '';
@@ -87,14 +84,8 @@ h2,
     line-height: 1.8rem;
 }
 
-#textInput {
-    width: 400px !important;
-}
-
 @media (max-width: 600px) {
-    #textInput {
-        width: 200px !important;
-    }
+    
     button.navbar-toggler {
         position: absolute;
         left: 16rem;

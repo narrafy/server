@@ -1,0 +1,175 @@
+.chat-container {
+    padding-top: 50px;
+    margin: 0 auto;
+    max-width: 768px;
+}
+
+#scrollingChat,
+.chat-input {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+#scrollingChat {
+  background-color: #fff;
+  max-height: 500px;
+  min-height: 300px;
+  overflow-y: auto;
+  padding: 2rem;
+}
+
+#scrollingChat .message-inner {
+  box-shadow: 1px 6px 20px 2px rgba(0, 0, 0, .2);
+  border-radius: 1rem;
+  clear: both;
+  display: block;
+  font-family: 'Roboto', Helvetica, sans-serif;
+  font-weight: 300;
+  margin: 0 auto 1.25rem;
+  max-width: 60%;
+  padding: 1.5rem 1.5rem;
+}
+
+#scrollingChat .from-watson .message-inner {
+  background-color: #f7f7f7;
+  border-top-left-radius: .2rem;
+  float: left;
+}
+
+#scrollingChat .from-user .message-inner {
+  background-color: #ef6263;
+  border-top-right-radius: .2rem;
+  box-shadow: 1px 6px 20px 2px rgba(242,129,130, .8);
+  color: #f9f9f9;
+  float: right;
+}
+
+#scrollingChat .message-inner p {
+  margin: 0;
+  padding: 0;
+}
+
+#scrollingChat .message-inner p::before {
+  border: none;
+}
+
+#scrollingChat .message-inner p + .choice {
+  display: flex;
+  margin-top: 1.5rem;
+}
+
+#scrollingChat .message-inner .choice .btn.quick-reply {
+  background-color: transparent;
+  border: 1px solid #ef6263;
+  border-radius: .65rem;
+  color: #ef6263;
+  cursor: pointer;
+  padding: .75rem 2rem;
+  transition: .3s ease all;
+  width: 50%;
+}
+
+#scrollingChat .message-inner .choice .btn.quick-reply:hover,
+#scrollingChat .message-inner .choice .btn.quick-reply:focus {
+  background-color: #ef6263;
+  color: #f9f9f9;
+}
+
+#scrollingChat .message-inner .choice .btn.quick-reply + .btn.quick-reply {
+  margin-left: 1rem;
+}
+
+.chat-input {
+  display: flex;
+}
+
+.chat-input input[type=text] {
+  border: none;
+  flex-grow: 1;
+  font-family: 'Roboto', Helvetica, sans-serif;
+  font-weight: 300;
+  outline: none;
+  padding: 0;
+}
+
+.chat-input input[type=submit] {
+  background-color: #ef6263;
+  border: none;
+  border-radius: .5rem;
+  color: #f9f9f9;
+  cursor: pointer;
+  padding: .75rem 2rem;
+}
+
+/*
+ * Loading animation
+ */
+span[class^='dot_'] {
+  background-color: #f9f9f9;
+  border-radius: 100%;
+  display: inline-block;
+  height: 6px;
+  opacity: 0;
+  width: 6px;
+}
+
+span[class^='dot_'] + span[class^='dot_'] {
+  margin-left: .35rem;
+}
+
+.dot_one {
+  animation: dot_one .5s infinite linear;
+}
+
+.dot_two {
+  animation: dot_two .5s infinite linear;
+}
+
+.dot_three {
+  animation: dot_three .5s infinite linear;
+}
+
+@keyframes dot_one {
+ 0% {
+   opacity: 0;
+ }
+ 15% {
+   opacity: 0;
+ }
+ 25% {
+   opacity: 1;
+ }
+ 100% {
+   opacity: 1;
+ }
+}
+
+@keyframes dot_two {
+ 0% {
+   opacity: 0;
+ }
+ 40% {
+   opacity: 0;
+ }
+ 50% {
+   opacity: 1;
+ }
+ 100% {
+   opacity: 1;
+ }
+}
+
+@keyframes dot_three {
+ 0% {
+   opacity: 0;
+ }
+ 65% {
+   opacity: 0;
+ }
+ 75% {
+   opacity: 1;
+ }
+ 100% {
+   opacity: 1;
+ }
+}
