@@ -68,7 +68,7 @@ function subscriber(email) {
 }
 
 function user(email) {
-	const fromEmail = new MailHelper.Email(config.sendGrid.adminEmail)
+	const fromEmail = new MailHelper.Email(config.sendGrid.contactEmail)
 	const toEmail = new MailHelper.Email(email)
 	const subject = "We've got your message!"
 	const emailBody = body.userReply()

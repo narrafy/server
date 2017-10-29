@@ -5,6 +5,7 @@ var ContactInput = (function(){
         selectors: {
             emailBox: '#email-box',
             messageBox: '#contact-box',
+            nameBox: '#name-box',
             contactForm: '#contact-form',
             notification: '#email-notification',
             subscribeForm: '#subscribe-div',
@@ -195,12 +196,14 @@ var ContactInput = (function(){
         // Submit on enter key, dis-allowing blank messages
         var emailBox = document.querySelector(settings.selectors.emailBox);
         if(emailBox.value ){
-            if(! validateEmail(emailBox.value)){
+            if(!validateEmail(emailBox.value)){
                 return;
             }
             var messageBox = document.querySelector(settings.selectors.messageBox);
+
+            var nameBox = document.querySelector(settings.selectors.nameBox);
             // Send the user message
-            Api.sendContactRequest(emailBox.value, messageBox.value);
+            Api.sendContactRequest(emailBox.value, messageBox.value, nameBox.value);
 
             // Clear input box for further messages
             emailBox.value = '';

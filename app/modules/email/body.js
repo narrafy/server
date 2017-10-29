@@ -44,7 +44,7 @@ function getUserReply() {
     return "<html><body><p>" + "Hi! We received your email." +
         " We will contact as soon as possible. Thank you for your interest!" +
         "</p>" +
-        "<p><a href='https://www.narrafy.io'>Narrafy</a> Team</p></body></html>"
+        "<p><a href='https://www.narrafy.io'>Narrafy Team</a> </p></body></html>"
 }
 
 module.exports = {

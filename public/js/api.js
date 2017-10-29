@@ -75,13 +75,14 @@ var Api = (function(){
     }
 
     //send a message request to the server
-    function sendContactRequest(email, message){
+    function sendContactRequest(email, message, name){
         //Build request payload
         var contactForm = {};
         if(email){
             contactForm = {
                 email: email,
-                message: message
+                message: message,
+                name: name
             };
         }
         //Build the http request
