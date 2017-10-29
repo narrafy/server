@@ -9,20 +9,20 @@ const fb = require('../facebook-api')
 module.exports = (app) => {
 
 	app.get('/webhook', async function (req, res) {
+
 		let customerVerifyToken =  req.query['hub.verify_token'];
 		let customerConfig = await db.getCustomerConfigByToken(customerVerifyToken);
 		if (customerConfig && (customerConfig.facebook.verify_token === customerVerifyToken)) {
-			res.send(req.query['hub.challenge'])
-
-			let data = {
-                greeting: customerConfig.facebook.greeting_message,
-                cta: customerConfig.facebook.cta,
-                access_token: customerConfig.facebook.access_token
-            };
 
             /* Configure Facebook */
 
-            fb.init(data).catch(log.error)
+            fb.init({
+                greeting: customerConfig.facebook.greeting_message,
+                cta: customerConfig.facebook.cta,
+                access_token: customerConfig.facebook.access_token
+            }).catch(log.error)
+
+			res.send(req.query['hub.challenge'])
 		} else {
 			res.send('Invalid verify token!')
 		}

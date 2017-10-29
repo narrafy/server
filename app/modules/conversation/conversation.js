@@ -126,7 +126,7 @@ async function getContextAndReply(data){
 
 async function messengerRequest(body) {
     var events = body.entry[0].messaging
-    let customer_id = body.enable[0]
+    let customer_id = body.entry[0].id
     for (var i = 0; i < events.length; i++) {
         var event = events[i]
         let data = {

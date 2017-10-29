@@ -274,6 +274,7 @@ var ConversationPanel = (function(){
         if (latestResponse) {
             context = latestResponse.context;
         }
+        Common.deleteDomElements('.quick-reply');
         // Send the user message
         Api.sendRequest(value, context);
     }
