@@ -209,7 +209,7 @@ var ContactInput = (function(){
             var contactForm = document.querySelector(settings.selectors.contactForm);
             contactForm.className = 'hide';
             var notification = document.querySelector(settings.selectors.notification);
-            notification.className = 'slider';
+            notification.className = '';
         }
     }
 

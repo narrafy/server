@@ -15,13 +15,13 @@ module.exports = (app) => {
 		if (customerConfig && (customerConfig.facebook.verify_token === customerVerifyToken)) {
             res.send(req.query['hub.challenge'])
 
-            /* Configure Facebook */
+            /* Configure Facebook
 
             fb.init({
                 greeting: customerConfig.facebook.greeting_message,
                 cta: customerConfig.facebook.cta,
                 access_token: customerConfig.facebook.access_token
-            }).catch(log.error)
+            }).catch(log.error)*/
 
 		} else {
 			res.send('Invalid verify token!')
