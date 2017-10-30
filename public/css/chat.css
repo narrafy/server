@@ -35,6 +35,11 @@
     float: left;
 }
 
+#scrollingChat .from-watson.latest .message-inner {
+    color: #331210;
+}
+
+
 #scrollingChat .from-user .message-inner {
     background-color: #ef6263;
     border-top-right-radius: .2rem;
@@ -104,7 +109,7 @@
  * Loading animation
  */
 span[class^='dot_'] {
-    background-color: #f9f9f9;
+    background-color: #555;
     border-radius: 100%;
     display: inline-block;
     height: 6px;
@@ -117,15 +122,15 @@ span[class^='dot_'] + span[class^='dot_'] {
 }
 
 .dot_one {
-    animation: dot_one .5s infinite linear;
+    animation: dot_one .6s infinite linear;
 }
 
 .dot_two {
-    animation: dot_two .5s infinite linear;
+    animation: dot_two .6s infinite linear;
 }
 
 .dot_three {
-    animation: dot_three .5s infinite linear;
+    animation: dot_three .6s infinite linear;
 }
 
 @keyframes dot_one {

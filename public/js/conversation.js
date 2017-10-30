@@ -36,11 +36,13 @@ var ConversationPanel = (function(){
         Api.setRequestPayload = function (newPayloadStr){
           currentRequestPayloadSetter.call(Api, newPayloadStr);
             displayMessage(JSON.parse(newPayloadStr), settings.authorTypes.user);
+            scrollBottomChat()
         };
         var currentResponsePayloadSetter = Api.setResponsePayload;
         Api.setResponsePayload = function (newPayloadStr) {
             currentResponsePayloadSetter.call(Api, newPayloadStr);
             displayMessage(JSON.parse(newPayloadStr), settings.authorTypes.watson);
+            scrollBottomChat()
         };
     };
 
@@ -114,6 +116,7 @@ var ConversationPanel = (function(){
             // Create new message DOM element
             var messageDivs = buildMessageDomElements(newPayload, isUser);
             scrollToChatBottom();
+            scrollBottomChat()
 
             var chatBoxElement = document.querySelector(settings.selectors.chatBox);
             var previousLatest = chatBoxElement.querySelectorAll((isUser
@@ -278,6 +281,7 @@ var ConversationPanel = (function(){
         }
         Common.deleteDomElements('.quick-reply');
         scrollToChatBottom()
+        scrollBottomChat()
         // Send the user message
         Api.sendRequest(value, context);
     }
@@ -287,12 +291,35 @@ var ConversationPanel = (function(){
         // Submit on enter key, dis-allowing blank messages
         if (event.keyCode === 13) {
            fireChatEvent(inputBox);
+           loadingAnimation()
         }
     }
+
+    function scrollBottomChat() {
+        var chatDiv = document.getElementById("scrollingChat");
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+    };
+
+     function loadingAnimation() {
+        var animationDots = '<div class="segments load loading-animation"><div class="from-watson top typing"><div class="message-inner"><span class="dot_one"></span><span class="dot_two"></span><span class="dot_three"></span></div></div></div>';
+
+        // Add the loading animation
+        if (document.querySelector(".loading-animation") == null) {
+            document.getElementById("scrollingChat").insertAdjacentHTML('afterend', animationDots);
+
+            // Run the animation for 1 second and remove it
+            setTimeout(function(){
+                document.querySelector(".loading-animation").parentNode.removeChild(document.querySelector(".loading-animation"));
+            }, 1000);
+        }
+
+        scrollBottomChat();
+    };
 
     function sendMessage(inputBoxId)
     {
         var inputBox = document.getElementById(inputBoxId);
         fireChatEvent(inputBox);
+        loadingAnimation()
     }
 }());
