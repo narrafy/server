@@ -24,6 +24,27 @@
     </div>
 </section>
 
+<script src="js/jquery.min.js"></script>
+<script>
+    var scrollBottomChat = function() {
+        $('#scrollingChat').scrollTop($('#scrollingChat')[0].scrollHeight);
+    };
+
+    var loadingAnimation = function() {
+        var animationDots = '<div class="segments load loading-animation"><div class="from-user top typing"><div class="message-inner"><span class="dot_one"></span><span class="dot_two"></span><span class="dot_three"></span></div></div></div>';
+
+        // Add the loading animation
+        if ($(".loading-animation").length == 0)
+            $("#scrollingChat").append(animationDots).delay(1000);
+
+        scrollBottomChat();
+
+        // Run the animation for 1 second and remove it
+        setTimeout(function(){
+            $(".loading-animation").remove();
+        }, 1000);
+    };
+</script>
 
 
 

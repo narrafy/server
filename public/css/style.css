@@ -85,7 +85,7 @@ h2,
 }
 
 @media (max-width: 600px) {
-    
+
     button.navbar-toggler {
         position: absolute;
         left: 16rem;

@@ -28,7 +28,7 @@ function getStory(stories) {
                     problemFlag = true
                 }
 
-                let span = "<p>" + entry.story + "</p>>"
+                let span = "<p>" + entry.story + "</p>"
                 story += span
             }
             if(entry.interview_type === "externalization")
@@ -39,7 +39,7 @@ function getStory(stories) {
                     storyFlag = true
                 }
 
-                let span = "<p>" + entry.story + "</p>>"
+                let span = "<p>" + entry.story + "</p>"
                 story += span
             }
         })

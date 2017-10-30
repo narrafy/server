@@ -79,27 +79,24 @@ function is3RdNode(conversation) {
 }
 
 async function SemanticParse(context) {
-    if (context.interview_type) {
-        var nodes_array = config.interviewNodes[context.interview_type]
-        for (let i = 0; i < nodes_array.length; i++) {
-            var context_var_name = nodes_array[i]
-            if (context && context.hasOwnProperty(context_var_name)) {
-                //found the context variable to send to semantic parser
-                var context_var = context[context_var_name]
-                if (context_var && context_var.parsed === false) {
-
-                    try {
-                        await nlu.semanticParse({
-                            item: context_var,
-                            label: context_var_name,
-                            interview_type: context.interview_type,
-                            conversation_id: context.conversation_id
-                        });
-                    } catch(e){
-                        logger.error(e)
-                    }
-                	context_var.parsed = true;
+    var nodes_array = config.interviewNodes
+    for (let i = 0; i < nodes_array.length; i++) {
+        var context_var_name = nodes_array[i]
+        if (context && context.hasOwnProperty(context_var_name)) {
+            //found the context variable to send to semantic parser
+            var context_var = context[context_var_name]
+            if (context_var && context_var.parsed === false) {
+                try {
+                    await nlu.semanticParse({
+                        item: context_var,
+                        label: context_var_name,
+                        interview_type: context.interview_type,
+                        conversation_id: context.conversation_id
+                    });
+                } catch(e){
+                    logger.error(e)
                 }
+                context_var.parsed = true
             }
         }
     }

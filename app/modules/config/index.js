@@ -43,9 +43,7 @@ module.exports = exports = {
 		externalization: "externalization"
 	},
 
-	interviewNodes : {
-
-        "internalization" : [
+	interviewNodes : [
             "problem",
             "context",
             "trigger",
@@ -54,8 +52,6 @@ module.exports = exports = {
             "influence_on_relationships_example",
             "difficulties",
             "invitation_to_exception",
-        ],
-        "externalization": [
             "problem_story",
             "vulnerable_to",
             "story_context",
@@ -67,7 +63,7 @@ module.exports = exports = {
             "unique_outcome",
             "invite_action"
         ]
-    },
+    ,
 
 	pos: {
 		"CC": {

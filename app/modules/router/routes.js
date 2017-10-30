@@ -124,8 +124,8 @@ module.exports = (app) => {
     })
 
 	app.get('/api/story/get', async (req, res) => {
-		let conversation_id = req.query['conversation_id'];
-		let interview_type = req.query['interview_type'];
+		let conversation_id = "f1d1ca41-277a-4097-8844-592569cfa2c7" // req.query['conversation_id'];
+		let interview_type = "externalization" // req.query['interview_type'];
 
 		let templateArray = {
 			"internalization" : "$user_name you say you are too _problem.sentence about _context.sentence. " +
@@ -134,14 +134,13 @@ module.exports = (app) => {
 			" _influence_on_relationships_example.sentence. It makes your life difficult. _difficulties.sentence. " +
 			"But, there is a hope! You see it. _invitation_to_exception.sentence. You are in the right place. I will help you!",
 
-			"externalization" : "$user_name, let's look back and see what kind of villain you are fighting with." +
-            " His name is $problem_story. Something happened and it was possible for him to dominate your life. " +
-            "You it's: $vulnerable_to_external_problem. The villain appears in specific contexts. " +
-            "In your case is when $story_context. It is a bad guy. It even managed to get you to do things " +
-            "against your better judgement - $jeopardize_judgement. $external_problem takes over when $takeover. " +
-            "It has an effect on your relationships. You say it $problem_effect_on_relationships. " +
-            "And it makes your life hard: \\\"$external_problem_cause_difficulties\\\". " +
-            "But you managed to fight back - $unique_outcome. Several times! And you are prepared to take a position against it."
+			"externalization" : "Once upon a time, there was a hero - $user_name emoji_hero. He was doing just fine in his own kingdom. " +
+			"However, one day, $user_name got challenged by a villain - $problem_story.text. It was \\\"$vulnerable_to.sentence\\\" that made " +
+			"him vulnerable to $problem_story.text. It usually shows up when $story_context.sentence. The villain is smart. It takes over by using " +
+			"tricks like: $takeover.sentence. It even managed $user_name do things against his better judgement! For ex: $jeopardize_judgement.sentence. " +
+			"It has an effect on $user_name's relationships. For ex: $effect_on_relationships.sentence And it makes your hero’s life" +
+			" challenging:$cause_difficulties.sentence. But the hero has his own way to fight back. For ex: $unique_outcome.sentence " +
+			"Several times! The hero is silently preparing a way to fight back and has a plan for the future: $invite_action.sentence"
 		}
 
 

@@ -31,14 +31,15 @@ async function generateStory(data) {
             };
         }
 
-        const nodes =  config.interviewNodes[data.interview_type]
+        const nodes =  config.interviewNodes
         nodes.forEach(key => {
             var sentence = mapArray[key];
-            if(sentence && data.template)
+            if(sentence) {
                 if(data.interview_type === config.interviewTypes.internalization)
                     return data.template = getNormalizedStory(sentence, key, data.template)
                 if(data.interview_type === config.interviewTypes.externalization)
                     return data.template = getNormalizedProblematicStory(sentence, key, data.template)
+            }
         });
         return data.template
     }

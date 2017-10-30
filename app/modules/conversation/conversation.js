@@ -16,6 +16,7 @@ async function reply(input, stored_log) {
         const { access_token, workspace } = await setContextConfig(input.customer_id)
         request.access_token = access_token
         request.workspace = workspace
+        request.fb_user = true
     }
 
 	//Send the input to the conversation service
@@ -45,13 +46,12 @@ async function reply(input, stored_log) {
 
 async function sendReplyToFacebook(id, conversation, text) {
 
-    let message = {}
-
-    message.text = text
+    let message = {
+        text: text
+    }
     //augment facebook message
     //add quick replies
     let currentContext = conversation.context
-    currentContext.fb_user = true
 
     if(currentContext && currentContext.quick_replies) {
         message.quick_replies = currentContext.quick_replies

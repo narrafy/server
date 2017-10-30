@@ -18,7 +18,8 @@ var ConversationPanel = (function(){
         init: init,
         inputKeyDown: inputKeyDown,
         sendMessage: sendMessage,
-        sendQuickReply: sendQuickReply
+        sendQuickReply: sendQuickReply,
+        scrollToChatBottom: scrollToChatBottom
     };
 
     //Initialize the module
@@ -112,6 +113,8 @@ var ConversationPanel = (function(){
         if (isUser !== null && textExists) {
             // Create new message DOM element
             var messageDivs = buildMessageDomElements(newPayload, isUser);
+            scrollToChatBottom();
+
             var chatBoxElement = document.querySelector(settings.selectors.chatBox);
             var previousLatest = chatBoxElement.querySelectorAll((isUser
                     ? settings.selectors.fromUser : settings.selectors.fromWatson)
@@ -129,7 +132,7 @@ var ConversationPanel = (function(){
                 currentDiv.classList.add('load');
             });
             // Move chat to the most recent messages when new messages are added
-            scrollToChatBottom();
+
         }
     }
 
@@ -233,7 +236,6 @@ var ConversationPanel = (function(){
             }
         });
 
-
         return messageArray;
     }
 
@@ -245,11 +247,11 @@ var ConversationPanel = (function(){
     function scrollToChatBottom() {
         var scrollingChat = document.querySelector('#scrollingChat');
 
-        // Scroll to the latest message sent by the user
-        var scrollEl = scrollingChat.querySelector(settings.selectors.fromUser
+        // Scroll to the latest message sent by watson
+        var scrollEl = scrollingChat.querySelector(settings.selectors.fromWatson
             + settings.selectors.latest);
         if (scrollEl) {
-            scrollingChat.scrollTop = scrollEl.offsetTop;
+            scrollingChat.scrollTop = scrollEl.offsetTop
         }
     }
 
@@ -275,6 +277,7 @@ var ConversationPanel = (function(){
             context = latestResponse.context;
         }
         Common.deleteDomElements('.quick-reply');
+        scrollToChatBottom()
         // Send the user message
         Api.sendRequest(value, context);
     }
