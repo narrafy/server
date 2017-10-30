@@ -8,8 +8,8 @@
 
                 <input id="textInput"
                        placeholder="Type something"
-                       onkeydown="ConversationPanel.inputKeyDown(event, this)">
-            <input type="submit" onclick="ConversationPanel.sendMessage('textInput')"
+                       onkeydown="ConversationPanel.inputKeyDown(event, this);">
+            <input type="submit" onclick="ConversationPanel.sendMessage('textInput');loadingAnimation();"
                    value="enter" name="enter" id="enter">
         </div>
 
@@ -31,7 +31,7 @@
     };
 
     var loadingAnimation = function() {
-        var animationDots = '<div class="segments load loading-animation"><div class="from-user top typing"><div class="message-inner"><span class="dot_one"></span><span class="dot_two"></span><span class="dot_three"></span></div></div></div>';
+        var animationDots = '<div class="segments load loading-animation"><div class="from-watson top typing"><div class="message-inner"><span class="dot_one"></span><span class="dot_two"></span><span class="dot_three"></span></div></div></div>';
 
         // Add the loading animation
         if ($(".loading-animation").length == 0)
