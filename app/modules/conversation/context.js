@@ -15,8 +15,14 @@ async function runContextTasks(conversation) {
             {
                 let stories = await db.getStories({
                     conversation_id: conversation_id })
-                if(stories.length > 0)
+                if(stories.length > 0){
                     emailService.story(email, stories)
+                    let data = {
+                        email: email,
+                        date: new Date(),
+                    };
+                    db.addSubscriber(data)
+                }
             }
         }
 
@@ -68,7 +74,8 @@ function shouldEnableBot(conversation) {
 
 
 function isSendStoryNode(conversation) {
-    return conversation.context && conversation.context.send_story;
+    return (conversation.context && conversation.context.send_story) ||
+        (conversation.context && conversation.context.user_email);
 
 }
 
