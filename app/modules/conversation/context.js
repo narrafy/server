@@ -38,7 +38,7 @@ async function runContextTasks(conversation) {
         if(conversation.context.help_request){
             emailService.admin("Help is needed! Check the facebook page ASAP!")
         }
-        await SemanticParse(conversation.context);
+        await SemanticParse(conversation);
 }
 
 function getEmailFromContext(conversation){
@@ -85,7 +85,8 @@ function is3RdNode(conversation) {
 		conversation.context.system.dialog_request_counter === 3
 }
 
-async function SemanticParse(context) {
+async function SemanticParse(conversation) {
+    let context = conversation.context
     var nodes_array = config.interviewNodes
     for (let i = 0; i < nodes_array.length; i++) {
         var context_var_name = nodes_array[i]
@@ -94,16 +95,21 @@ async function SemanticParse(context) {
             var context_var = context[context_var_name]
             if (context_var && context_var.parsed === false) {
                 try {
-                    await nlu.semanticParse({
+
+                    let params = {
                         item: context_var,
                         label: context_var_name,
                         interview_type: context.interview_type,
                         conversation_id: context.conversation_id
-                    });
+                    };
+
+                    await nlu.semanticParse(params);
+
                 } catch(e){
-                    logger.error(e)
+                    logger.error(e.stacktrace)
                 }
                 context_var.parsed = true
+
             }
         }
     }

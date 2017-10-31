@@ -12,26 +12,23 @@ const nluClient = new NluClient({
 	'url': config.nlu.url
 })
 
-
-
 async function parseContextItem(data) {
     let itemText = data.item.text;
-    let semantic_data = await parseText(itemText)
+    let semantic_data = parseText(itemText)
     data.semantic_data = semantic_data
     await db.saveSemantics(data)
     return semantic_data
 }
 
 
-function isOneWord(sentence) {
-    const tokenizedSentence = tokenizer.tokenize(sentence)
-    return tokenizedSentence.length === 1
-}
+function parseText(text) {
 
-async function parseText(text) {
-    if(isOneWord(text)){
-        return parseTextV2(text)
+    return pos(text)
+
+    /*if(isOneWord(text)){
+        return pos(text)
     }
+
     try{
         const parameters = {
             'features': {
@@ -39,81 +36,45 @@ async function parseText(text) {
             },
             'text': text
         }
-        return analyze(parameters)
+        let watsonData = await analyze(parameters)
+        if (watsonData)
+            return watsonData
+        return pos(text)
 
     }catch (e) {
-        return parseTextV2(text);
-    }
+        return pos(text);
+    }*/
 }
 
-function parseTextV2(sentence){
+//function to parse a sentence and assign a part
+//of speech to an item
+function pos(sentence){
 
     let words = new postag.Lexer().lex(sentence);
     let taggedWords = new postag.Tagger().tag(words);
-    let semantic_data= {};
+    let objects = [];
+    let actions = [];
+    let subjects = [];
     for (let i in taggedWords) {
         var taggedWord = taggedWords[i];
         var word = taggedWord[0];
         var tag = taggedWord[1];
+
+
         if(isActionPOS(tag))
         {
-            return semantic_data = {
-                usage:  {
-                    text_units: 0,
-                    text_characters: 0,
-                    features: 1
-                },
-                semantic_roles: [
-                    {
-                        sentence: sentence,
-                        subject: {
-                            text: ""
-                        },
-                        object: {
-                            text: ""
-                        },
-                        action: {
-                            text: word,
-                            normalized: "",
-                            verb: {
-                                text: word,
-                                tense: tag
-                            }
-                        }
-                    }
-                ]
-            };
+           actions.push(word)
         }
         if(isObjectPOS(tag))
         {
-            return semantic_data = {
-                usage:  {
-                    text_units: 0,
-                    text_characters: 0,
-                    features: 1
-                },
-                semantic_roles: [
-                    {
-                        sentence: sentence,
-                        subject: {
-                            text: ""
-                        },
-                        object: {
-                            text: word
-                        },
-                        action: {
-                            text: "",
-                            normalized: "",
-                            verb: {
-                                text: "",
-                                tense: ""
-                            }
-                        }
-                    }
-                ]
-            };
+            objects.push(word)
+        }
+        if(isSubjectPOS(tag))
+        {
+            subjects.push(word)
         }
     }
+
     return {
         usage:  {
             text_units: 0,
@@ -123,20 +84,9 @@ function parseTextV2(sentence){
         semantic_roles: [
             {
                 sentence: sentence,
-                subject: {
-                    text: ""
-                },
-                object: {
-                    text: ""
-                },
-                action: {
-                    text: "",
-                    normalized: "",
-                    verb: {
-                        text: "",
-                        tense: ""
-                    }
-                }
+                subject: subjects,
+                object: objects,
+                action: actions
             }
         ]
     };
@@ -158,6 +108,14 @@ function isObjectPOS(tag)
         tag === "JJS";
 }
 
+function isSubjectPOS(tag){
+    return tag === "NN" ||
+        tag === "NNP" ||
+        tag === "NNPS" ||
+        tag === "NNS";
+}
+
+
 async function analyze(parameters) {
     return new Promise((resolve, reject) => {
         nluClient.analyze(parameters, function (err, response) {
@@ -171,5 +129,6 @@ async function analyze(parameters) {
 }
 
 module.exports = exports = {
-	semanticParse: parseContextItem
+	semanticParse: parseContextItem,
+    pos:pos
 }

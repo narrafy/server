@@ -2,6 +2,7 @@ const db = require('../db')
 const log = require('../log')
 const Conversation = require('../conversation/conversation')
 const Nlg = require('../natural-language/generation')
+const Nlu = require('../natural-language/understanding')
 const mailService = require('../email')
 const config = require('../config')
 const fb = require('../facebook-api')
@@ -121,6 +122,12 @@ module.exports = (app) => {
         } else {
             res.sendStatus(500)
         }
+    })
+
+
+    app.get('/api/item/parse', async (req, res) => {
+        let parsedItem = Nlu.pos("i'm too lazy")
+        res.send(parsedItem[0])
     })
 
 	app.get('/api/story/get', async (req, res) => {

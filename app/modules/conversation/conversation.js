@@ -146,20 +146,13 @@ async function messengerRequest(body) {
                 //user interacts with the page for the first time.
                 case 'optin': {
                     await getContextAndReply(data)
-
                 }
                     break
                 case 'CONTACT_REQUEST':{
-                    let config = await db.getConfig(data.customer_id)
-                    //reply to the user
-                    let user_message = {
-                        id: data.sender,
-                        message: {
-                            text: "Human on the way. We will contact you as soon as possible!"
-                        },
-                        access_token: config.facebook.access_token
-                    }
-                    await facebookApi.sendMessage(user_message)
+
+                    data.text= "Narrafy go to sleep"
+
+                    await getContextAndReply(data)
 
                     //notify admin
                     let admin_message = {
@@ -168,15 +161,15 @@ async function messengerRequest(body) {
                             text: "Check the facebook page!"
                         }
                     }
-                    email.admin(admin_message.message.text)
 
                     await facebookApi.sendMessage(admin_message)
+                    email.admin(admin_message.message.text)
+
                 }
                     break
 
                 //clear context button was pressed
                 case 'CLEAR_CONTEXT': {
-                    data.limit = 1
 
                     const {input, stored_log} = await context.clearContext(data)
 

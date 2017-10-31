@@ -297,10 +297,13 @@ var ConversationPanel = (function(){
 
     function scrollBottomChat() {
         var chatDiv = document.getElementById("scrollingChat");
-        chatDiv.scrollTop = chatDiv.scrollHeight;
+        var messagesFromW = document.querySelectorAll(".from-watson .message-inner");
+        var latestMessageFromW = messagesFromW[messagesFromW.length - 1];
+        if(latestMessageFromW)
+            chatDiv.scrollTop = chatDiv.scrollHeight - latestMessageFromW.scrollHeight;
     };
 
-     function loadingAnimation() {
+    function loadingAnimation() {
         var animationDots = '<div class="segments load loading-animation"><div class="from-watson top typing"><div class="message-inner"><span class="dot_one"></span><span class="dot_two"></span><span class="dot_three"></span></div></div></div>';
 
         // Add the loading animation

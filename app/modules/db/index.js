@@ -61,32 +61,17 @@ async function pushContext(id, conversation) {
 		.insertOne(dbConversation)
 }
 
-async function getParsedContext(conversation_id, interview_type){
+async function getParsedContext(conversation_id){
 	return dbConnection.collection(collection.context_semantics)
-        .find({conversation_id: conversation_id, interview_type: interview_type})
+        .find({conversation_id: conversation_id})
         .sort({$natural: 1}).toArray()
 }
 
 async function clearContext(data) {
-    const ids = await dbConnection
-        .collection(collection.log)
-        .find({id: data.sender})
-        .sort({date: -1})
-        .limit(data.limit)
-        .toArray()
-		//.map(function(doc) { return doc._id })
+	await dbConnection
+		.collection(collection.log)
+		.deleteMany({id: data.sender})
 
-	let idArray = []
-	if(ids && ids.length > 0)
-	{
-		ids.forEach(item => {
-			idArray.push(item._id)
-		})
-
-	}
-	 await dbConnection
-         .collection(collection.log)
-         .remove({_id: {$in: idArray}})
 	return getContext(data)
 }
 
