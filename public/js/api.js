@@ -44,11 +44,11 @@ var Api = (function(){
         }
         if(context){
             context.quick_replies = '';
-            context.customer_id = "1434671989884760"
+            context.customer_id = "378327679207724"
             payloadToWatson.context = context;
         }else{
             payloadToWatson.context = {
-                customer_id : "1434671989884760"
+                customer_id : "378327679207724"
             }
         }
 

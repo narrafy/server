@@ -14,8 +14,10 @@ async function reply(input, stored_log) {
     if(!request.workspace)
     {
         const { access_token, workspace } = await setContextConfig(input.customer_id)
-        request.access_token = access_token
-        request.workspace = workspace
+        if(access_token)
+            request.access_token = access_token
+        if(workspace)
+            request.workspace = workspace
         request.fb_user = true
     }
 
@@ -113,7 +115,9 @@ async function updateMessage(id, conversation) {
 async function setContextConfig(customer_id) {
     //refactor use projection to return only this two fields
     let customerConfig = await db.getConfig(customer_id)
-    return { access_token: customerConfig.facebook.access_token, workspace: customerConfig.conversation.workspace}
+    if(customerConfig)
+        return { access_token: customerConfig.facebook.access_token, workspace: customerConfig.conversation.workspace}
+    return null
 }
 
 async function getContextAndReply(data){
@@ -132,7 +136,7 @@ async function messengerRequest(body) {
         let data = {
             sender: event.sender.id,
             text: "",
-            customer_id: event.sender.id
+            customer_id: event.recipient.id
         }
 
         //user interacts with the page for the first time
@@ -142,6 +146,7 @@ async function messengerRequest(body) {
                 //user interacts with the page for the first time.
                 case 'optin': {
                     await getContextAndReply(data)
+
                 }
                     break
                 case 'CONTACT_REQUEST':{
