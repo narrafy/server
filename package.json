@@ -2,8 +2,8 @@
   "name": "narrafy.io",
   "version": "1.0.0",
   "engines": {
-    "node": ">=8.0.0",
-    "npm": ">=5.0.0"
+    "node": "8.2.0",
+    "npm": "5.3.0"
   },
   "description": "narrafy - software for counseling",
   "main": "server.js",
