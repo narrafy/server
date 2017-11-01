@@ -134,7 +134,7 @@ module.exports = exports = {
 			def: "Predeterminer",
 			ex: "all, both"
 		},
-        "PP$": {
+        "PPS": {
 			def: "Possessive pronoun",
 			ex: " my,one's"
 		},

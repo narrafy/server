@@ -2,6 +2,7 @@ const natural = require('natural')
 const tokenizer = new natural.WordTokenizer()
 const nlp = require('compromise')
 const understanding = require('../understanding')
+const config = require('../../config')
 
 function getAction(sentence){
     let semanticRole = getSemanticRole(sentence)
@@ -106,13 +107,23 @@ function getSubject(sentence){
 }
 
 function getSemanticRole(sentence) {
-    if(sentence.semantic_data){
-        let partSpeech = sentence.semantic_data
-        if(partSpeech && partSpeech.semantic_roles && partSpeech.semantic_roles.length > 0){
-            return partSpeech.semantic_roles[0];
-        }
+    if(sentence.semantics){
+        return sentence.semantics;
     }
     return null
+}
+
+function parsedStory(mapArray, template)
+{
+    let story = "";
+    const nodes =  config.interviewNodes
+    nodes.forEach(key => {
+        var sentence = mapArray[key];
+        if(sentence) {
+            story = getNormalizedStory(sentence, key, template)
+        }
+    })
+    return story
 }
 
 function getNormalizedStory(sentence, key, template){
@@ -137,5 +148,5 @@ function getNormalizedStory(sentence, key, template){
 }
 
 module.exports = {
-    parsedStory: getNormalizedStory
+    parsedStory: parsedStory
 }

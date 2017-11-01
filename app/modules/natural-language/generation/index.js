@@ -1,4 +1,3 @@
-const config = require('../../config')
 const db = require('../../db')
 const emojiReplacer = require('../../utils/emoji')
 const log = require('../../log')
@@ -18,25 +17,21 @@ function mineResponse(data) {
 
 async function parseReply(data){
 
-    const contextArray = await db.getSemanticParse(data.conversation_id);
+    const contextArray = await db.getSemanticParse(data.conversation_id)
 
     if(contextArray){
-        let mapArray = {};
-        for(let i = 0; i < contextArray.length; i++){
-            mapArray[contextArray[i].label] = {
-                text: contextArray[i].item.text,
-                semantic_data: contextArray[i].semantic_data
-            };
-        }
-
-        const nodes =  config.interviewNodes
-        nodes.forEach(key => {
-            var sentence = mapArray[key];
-            if(sentence) {
-                return data.template = processing.parsedStory(sentence, key, data.template)
+        let mapArray = {}
+        for(let i = 0; i < contextArray.length; i++) {
+            let node = contextArray[i].node_name
+            let text = contextArray[i].text
+            let semantics = contextArray[i].semantics
+            mapArray[node] = {
+                text: text,
+                semantics: semantics
             }
-        });
-        return data.template
+        }
+        let template  = processing.parsedStory(mapArray, data.template)
+        return template
     }
 }
 
@@ -84,9 +79,8 @@ async function message(conversation){
                     try{
                         let params = {
                             conversation_id: currentContext.conversation_id,
-                            interview_type: currentContext.interview_type,
                             template: textArray[i]
-                        };
+                        }
                         let story = await parseReply(params)
 
                         if(story){

@@ -36,6 +36,7 @@ async function reply(input, stored_log) {
 
             //get a response from natural language generation service
             let messageArray = await nlg.message(conversation)
+
             for(let k =0 ; k < messageArray.length; k++)
             {
                 await sendReplyToFacebook(request.id, conversation, messageArray[k])

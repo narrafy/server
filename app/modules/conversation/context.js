@@ -1,6 +1,7 @@
 const db = require('../db')
 const emailService = require('../email')
 const nlu = require('../natural-language/understanding')
+const nlg = require('../natural-language/generation')
 const config = require('../config')
 const logger = require('pino')()
 
@@ -8,8 +9,44 @@ const logger = require('pino')()
  * it's usually to send an email or parse the context variable */
 async function runContextTasks(conversation) {
 
-        const conversation_id = conversation.context.conversation_id
-        if (isEmailNode(conversation)) {
+    const conversation_id = conversation.context.conversation_id
+    let context = conversation.context
+
+    if(context.parse_node && context.parse_node === true ){
+        let text = conversation.input.text
+        let semantics = nlu.pos(text)
+
+        let data = {
+            text: text ,
+            node_name: context.input_node_name,
+            conversation_id: context.conversation_id,
+            semantics : semantics
+        }
+
+        if(semantics)
+        {
+            if(context.hasOwnProperty(context.input_node_name))
+            {
+                let context_var = context[context.input_node_name]
+                if(context_var) {
+
+                    if(semantics.object)
+                        context_var.object = semantics.object[0]
+
+                    if(semantics.subject)
+                        context_var.subject = semantics.subject[0]
+
+                    if(semantics.action)
+                        context_var.action = semantics.action[0]
+                }
+            }
+
+            await db.saveSemantics(data)
+        }
+
+    }
+
+    if (isEmailNode(conversation)) {
             let email = getEmailFromContext(conversation)
             if(email && isSendStoryNode(conversation))
             {
@@ -26,19 +63,17 @@ async function runContextTasks(conversation) {
             }
         }
 
-        if(shouldEnableBot(conversation))
-            conversation.bot_active = true
+    if(shouldEnableBot(conversation))
+        conversation.bot_active = true
 
-        if(shouldPauseBot(conversation))
-            conversation.bot_active = false
+    if(shouldPauseBot(conversation))
+        conversation.bot_active = false
         
-        if (is3RdNode(conversation)) {
-            emailService.admin("Someone is talking to the bot. Remember to train on the input!")
-        }
-        if(conversation.context.help_request){
-            emailService.admin("Help is needed! Check the facebook page ASAP!")
-        }
-        await SemanticParse(conversation);
+  //  if (is3RdNode(conversation))
+    //   emailService.admin("Someone is talking to the bot. Remember to train on the input!")
+
+    if(conversation.context.help_request)
+        emailService.admin("Help is needed! Check the facebook page ASAP!")
 }
 
 function getEmailFromContext(conversation){
@@ -83,36 +118,6 @@ function is3RdNode(conversation) {
 	return conversation.context &&
 		conversation.context.system &&
 		conversation.context.system.dialog_request_counter === 3
-}
-
-async function SemanticParse(conversation) {
-    let context = conversation.context
-    var nodes_array = config.interviewNodes
-    for (let i = 0; i < nodes_array.length; i++) {
-        var context_var_name = nodes_array[i]
-        if (context && context.hasOwnProperty(context_var_name)) {
-            //found the context variable to send to semantic parser
-            var context_var = context[context_var_name]
-            if (context_var && context_var.parsed === false) {
-                try {
-
-                    let params = {
-                        item: context_var,
-                        label: context_var_name,
-                        interview_type: context.interview_type,
-                        conversation_id: context.conversation_id
-                    };
-
-                    await nlu.semanticParse(params);
-
-                } catch(e){
-                    logger.error(e.stacktrace)
-                }
-                context_var.parsed = true
-
-            }
-        }
-    }
 }
 
 module.exports = {
