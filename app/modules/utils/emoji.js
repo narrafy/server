@@ -3,6 +3,7 @@ const emojiDictionary = {
 	emoji_hugging_face: "🤗",
 	emoji_broken_heart: "💔",
 	emoji_curious: "🤓",
+	emoji_heart_eyes: "😍",
 	emoji_book: "📖",
 	emoji_skiing: "⛷️",
 	emoji_watching_films: "📽️",

@@ -126,7 +126,7 @@ module.exports = (app) => {
 
 
     app.get('/api/item/parse', async (req, res) => {
-        let parsedItem = Nlu.pos("i'm too lazy")
+        let parsedItem = Nlu.pos("i'm too perfectionist")
         res.send(parsedItem[0])
     })
 
@@ -159,7 +159,7 @@ module.exports = (app) => {
 			};
 
 			try {
-                const story = await Nlg.story(data);
+                const story = await Nlg.parseReply(data);
                 res.json(story);
 			} catch (e) {
 				console.log(e.stack);

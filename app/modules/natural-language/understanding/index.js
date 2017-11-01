@@ -61,11 +61,11 @@ function isObjectPOS(tag)
 {
     return tag === "JJ" ||
         tag === "JJR" ||
-        tag === "JJS" ||
-        tag === "NN" ||
-        tag === "NNP" ||
-        tag === "NNPS" ||
-        tag === "NNS"
+        tag === "JJS" //||
+        //tag === "NN" ||
+        //tag === "NNP" ||
+        //tag === "NNPS" ||
+        //tag === "NNS"
 }
 
 function isSubjectPOS(tag){

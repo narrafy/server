@@ -9,16 +9,6 @@ function getAction(sentence){
     if(semanticRole && semanticRole.action && semanticRole.action.length > 0){
         let action = semanticRole.action[0];
         return action
-        /*if(action.verb){
-            let verb = action.verb;
-            if(verb.negated)
-            {
-                return "cannot " + verb.text;
-            }
-            if(verb.text)
-                return verb.text;
-            return semanticRole.action.text;
-        }*/
     }
     return ""
 }
@@ -27,7 +17,7 @@ function getObject(sentence) {
     let semanticRole = getSemanticRole(sentence)
     if(semanticRole && semanticRole.object && semanticRole.object.length > 0)
         return to2PRPForm(semanticRole.object[0]);
-    return null
+    return "";
 }
 
 function to2PRPForm(text){
@@ -115,7 +105,7 @@ function getSemanticRole(sentence) {
 
 function parsedStory(mapArray, template)
 {
-    let story = "";
+    let story = ""
     const nodes =  config.interviewNodes
     nodes.forEach(key => {
         var sentence = mapArray[key];
@@ -142,7 +132,7 @@ function getNormalizedStory(sentence, key, template){
     let normalizedSentence = template.replace(new RegExp(subjectKey, 'g'), subject)
         .replace(new RegExp(actionKey,'g'), action)
         .replace(new RegExp(objectKey, 'g'), object)
-        .replace(sentenceKey, originalSentence);
+        .replace(sentenceKey, originalSentence)
 
     return normalizedSentence;
 }

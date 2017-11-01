@@ -12,7 +12,8 @@ const collection = {
 	story_template: "story_template",
 	subscribers: "subscribers",
 	stories: "stories",
-	customer: "customer"
+	customer: "customer",
+	template_stories: "template_stories"
 }
 
 let dbConnection = null
@@ -151,6 +152,15 @@ async function getStory(story) {
         .toArray()
 }
 
+async function getStoryTemplates(interview_type) {
+    return dbConnection.collection(collection.template_stories)
+        .find({interview_type: interview_type})
+        .sort({$natural: 1})
+        .toArray()
+}
+
+
+
 async function getCustomerConfig(customer_id){
     return dbConnection.collection(collection.customer)
         .findOne({customer_id : customer_id})
@@ -172,6 +182,7 @@ module.exports = exports = {
 	clearContext: clearContext,
 	pushContext: pushContext,
 	getSemanticParse: getParsedContext,
+    getStoryTemplates: getStoryTemplates,
 	saveStory: saveStory,
 	getStories: getStory,
 	getConfig: getCustomerConfig,
