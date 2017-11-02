@@ -2,7 +2,6 @@ const db = require('../db')
 const log = require('../log')
 const Conversation = require('../conversation/conversation')
 const Nlg = require('../natural-language/generation')
-const Nlu = require('../natural-language/understanding')
 const mailService = require('../email')
 const config = require('../config')
 const fb = require('../facebook-api')
@@ -12,7 +11,7 @@ module.exports = (app) => {
 	app.get('/webhook', async function (req, res) {
 
 		let customerVerifyToken =  req.query['hub.verify_token'];
-		let customerConfig = await db.getCustomerConfigByToken(customerVerifyToken);
+		let customerConfig = await db.getCustomerByToken(customerVerifyToken);
 		if (customerConfig && (customerConfig.facebook.verify_token === customerVerifyToken)) {
             res.send(req.query['hub.challenge'])
 
@@ -85,16 +84,6 @@ module.exports = (app) => {
 		}
 	})
 
-    app.get('/api/customer/get', async (req, res) => {
-        var customer_id = req.query['customer_id']
-        if (customer_id) {
-            const customer_data = await db.getConfig(customer_id)
-            res.json(customer_data)
-        } else {
-            res.sendStatus(500)
-        }
-    })
-
 	app.get('/api/transcript/email',  async (req, res) => {
 
 		var conversation_id = req.query['conversation_id']
@@ -148,12 +137,6 @@ module.exports = (app) => {
 		res.sendStatus(200)
     })
 
-
-    app.get('/api/item/parse', async (req, res) => {
-        let parsedItem = Nlu.pos("i'm too perfectionist")
-        res.send(parsedItem[0])
-    })
-
 	app.get('/api/story/get', async (req, res) => {
 		let conversation_id = "f1d1ca41-277a-4097-8844-592569cfa2c7" // req.query['conversation_id'];
 		let interview_type = "externalization" // req.query['interview_type'];
@@ -194,11 +177,6 @@ module.exports = (app) => {
 		}
 	})
 
-	//free ssl encryption
-	app.get('/.well-known/acme-challenge/:content', (req, res) => {
-		res.send(config.sslSecret)
-	})
-
 	app.get('/', (req, res) => {
 		res.render('index.ejs')
 	})
@@ -222,7 +200,13 @@ module.exports = (app) => {
 	app.get('/terms-of-use', (req, res) => {
 		res.render('terms.ejs')
 	})
+
 	app.get('/contact', (req, res) => {
 		res.render('foundation/contact.ejs')
 	})
+
+    //free ssl encryption
+    app.get('/.well-known/acme-challenge/:content', (req, res) => {
+        res.send(config.sslSecret)
+    })
 }

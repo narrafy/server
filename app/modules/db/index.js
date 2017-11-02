@@ -34,16 +34,6 @@ async function getContext(input) {
 			.then((stored_log) => ({input, stored_log}))
 }
 
-async function getContextVars(conversation_id){
-	return dbConnection.collection(collection.log)
-		.find({conversation_id: conversation_id})
-		.sort({date: -1})
-		.limit(1)
-		.toArray()
-		.then(stored_log => stored_log[0])
-		.catch((err)=>{console.log(err)});
-}
-
 async function pushContext(id, conversation) {
 
 	const dbConversation = {
@@ -66,14 +56,6 @@ async function getParsedContext(conversation_id){
 	return dbConnection.collection(collection.context_semantics)
         .find({conversation_id: conversation_id})
         .sort({$natural: 1}).toArray()
-}
-
-async function clearContext(data) {
-	await dbConnection
-		.collection(collection.log)
-		.deleteMany({id: data.sender})
-
-	return getContext(data)
 }
 
 async function saveInquiry(data) {
@@ -111,32 +93,10 @@ async function getTranscript(conversation_id) {
 	}
 }
 
-async function getReplies(conversation_id) {
-	const conversations = await dbConnection
-		.collection(collection.log)
-		.find({conversation_id: conversation_id})
-		.sort({$natural: 1}).toArray()
-
-	return conversations.reduce((outputText, conversation) => {
-		if (conversation.input && conversation.input.text) {
-			outputText += `. ${conversation.input.text}`
-		}
-		return outputText
-	}, '')
-
-}
-
 async function saveSubscriber(data) {
 	return dbConnection
 		.collection(collection.subscribers)
 		.save(data)
-}
-
-async function saveSemantics(data) {
-	return dbConnection
-		.collection(collection.context_semantics)
-		.save(data)
-		.then(() => data)
 }
 
 async function saveStory(data) {
@@ -173,20 +133,17 @@ async function getCustomerConfigByToken(verifyToken){
 
 
 module.exports = exports = {
+
 	connect: connect,
-	saveSemantics: saveSemantics,
 	getTranscript: getTranscript,
-	getReplies: getReplies,
 	getContext: getContext,
-	getContextVars: getContextVars,
-	clearContext: clearContext,
 	pushContext: pushContext,
 	getSemanticParse: getParsedContext,
     getStoryTemplates: getStoryTemplates,
 	saveStory: saveStory,
 	getStories: getStory,
 	getConfig: getCustomerConfig,
-    getCustomerConfigByToken: getCustomerConfigByToken,
+    getCustomerByToken: getCustomerConfigByToken,
 
 	async addInquiry(data) {
 		await saveInquiry(data)

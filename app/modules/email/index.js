@@ -40,7 +40,6 @@ function bot(stories, ps, email) {
 
 }
 
-
 function contact(data) {
     const fromEmail = new MailHelper.Email(data.email)
     const toEmail = new MailHelper.Email(config.sendGrid.contactEmail)

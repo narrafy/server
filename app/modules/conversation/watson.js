@@ -1,4 +1,3 @@
-
 const config = require('../config')
 const WatsonClient = require('watson-developer-cloud/conversation/v1')
 
@@ -56,7 +55,6 @@ async function ask(data) {
 	})
 
 }
-
 
 function populateRequest(input, stored_log) {
 	var request = {

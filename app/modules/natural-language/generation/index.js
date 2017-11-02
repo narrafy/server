@@ -1,11 +1,10 @@
 const db = require('../../db')
 const emojiReplacer = require('../../utils/emoji')
-const log = require('../../log')
 const processing = require('./processing')
+
 function mineResponse(data) {
 
     let messageArray = []
-
     if (data) {
         for(let j=0; j< data.length; j++)
         {
@@ -18,7 +17,6 @@ function mineResponse(data) {
 async function parseReply(data){
 
     const contextArray = await db.getSemanticParse(data.conversation_id)
-
     let  template = await db.getStoryTemplates(data.interview_type)
 
     if(contextArray){
@@ -39,9 +37,7 @@ async function parseReply(data){
 
 async function message(conversation){
 
-    let textArray = mineResponse(conversation.output.text)
-
-    return textArray
+    return mineResponse(conversation.output.text)
 }
 
 module.exports = {
