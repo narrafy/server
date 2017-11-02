@@ -28,6 +28,18 @@ function admin(message) {
 	return send(mail)
 }
 
+function bot(stories, ps, email) {
+
+    const fromEmail = new MailHelper.Email("chatbot@narrafy.io")
+    const toEmail = new MailHelper.Email(email)
+    const subject = "The story of Rose"
+    const emailBody = body.story(stories, ps)
+    const content = new MailHelper.Content('text/html', emailBody)
+    const mail = new MailHelper.Mail(fromEmail, subject, toEmail, content)
+    return send(mail)
+
+}
+
 
 function contact(data) {
     const fromEmail = new MailHelper.Email(data.email)
@@ -84,6 +96,7 @@ module.exports = {
 	subscriber: subscriber,
 	transcript: transcript,
 	story: story,
+	bot: bot,
 
 	admin(message) {
 		return admin(message)

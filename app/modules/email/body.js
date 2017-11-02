@@ -9,7 +9,7 @@ function getTranscript(transcript) {
     return `<html><body><ul>{transcriptHtml}</ul><body/></html>`
 }
 
-function getStory(stories) {
+function getStory(stories, ps) {
 
     let header = "<html><body>"
 
@@ -18,12 +18,10 @@ function getStory(stories) {
         let problemFlag = false
         let storyFlag = false
         stories.forEach(entry => {
-
-
             if(entry.interview_type === "internalization")
             {
                 if(!problemFlag){
-                    let h2 = "<h2>" + "The problem" +"</h2>"
+                    let h2 = "<h2>" + "The Story of Rose" +"</h2>"
                     story += h2
                     problemFlag = true
                 }
@@ -31,21 +29,25 @@ function getStory(stories) {
                 let span = "<p>" + entry.story + "</p>"
                 story += span
             }
+
             if(entry.interview_type === "externalization")
             {
                 if(!storyFlag){
-                    let h2 = "<h2>" + "The problematic story" +"</h2>"
+                    let h2 = "<h2>" + "Or," +"</h2>"
                     story += h2
                     storyFlag = true
                 }
-
                 let span = "<p>" + entry.story + "</p>"
                 story += span
             }
         })
     }
 
-    let footer = "<hr/><p>Have a nice day! <a href='https://www.narrafy.io'>Narrafy Team</a></p>" +
+    if(ps){
+        story += ps
+    }
+
+    let footer = "<hr/><p>Have a nice day! <a href='https://www.narrafy.io'>Narrafy Bot</a></p>" +
         "<body/></html>"
 
     return header + story + footer
