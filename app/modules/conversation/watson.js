@@ -24,7 +24,8 @@ function createPayload(data) {
 		workspace_id: data.workspace,
 		context: {
 			access_token: data.access_token,
-			workspace: data.workspace
+			workspace: data.workspace,
+			fb_user: data.fb_user
 		},
 		input: {}
 	}
@@ -36,6 +37,7 @@ function createPayload(data) {
 		// The client must maintain context/state
 		payload.context = data.context
 		payload.context.workspace = data.workspace
+		payload.context.fb_user = data.fb_user
 	}
 	return payload
 }

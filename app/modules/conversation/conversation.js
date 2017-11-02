@@ -172,9 +172,9 @@ async function messengerRequest(body) {
                 //clear context button was pressed
                 case 'CLEAR_CONTEXT': {
 
-                    //const {input, stored_log} = await context.clearContext(data)
+                    data.text= "Hello"
 
-                    //await reply(input, stored_log)
+                    await getContextAndReply(data)
                 }
                     break
                 default:

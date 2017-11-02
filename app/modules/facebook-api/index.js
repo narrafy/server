@@ -208,7 +208,9 @@ module.exports = exports = {
 
 	async sendMessage(data) {
 		await startTyping(data)
-		await sendMessage(data)
+		setTimeout( async ()=>{
+            await sendMessage(data)
+		}, 1000)
 	},
 	async sendWebView(data, webviewData){
 		await startTyping(data)

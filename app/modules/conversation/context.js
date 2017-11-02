@@ -17,7 +17,7 @@ async function runContextTasks(conversation) {
                     date: new Date(),
                 };
                 db.addSubscriber(data)
-                emailService.admin("Check conversation id" + conversation_id)
+                emailService.admin("Check conversation id: " + conversation_id)
             }
         }
 
