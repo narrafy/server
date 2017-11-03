@@ -31,8 +31,17 @@ async function reply(input, stored_log) {
 		    //run tasks first, context might change here
             await context.runContextTasks(conversation)
 
-            //then push to db
-			await context.pushContext(request.id, conversation)
+            let ctx = conversation.context
+
+            if(ctx){
+                if(ctx.bot_active === false){
+                    //return from function, don't push the context, human is talking
+                    return conversation
+                }else{
+                    //then push to db
+                    await context.pushContext(request.id, conversation)
+                }
+            }
 
             //get a response from natural language generation service
             let messageArray = await nlg.message(conversation)
@@ -41,6 +50,7 @@ async function reply(input, stored_log) {
             {
                 await sendReplyToFacebook(request.id, conversation, messageArray[k])
             }
+            return conversation
 		}
 	} catch (err) {
 		console.log("error in the reply function " + err.stack)
@@ -123,11 +133,33 @@ async function setContextConfig(customer_id) {
 
 async function getContextAndReply(data){
     const {input, stored_log} = await context.getContext(data)
-    //if the bot is disabled return
-    if(stored_log &&
-        stored_log.length > 0 &&
-        stored_log[0].bot_active === false ) return
+
     await reply(input, stored_log)
+}
+
+async function PauseBot(data) {
+
+    data.text = "shutdown"
+
+    const {input, stored_log} = await context.getContext(data)
+
+    const conversation = await reply(input, stored_log)
+
+    //store the fact that the bot is disabled
+    context.pushContext(data.sender, conversation)
+
+    let dt = {
+        id: data.sender,
+        message: {
+            text: "A person will shortly take over. I'm going back to training. Call my name if you want to talk to me!"
+        },
+        access_token: stored_log[0].context.access_token
+    }
+
+    await facebookApi.sendMessage(dt)
+
+    //notify admin
+    email.admin("Check the facebook page!")
 }
 
 async function messengerRequest(body) {
@@ -151,21 +183,7 @@ async function messengerRequest(body) {
                     break
                 case 'CONTACT_REQUEST':{
 
-                    data.text= "Narrafy go to sleep"
-
-                    await getContextAndReply(data)
-
-                    //notify admin
-                    let admin_message = {
-                        id: config.facebook.admin_id,
-                        message: {
-                            text: "Check the facebook page!"
-                        }
-                    }
-
-                    await facebookApi.sendMessage(admin_message)
-                    email.admin(admin_message.message.text)
-
+                    await PauseBot(data)
                 }
                     break
 

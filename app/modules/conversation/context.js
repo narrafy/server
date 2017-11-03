@@ -6,7 +6,8 @@ const config = require('../config')
  * it's usually to send an email or parse the context variable */
 async function runContextTasks(conversation) {
 
-    const conversation_id = conversation.context.conversation_id
+    let context = conversation.context
+    const conversation_id = context.conversation_id
 
     if (isEmailNode(conversation)) {
             let email = getEmailFromContext(conversation)
@@ -22,10 +23,10 @@ async function runContextTasks(conversation) {
         }
 
     if(shouldEnableBot(conversation))
-        conversation.bot_active = true
+        context.bot_active = true
 
     if(shouldPauseBot(conversation))
-        conversation.bot_active = false
+        context.bot_active = false
         
     if (is3RdNode(conversation))
        emailService.admin("Someone is talking to the bot. Remember to train on the input!")
