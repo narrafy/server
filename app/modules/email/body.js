@@ -54,6 +54,13 @@ function getStory(stories, ps) {
 
 }
 
+function getAdminEmailBody(data){
+
+    return "<html><body><p>" + "Hello Ion. You have a new story to look at." +
+        "</p>" +
+        "<p><a target='_self' href='https://" + data.url + "'> Check Story </a></p></body></html>"
+}
+
 function getSubscriberReply() {
     return "<html><body><p>" + "Hey! We received your email." +
         " We will contact you when we have something important to share." +
@@ -74,4 +81,5 @@ module.exports = {
     subscriberReply: getSubscriberReply,
     story: getStory,
     transcript: getTranscript,
+    adminemail: getAdminEmailBody,
 }

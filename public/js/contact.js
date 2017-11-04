@@ -20,6 +20,7 @@ var ContactInput = (function(){
     return {
         init: init,
         contactSubmit: contactSubmit,
+        sendStory: sendStory,
         subscribeKeyDown: subscribeKeyDown,
         subscribeSubmit: subscribeSubmit
     };
@@ -218,6 +219,32 @@ var ContactInput = (function(){
             notification.className = '';
         }
     }
+
+    // Handles the submission of input
+    function sendStory(event) {
+        // Submit on enter key, dis-allowing blank messages
+        var emailBox = document.querySelector(settings.selectors.emailBox);
+        if(emailBox.value ){
+            if(!validateEmail(emailBox.value)){
+                return;
+            }
+            var messageBox = document.querySelector(settings.selectors.messageBox);
+
+            var nameBox = document.querySelector(settings.selectors.nameBox);
+            // Send the user message
+            Api.sendUserStory(emailBox.value, messageBox.value, nameBox.value);
+
+            // Clear input box for further messages
+            emailBox.value = '';
+            messageBox.value = '';
+            Common.fireEvent(emailBox, 'input');
+            var contactForm = document.querySelector(settings.selectors.contactForm);
+            contactForm.className = 'hide';
+            var notification = document.querySelector(settings.selectors.notification);
+            notification.className = '';
+        }
+    }
+
 
     // Handles the submission of input
     function inputKeyDown(event, inputBox) {

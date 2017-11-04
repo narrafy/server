@@ -28,6 +28,18 @@ function admin(message) {
 	return send(mail)
 }
 
+
+function adminbot(data) {
+
+    const fromEmail = new MailHelper.Email("chatbot@narrafy.io")
+    const toEmail = new MailHelper.Email(config.sendGrid.adminEmail)
+    const subject = config.app.name
+	const emailBody = body.adminemail(data)
+    const content = new MailHelper.Content('text/html', emailBody)
+    const mail = new MailHelper.Mail(fromEmail, subject, toEmail, content)
+    return send(mail)
+}
+
 function bot(stories, ps, email) {
 
     const fromEmail = new MailHelper.Email("chatbot@narrafy.io")
@@ -37,8 +49,8 @@ function bot(stories, ps, email) {
     const content = new MailHelper.Content('text/html', emailBody)
     const mail = new MailHelper.Mail(fromEmail, subject, toEmail, content)
     return send(mail)
-
 }
+
 
 function contact(data) {
     const fromEmail = new MailHelper.Email(data.email)
@@ -96,6 +108,7 @@ module.exports = {
 	transcript: transcript,
 	story: story,
 	bot: bot,
+	adminbot: adminbot,
 
 	admin(message) {
 		return admin(message)

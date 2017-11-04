@@ -1,0 +1,38 @@
+
+<section id="contact" class="section-secondary">
+    <div class="container">
+        <h2> Send Story </h2>
+
+        <div class="row row-eq-height">
+            <div class="col-md-2 ">
+                <img src="img/contact.jpg" alt="icon" class="team img-responsive">
+
+            </div>
+            <div class="col-md-8 ">
+                <div id="email-notification" class="hide">
+                    <p class="text-center big">
+                        Thank you for your message. We will get back to you shortly.
+                    </p>
+                </div>
+
+                <div id="contact-form">
+                    <div class="form-group">
+
+                        <input id="name-box" type="name" value="<%= username %>" name="name" class="form-input-text form-control" placeholder="Name" required="required">
+                    </div>
+                    <div class="form-group">
+
+                        <input id="email-box" type="email" value="<%= email%>" name="email" class="form-input-text form-control" placeholder="Email" required="required">
+                    </div>
+
+                    <div class="form-group">
+                        <textarea id="contact-box" value="<%= story%>" name="message" class="form-input-text form-control" rows="10" placeholder="Story" required="required"></textarea>
+                    </div>
+                    <div class="send-button bottom-margin">
+                        <button type="submit" onclick="ContactInput.sendStory(this)" class="btn  btn-primary">Send Message</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

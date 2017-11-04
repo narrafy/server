@@ -15,12 +15,14 @@ async function runContextTasks(conversation) {
             {
                 let data = {
                     email: email,
+                    conversation_id: conversation_id,
                     date: new Date(),
                 };
                 db.addSubscriber(data)
-                emailService.admin("Check conversation id: " + conversation_id)
+                data.url = config.app.url + "/dashboard"+"?conversation_id="+ conversation_id
+                emailService.adminbot(data)
             }
-        }
+    }
 
     if(shouldEnableBot(conversation))
         context.bot_active = true

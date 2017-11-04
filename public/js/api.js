@@ -4,12 +4,14 @@ var Api = (function(){
     var responsePayload;
     var messageEndpoint = '/api/message';
     var contactEndpoint = '/api/contact';
+    var sendStoryEndpoint = '/api/story';
     var subscribeEndpoint = '/api/subscribe';
 
     //publicly accessible methods defined
     return {
         sendRequest: sendRequest,
         sendContactRequest: sendContactRequest,
+        sendUserStory: sendStory,
         sendSubscribeRequest: sendSubscribeRequest,
 
         //The request/response getters/setter are defined here to prevent internal methods
@@ -88,6 +90,26 @@ var Api = (function(){
         //Build the http request
         var http  = new XMLHttpRequest();
         http.open('POST', contactEndpoint, true);
+        http.setRequestHeader('Content-type','application/json');
+        var params = JSON.stringify(contactForm);
+        //send request
+        http.send(params);
+    }
+
+    //send a message request to the server
+    function sendStory(email, message, name){
+        //Build request payload
+        var contactForm = {};
+        if(email){
+            contactForm = {
+                email: email,
+                message: message,
+                name: name
+            };
+        }
+        //Build the http request
+        var http  = new XMLHttpRequest();
+        http.open('POST', sendStoryEndpoint, true);
         http.setRequestHeader('Content-type','application/json');
         var params = JSON.stringify(contactForm);
         //send request

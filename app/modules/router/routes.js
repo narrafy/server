@@ -100,26 +100,6 @@ module.exports = (app) => {
 
     app.get('/api/story/send', async (req, res) => {
 
-        let email = "alukura@hotmail.com"
-
-		let story_internalization = "Rose you say you are too opinionated about your experience of the world, your beliefs and perceptions. " +
-			"It usually happens when you are feeling as though your are not being understood or listened to. " +
-			"This does affect your life, because it makes you do things you would not do otherwise. You state your beliefs in several different ways. " +
-			"It affects people and relationships you care about. Some people avoid discussing specific topics with you. It makes your life difficult. " +
-			"Possibly difficult arguments with your daughter who is also opinionated. If by a miracle you would wake up and wouldn't opinionated anymore" +
-			" you would feel silenced minimal influence in the world."
-
-		let story_externalization = "Once upon a time, there was a hero - Rose. She was doing just fine in her own kingdom. However, one day, " +
-			"Rose got challenged by a villain - the Full-on. It was “maybe not being heard, made to feel unimportant as a child that made her " +
-			"vulnerable” to Full-on. The villain usually shows up when the person Rose is speaking to, doesn't understand or acknowledge " +
-			"what she is saying. The villain is smart. It takes over by using tricks like making Rose feeling discounted or minimized. " +
-			"It has an effect on Rose's relationships. Full-on escalates arguments with her daughter." +
-			" And it makes Rose’s life challenging. She feels less important and less respected by her daughter. It blinds her in the moment of conflict. " +
-			"But Rose has her own way to fight back. When she is with scaringly angry people, she practice detached compassion, strongly repressing her feelings " +
-			"for safety sake. Last time she managed to fight back was when she was with a friend, allowing her to initiate the topic of conversation. " +
-			"She knows what she experience to be true for her without expecting others to understand or agree, just knowing is enough. She prefers to simply " +
-			"sit with her knowledge without needing to necessarily share it.\""
-
 		let stories = [
 			{
 				interview_type:"internalization",
@@ -131,9 +111,7 @@ module.exports = (app) => {
 			}
 		]
 
-		let ps ="P.S. Rose, you are the first one I send a letter to! Sorry for the delay. Technical problems."
-
-		mailService.bot(stories, ps, email)
+		//mailService.bot(stories, ps, email)
 		res.sendStatus(200)
     })
 
@@ -156,7 +134,6 @@ module.exports = (app) => {
 			" challenging:$cause_difficulties.sentence. But the hero has his own way to fight back. For ex: $unique_outcome.sentence " +
 			"Several times! The hero is silently preparing a way to fight back and has a plan for the future: $invite_action.sentence"
 		}
-
 
 		if (conversation_id !== null) {
 			let data = {
@@ -204,6 +181,17 @@ module.exports = (app) => {
 	app.get('/contact', (req, res) => {
 		res.render('foundation/contact.ejs')
 	})
+
+    app.get('/dashboard', async function (req, res) {
+
+        let conversation_id = req.query['conversation_id'];
+        let data = {
+            "username": "", //data.username
+            "email": "", //data.email
+            "story": "", // data.story
+        }; //Nlg.story(conversation_id)
+        res.render('dashboard/index.ejs',data)
+    })
 
     //free ssl encryption
     app.get('/.well-known/acme-challenge/:content', (req, res) => {
