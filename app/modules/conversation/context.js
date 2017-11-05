@@ -33,8 +33,15 @@ async function runContextTasks(conversation) {
     if (is3RdNode(conversation))
        emailService.admin("Someone is talking to the bot. Remember to train on the input!")
 
-    if(conversation.context.help_request)
+    if(conversation.context.help_request || conversation.context.email_admin){
         emailService.admin("Help is needed! Check the facebook page ASAP!")
+        conversation.context.email_admin = false
+    }
+
+    if(conversation.context.email_admin && conversation.context.email_admin === true ){
+        emailService.admin("Narrafy is struggling! Check the facebook page ASAP!")
+        conversation.context.email_admin = false
+    }
 }
 
 function getEmailFromContext(conversation){

@@ -190,7 +190,7 @@ async function messengerRequest(body) {
                 //clear context button was pressed
                 case 'CLEAR_CONTEXT': {
 
-                    data.text= "Hello"
+                    data.text= "let's try again"
 
                     await getContextAndReply(data)
                 }

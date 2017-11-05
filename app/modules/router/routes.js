@@ -184,7 +184,7 @@ module.exports = (app) => {
 
     app.get('/dashboard', async function (req, res) {
 
-        let conversation_id = req.query['conversation_id'];
+        let conversation_id = req.query['conversation_id']
         let data = {
             "username": "", //data.username
             "email": "", //data.email
