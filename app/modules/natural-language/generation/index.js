@@ -35,6 +35,29 @@ async function parseReply(data){
     }
 }
 
+
+
+async function getStoryStub(data){
+
+    const contextArray = await db.getSemanticParse(data.conversation_id)
+    let  template = await db.getStoryTemplates(data.interview_type)
+
+    if(contextArray){
+        let mapArray = {}
+        for(let i = 0; i < contextArray.length; i++) {
+            let node = contextArray[i].node_name
+            let text = contextArray[i].text
+            let semantics = contextArray[i].semantics
+            mapArray[node] = {
+                text: text,
+                semantics: semantics
+            }
+        }
+        let template  = processing.parsedStory(mapArray, template)
+        return template
+    }
+}
+
 async function message(conversation){
 
     return mineResponse(conversation.output.text)
@@ -42,5 +65,6 @@ async function message(conversation){
 
 module.exports = {
     parseReply: parseReply,
-    message: message
+    message: message,
+    getStoryStub: getStoryStub
 }

@@ -106,7 +106,7 @@ function getSemanticRole(sentence) {
 function parsedStory(mapArray, template)
 {
     let story = ""
-    const nodes =  config.interviewNodes
+    const nodes =  template.nodes
     nodes.forEach(key => {
         var sentence = mapArray[key];
         if(sentence) {

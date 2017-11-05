@@ -34,6 +34,16 @@ async function getContext(input) {
 			.then((stored_log) => ({input, stored_log}))
 }
 
+async function getContextByConversationId(id) {
+    return dbConnection
+        .collection(collection.log)
+        .find({conversation_id: id})
+        .sort({date: -1})
+		.limit(1)
+		.toArray()
+}
+
+
 async function pushContext(id, conversation) {
 
 	const dbConversation = {
@@ -137,6 +147,7 @@ module.exports = exports = {
 	connect: connect,
 	getTranscript: getTranscript,
 	getContext: getContext,
+	getContextById: getContextByConversationId,
 	pushContext: pushContext,
 	getSemanticParse: getParsedContext,
     getStoryTemplates: getStoryTemplates,

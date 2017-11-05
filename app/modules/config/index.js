@@ -39,33 +39,6 @@ module.exports = exports = {
 	sslSecret : process.env.SSL_SECRET,
 	chatBotId: process.env.CHATBOT_ID,
 
-	interviewTypes: {
-        internalization : "internalization",
-		externalization: "externalization"
-	},
-
-	interviewNodes : [
-            "problem",
-            "context",
-            "trigger",
-            "influence",
-            "influence_on_relationships",
-            "influence_on_relationships_example",
-            "difficulties",
-            "invitation_to_exception",
-            "problem_story",
-            "vulnerable_to",
-            "story_context",
-            "takeover",
-            "jeopardize_judgement",
-            "effect_on_relationships",
-            "cause_difficulties",
-            "blind_skills",
-            "unique_outcome",
-            "invite_action"
-        ]
-    ,
-
 	pos: {
 		"CC": {
 			def: "Coord Conjuncn",

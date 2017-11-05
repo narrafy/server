@@ -182,6 +182,18 @@ module.exports = (app) => {
 		res.render('foundation/contact.ejs')
 	})
 
+
+    app.get('/conversation', async function (req, res) {
+
+        var conversation_id = req.query['conversation_id']
+        if (conversation_id !== null) {
+            const conversation = await db.getContextById(conversation_id)
+            res.json(conversation)
+        } else {
+            res.sendStatus(500)
+        }
+    })
+
     app.get('/dashboard', async function (req, res) {
 
         let conversation_id = req.query['conversation_id']

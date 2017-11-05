@@ -151,7 +151,7 @@ async function PauseBot(data) {
     let dt = {
         id: data.sender,
         message: {
-            text: "A person will shortly take over. I'm going back to training. Call my name if you want to talk to me!"
+            text: "A person will shortly take over. I'm going back to training 💪. Call my name and I will be back!"
         },
         access_token: stored_log[0].context.access_token
     }
@@ -181,7 +181,7 @@ async function messengerRequest(body) {
                     await getContextAndReply(data)
                 }
                     break
-                case 'CONTACT_REQUEST':{
+                case 'CONTACT_REQUEST': {
 
                     await PauseBot(data)
                 }
