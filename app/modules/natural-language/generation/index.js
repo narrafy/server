@@ -14,48 +14,53 @@ function mineResponse(data) {
     return messageArray
 }
 
-async function parseReply(data){
+async function getStoryStub(conversation_id){
 
-    const contextArray = await db.getSemanticParse(data.conversation_id)
-    let  template = await db.getStoryTemplates(data.interview_type)
+    const conversation = await db.getContextById(conversation_id)
+    let story_templates = await db.getStoryTemplates()
+    let email = ""
+    let user_name = ""
 
-    if(contextArray){
-        let mapArray = {}
-        for(let i = 0; i < contextArray.length; i++) {
-            let node = contextArray[i].node_name
-            let text = contextArray[i].text
-            let semantics = contextArray[i].semantics
-            mapArray[node] = {
-                text: text,
-                semantics: semantics
-            }
+    if(conversation && conversation.length > 0){
+        let ctx = conversation[0].context
+        if(ctx["user_email"])
+            email = ctx["user_email"]
+        if(ctx["user_name"])
+            user_name = ctx["user_name"]
+        let stories = {}
+        for(let j=0;j<story_templates.length; j++){
+            let cursor = story_templates[j]
+            let story_key = cursor.interview_type
+            let template_nodes = cursor.nodes
+            let story_template = cursor.templates
+            let story = getStory(ctx, template_nodes, story_template)
+            stories[story_key] = story
         }
-        let template  = processing.parsedStory(mapArray, template)
-        return template
+        return {
+            user_name: user_name,
+            email: email,
+            story: stories
+        }
     }
 }
 
+function getStory(ctx, template_nodes, story_template)
+{
+    let array = {}
+    for(let prop in ctx) {
+        for(let i = 0; i < template_nodes.length; i++ ){
+            if(template_nodes[i] === prop) {
+                let textKey = '_'.concat(prop).concat('.text')
+                let value = ctx[prop].text
 
-
-async function getStoryStub(data){
-
-    const contextArray = await db.getSemanticParse(data.conversation_id)
-    let  template = await db.getStoryTemplates(data.interview_type)
-
-    if(contextArray){
-        let mapArray = {}
-        for(let i = 0; i < contextArray.length; i++) {
-            let node = contextArray[i].node_name
-            let text = contextArray[i].text
-            let semantics = contextArray[i].semantics
-            mapArray[node] = {
-                text: text,
-                semantics: semantics
+                if(value) {
+                    array[textKey] = value
+                }
             }
         }
-        let template  = processing.parsedStory(mapArray, template)
-        return template
     }
+    let story = processing.parseTemplate(story_template, array)
+    return story
 }
 
 async function message(conversation){
@@ -64,7 +69,6 @@ async function message(conversation){
 }
 
 module.exports = {
-    parseReply: parseReply,
     message: message,
     getStoryStub: getStoryStub
 }

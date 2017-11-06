@@ -5,6 +5,7 @@ const config = require('../config')
 const nlg = require('../natural-language/generation')
 const email = require('../email')
 const db = require('../db')
+const log = require('../log')
 
 async function reply(input, stored_log) {
 
@@ -232,6 +233,7 @@ async function webRequest(id, body) {
     return updateMessage(id, data)
 }
 
+
 module.exports = {
 
 	messengerRequest: messengerRequest,
@@ -239,4 +241,6 @@ module.exports = {
 	async web(req) {
 		return webRequest(req.sessionID, req.body)
 	},
+
+    getStory: nlg.getStoryStub
 }

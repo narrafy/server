@@ -40,12 +40,12 @@ function adminbot(data) {
     return send(mail)
 }
 
-function bot(stories, ps, email) {
+function bot(data) {
 
     const fromEmail = new MailHelper.Email("chatbot@narrafy.io")
-    const toEmail = new MailHelper.Email(email)
-    const subject = "The story of Rose"
-    const emailBody = body.story(stories, ps)
+    const toEmail = new MailHelper.Email(data.email)
+    const subject = "The story of " + data.name
+    const emailBody = body.story(data)
     const content = new MailHelper.Content('text/html', emailBody)
     const mail = new MailHelper.Mail(fromEmail, subject, toEmail, content)
     return send(mail)

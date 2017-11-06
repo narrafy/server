@@ -11,14 +11,17 @@
             <div class="col-md-8 ">
                 <div id="email-notification" class="hide">
                     <p class="text-center big">
-                        Thank you for your message. We will get back to you shortly.
+                        Story sent.
                     </p>
                 </div>
 
-                <div id="contact-form">
+                <div id="send-story-form">
                     <div class="form-group">
+                        <input id="conversation-id" type="name" value="<%= conversation_id %>" name="conversation_id" class="form-input-text form-control" placeholder="Name" required="required" />
+                    </div>
 
-                        <input id="name-box" type="name" value="<%= username %>" name="name" class="form-input-text form-control" placeholder="Name" required="required">
+                    <div class="form-group">
+                        <input id="name-box" type="name" value="<%= user_name %>" name="name" class="form-input-text form-control" placeholder="Name" required="required">
                     </div>
                     <div class="form-group">
 
@@ -26,8 +29,13 @@
                     </div>
 
                     <div class="form-group">
-                        <textarea id="contact-box" value="<%= story%>" name="message" class="form-input-text form-control" rows="10" placeholder="Story" required="required"></textarea>
+                        <textarea id="internalization-story-box" value="" name="internalization" class="form-input-text form-control" rows="10" placeholder="Internalization Exercise" required="required"><%= internalization%></textarea>
                     </div>
+
+                    <div class="form-group">
+                        <textarea id="externalization-story-box" value="" name="externalization" class="form-input-text form-control" rows="10" placeholder="Externalization Exercise" required="required"><%= externalization%></textarea>
+                    </div>
+
                     <div class="send-button bottom-margin">
                         <button type="submit" onclick="ContactInput.sendStory(this)" class="btn  btn-primary">Send Message</button>
                     </div>

@@ -73,7 +73,6 @@ function isSubjectPOS(tag){
         tag === "PRP"
 }
 
-
 async function analyze(parameters) {
     return new Promise((resolve, reject) => {
         nluClient.analyze(parameters, function (err, response) {

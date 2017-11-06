@@ -37,7 +37,7 @@ async function getContext(input) {
 async function getContextByConversationId(id) {
     return dbConnection
         .collection(collection.log)
-        .find({conversation_id: id})
+        .find({conversation_id: id},{ context: 1 })
         .sort({date: -1})
 		.limit(1)
 		.toArray()
@@ -122,9 +122,9 @@ async function getStory(story) {
         .toArray()
 }
 
-async function getStoryTemplates(interview_type) {
+async function getStoryTemplates() {
     return dbConnection.collection(collection.template_stories)
-        .find({interview_type: interview_type})
+        .find()
         .sort({$natural: 1})
         .toArray()
 }
@@ -146,13 +146,15 @@ module.exports = exports = {
 
 	connect: connect,
 	getTranscript: getTranscript,
+
 	getContext: getContext,
+    pushContext: pushContext,
 	getContextById: getContextByConversationId,
-	pushContext: pushContext,
-	getSemanticParse: getParsedContext,
+
     getStoryTemplates: getStoryTemplates,
 	saveStory: saveStory,
 	getStories: getStory,
+
 	getConfig: getCustomerConfig,
     getCustomerByToken: getCustomerConfigByToken,
 

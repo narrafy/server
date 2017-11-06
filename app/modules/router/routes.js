@@ -63,6 +63,22 @@ module.exports = (app) => {
 		res.sendStatus(200)
 	})
 
+    app.post('/api/story/send', async (req, res) => {
+
+        let data = {
+            email: req.body.email,
+            conversation_id: req.body.conversation_id,
+			name: req.body.name,
+			ps: "We help people better understand themselves.",
+			internalization: req.body.internalization,
+			externalization: req.body.externalization,
+            date: new Date()
+        };
+        await db.saveStory(data)
+        mailService.bot(data)
+        res.sendStatus(200)
+    })
+
 	app.post('/api/subscribe', async (req, res) => {
 		let data = {
             email: req.body.email,
@@ -98,52 +114,19 @@ module.exports = (app) => {
 		}
 	})
 
-    app.get('/api/story/send', async (req, res) => {
-
-		let stories = [
-			{
-				interview_type:"internalization",
-				story : story_internalization
-			},
-			{
-				interview_type: "externalization",
-				story: story_externalization
-			}
-		]
-
-		//mailService.bot(stories, ps, email)
-		res.sendStatus(200)
-    })
-
 	app.get('/api/story/get', async (req, res) => {
-		let conversation_id = "f1d1ca41-277a-4097-8844-592569cfa2c7" // req.query['conversation_id'];
-		let interview_type = "externalization" // req.query['interview_type'];
 
-		let templateArray = {
-			"internalization" : "$user_name you say you are too _problem.sentence about _context.sentence. " +
-			"It usually happens when you are _trigger.sentence. This does affect your life, because it makes you " +
-			"do things you would not do otherwise. _influence.sentence. It affects people and relationships you care about." +
-			" _influence_on_relationships_example.sentence. It makes your life difficult. _difficulties.sentence. " +
-			"But, there is a hope! You see it. _invitation_to_exception.sentence. You are in the right place. I will help you!",
-
-			"externalization" : "Once upon a time, there was a hero - $user_name emoji_hero. He was doing just fine in his own kingdom. " +
-			"However, one day, $user_name got challenged by a villain - $problem_story.text. It was \\\"$vulnerable_to.sentence\\\" that made " +
-			"him vulnerable to $problem_story.text. It usually shows up when $story_context.sentence. The villain is smart. It takes over by using " +
-			"tricks like: $takeover.sentence. It even managed $user_name do things against his better judgement! For ex: $jeopardize_judgement.sentence. " +
-			"It has an effect on $user_name's relationships. For ex: $effect_on_relationships.sentence And it makes your hero’s life" +
-			" challenging:$cause_difficulties.sentence. But the hero has his own way to fight back. For ex: $unique_outcome.sentence " +
-			"Several times! The hero is silently preparing a way to fight back and has a plan for the future: $invite_action.sentence"
-		}
+		let conversation_id = "561d304c-f378-4b84-a6ae-04f67fec0182"
+		let interview_type = "internalization"
 
 		if (conversation_id !== null) {
 			let data = {
-				template: templateArray[interview_type],
 				conversation_id: conversation_id,
 				interview_type: interview_type
 			};
 
 			try {
-                const story = await Nlg.parseReply(data);
+                const story = await Nlg.getStoryStub(data);
                 res.json(story);
 			} catch (e) {
 				console.log(e.stack);
@@ -182,7 +165,6 @@ module.exports = (app) => {
 		res.render('foundation/contact.ejs')
 	})
 
-
     app.get('/conversation', async function (req, res) {
 
         var conversation_id = req.query['conversation_id']
@@ -197,12 +179,14 @@ module.exports = (app) => {
     app.get('/dashboard', async function (req, res) {
 
         let conversation_id = req.query['conversation_id']
-        let data = {
-            "username": "", //data.username
-            "email": "", //data.email
-            "story": "", // data.story
-        }; //Nlg.story(conversation_id)
-        res.render('dashboard/index.ejs',data)
+        let data = await Conversation.getStory(conversation_id)
+        res.render('dashboard/index.ejs', {
+        	"conversation_id": conversation_id,
+        	"user_name": data.user_name,
+			"email": data.email,
+			"internalization": data.story.internalization,
+			"externalization": data.story.externalization
+		})
     })
 
     //free ssl encryption

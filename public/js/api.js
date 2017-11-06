@@ -4,7 +4,7 @@ var Api = (function(){
     var responsePayload;
     var messageEndpoint = '/api/message';
     var contactEndpoint = '/api/contact';
-    var sendStoryEndpoint = '/api/story';
+    var sendStoryEndpoint = '/api/story/send';
     var subscribeEndpoint = '/api/subscribe';
 
     //publicly accessible methods defined
@@ -97,21 +97,23 @@ var Api = (function(){
     }
 
     //send a message request to the server
-    function sendStory(email, message, name){
+    function sendStory(email, internalization, externalization, name, conversation_id){
         //Build request payload
-        var contactForm = {};
+        var sendStoryForm = {};
         if(email){
-            contactForm = {
+            sendStoryForm = {
                 email: email,
-                message: message,
-                name: name
+                internalization: internalization,
+                externalization: externalization,
+                name: name,
+                conversation_id: conversation_id
             };
         }
         //Build the http request
         var http  = new XMLHttpRequest();
         http.open('POST', sendStoryEndpoint, true);
         http.setRequestHeader('Content-type','application/json');
-        var params = JSON.stringify(contactForm);
+        var params = JSON.stringify(sendStoryForm);
         //send request
         http.send(params);
     }

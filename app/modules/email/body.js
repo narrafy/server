@@ -9,48 +9,31 @@ function getTranscript(transcript) {
     return `<html><body><ul>{transcriptHtml}</ul><body/></html>`
 }
 
-function getStory(stories, ps) {
+function getStory(data) {
 
     let header = "<html><body>"
+    let content = ""
+    let h2 = "<h2>" + "The Story of " + data.name +"</h2>"
+    content += h2
 
-    let story="";
-    if(stories){
-        let problemFlag = false
-        let storyFlag = false
-        stories.forEach(entry => {
-            if(entry.interview_type === "internalization")
-            {
-                if(!problemFlag){
-                    let h2 = "<h2>" + "The Story of Rose" +"</h2>"
-                    story += h2
-                    problemFlag = true
-                }
+    if(data.internalization){
+        content += "<p style='font-size: medium'>"+ data.internalization + "</p>"
+    }
+    content += "<h3>" + "Or, " + "</h3>"
 
-                let span = "<p>" + entry.story + "</p>"
-                story += span
-            }
-
-            if(entry.interview_type === "externalization")
-            {
-                if(!storyFlag){
-                    let h2 = "<h2>" + "Or," +"</h2>"
-                    story += h2
-                    storyFlag = true
-                }
-                let span = "<p>" + entry.story + "</p>"
-                story += span
-            }
-        })
+    if(data.externalization)
+    {
+        content += "<p style='font-size: medium'>" + data.externalization + "</p>"
     }
 
-    if(ps){
-        story += ps
+    if(data.ps){
+        content += "<h4>" + data.ps + "</h4>"
     }
 
-    let footer = "<hr/><p>Have a nice day! <a href='https://www.narrafy.io'>Narrafy Bot</a></p>" +
+    let footer = "<hr/><p>Have a nice day! <a href='https://www.narrafy.io'>Narrafy Team</a></p>" +
         "<body/></html>"
 
-    return header + story + footer
+    return header + content + footer
 
 }
 

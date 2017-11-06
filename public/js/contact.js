@@ -5,8 +5,12 @@ var ContactInput = (function(){
         selectors: {
             emailBox: '#email-box',
             messageBox: '#contact-box',
+            internalizationStoryBox: "#internalization-story-box",
+            externalizationStoryBox: "#externalization-story-box",
             nameBox: '#name-box',
+            conversationId: '#conversation-id',
             contactForm: '#contact-form',
+            sentStoryForm: '#send-story-form',
             notification: '#email-notification',
             subscribeForm: '#subscribe-div',
             subscribeNotification: '#subscribe-notification'
@@ -228,17 +232,22 @@ var ContactInput = (function(){
             if(!validateEmail(emailBox.value)){
                 return;
             }
-            var messageBox = document.querySelector(settings.selectors.messageBox);
+            var internalizationStoryBox = document.querySelector(settings.selectors.internalizationStoryBox);
+
+            var externalizationStoryBox = document.querySelector(settings.selectors.externalizationStoryBox);
 
             var nameBox = document.querySelector(settings.selectors.nameBox);
+
+            var conversationId = document.querySelector(settings.selectors.conversationId);
+
             // Send the user message
-            Api.sendUserStory(emailBox.value, messageBox.value, nameBox.value);
+            Api.sendUserStory(emailBox.value, internalizationStoryBox.value, externalizationStoryBox.value, nameBox.value, conversationId.value);
 
             // Clear input box for further messages
             emailBox.value = '';
-            messageBox.value = '';
+            internalizationStoryBox.value = '';
             Common.fireEvent(emailBox, 'input');
-            var contactForm = document.querySelector(settings.selectors.contactForm);
+            var contactForm = document.querySelector(settings.selectors.sentStoryForm);
             contactForm.className = 'hide';
             var notification = document.querySelector(settings.selectors.notification);
             notification.className = '';
