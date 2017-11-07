@@ -69,7 +69,7 @@ module.exports = (app) => {
             email: req.body.email,
             conversation_id: req.body.conversation_id,
 			name: req.body.name,
-			ps: "We help people better understand themselves.",
+			ps: "P.S. We help people better understand themselves.",
 			internalization: req.body.internalization,
 			externalization: req.body.externalization,
             date: new Date()

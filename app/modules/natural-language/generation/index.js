@@ -26,7 +26,7 @@ async function getStoryStub(conversation_id){
         if(ctx["user_email"])
             email = ctx["user_email"]
         if(ctx["user_name"])
-            user_name = ctx["user_name"]
+            user_name = ctx["user_name"].text
         let stories = {}
         for(let j=0;j<story_templates.length; j++){
             let cursor = story_templates[j]
