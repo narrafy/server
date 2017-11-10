@@ -9,7 +9,7 @@ async function runContextTasks(conversation) {
     let context = conversation.context
     const conversation_id = context.conversation_id
 
-    if (isEmailNode(conversation)) {
+    if (isRequestStory(conversation)) {
             let email = getEmailFromContext(conversation)
             if(email)
             {
@@ -57,10 +57,11 @@ function validateEmail(email) {
 }
 
 
-function isEmailNode(conversation) {
+function isRequestStory(conversation) {
 	return conversation.entities &&
 		conversation.entities[0] &&
-		conversation.entities[0].entity === "email"
+        (conversation.entities[0].entity === "email" ||
+            conversation.entities[0].entity === "link" )
 }
 
 function shouldPauseBot(conversation) {

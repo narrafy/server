@@ -313,7 +313,7 @@ var ConversationPanel = (function(){
             // Run the animation for 1 second and remove it
             setTimeout(function(){
                 document.querySelector(".loading-animation").parentNode.removeChild(document.querySelector(".loading-animation"));
-            }, 1000);
+            }, 500);
         }
 
         scrollBottomChat();

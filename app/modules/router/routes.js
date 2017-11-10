@@ -165,12 +165,21 @@ module.exports = (app) => {
 		res.render('foundation/contact.ejs')
 	})
 
-    app.get('/conversation', async function (req, res) {
+    app.get('/story', async function (req, res) {
 
         var conversation_id = req.query['conversation_id']
         if (conversation_id !== null) {
-            const conversation = await db.getContextById(conversation_id)
-            res.json(conversation)
+            let story = await db.getStory(conversation_id)
+			if(story.length>0){
+            	let latestStory = story[0]
+                res.render('dashboard/user.ejs', {
+                	"conversation_id": conversation_id,
+                    "internalization": latestStory.internalization,
+                    "externalization": latestStory.externalization
+                })
+			} else {
+				res.render('dashboard/come-back-later.ejs')
+			}
         } else {
             res.sendStatus(500)
         }
@@ -179,7 +188,7 @@ module.exports = (app) => {
     app.get('/dashboard', async function (req, res) {
 
         let conversation_id = req.query['conversation_id']
-        let data = await Conversation.getStory(conversation_id)
+        let data = await Conversation.getStoryStub(conversation_id)
         res.render('dashboard/index.ejs', {
         	"conversation_id": conversation_id,
         	"user_name": data.user_name,

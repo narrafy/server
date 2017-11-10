@@ -25,7 +25,8 @@ const emojiDictionary = {
 	emoji_hero: "😎",
 	emoji_villain: "👺",
 	emoji_train:"💪",
-	emoji_robot:"🤖"
+	emoji_robot:"🤖",
+	emoji_bug: "🐞"
 }
 
 function replaceEmojiKey(input) {

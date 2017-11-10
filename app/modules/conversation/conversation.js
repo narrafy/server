@@ -242,5 +242,6 @@ module.exports = {
 		return webRequest(req.sessionID, req.body)
 	},
 
-    getStory: nlg.getStoryStub
+    getStoryStub: nlg.getStoryStub,
+    getStory: db.getStory
 }

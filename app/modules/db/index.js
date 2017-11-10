@@ -62,12 +62,6 @@ async function pushContext(id, conversation) {
 		.insertOne(dbConversation)
 }
 
-async function getParsedContext(conversation_id){
-	return dbConnection.collection(collection.context_semantics)
-        .find({conversation_id: conversation_id})
-        .sort({$natural: 1}).toArray()
-}
-
 async function saveInquiry(data) {
 	return dbConnection
 		.collection(collection.contact)
@@ -115,9 +109,9 @@ async function saveStory(data) {
 		.then(() => data)
 }
 
-async function getStory(story) {
+async function getStory(conversation_id) {
 	return dbConnection.collection(collection.stories)
-		.find({conversation_id: story.conversation_id})
+		.find({conversation_id: conversation_id})
         .sort({$natural: 1})
         .toArray()
 }
@@ -153,7 +147,7 @@ module.exports = exports = {
 
     getStoryTemplates: getStoryTemplates,
 	saveStory: saveStory,
-	getStories: getStory,
+	getStory: getStory,
 
 	getConfig: getCustomerConfig,
     getCustomerByToken: getCustomerConfigByToken,
