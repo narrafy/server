@@ -25,6 +25,7 @@ var ContactInput = (function(){
         init: init,
         contactSubmit: contactSubmit,
         sendStory: sendStory,
+        saveDraft: saveDraft,
         subscribeKeyDown: subscribeKeyDown,
         subscribeSubmit: subscribeSubmit
     };
@@ -226,6 +227,36 @@ var ContactInput = (function(){
 
     // Handles the submission of input
     function sendStory(event) {
+        // Submit on enter key, dis-allowing blank messages
+        var emailBox = document.querySelector(settings.selectors.emailBox);
+        if(emailBox.value ){
+            if(!validateEmail(emailBox.value)){
+                return;
+            }
+            var internalizationStoryBox = document.querySelector(settings.selectors.internalizationStoryBox);
+
+            var externalizationStoryBox = document.querySelector(settings.selectors.externalizationStoryBox);
+
+            var nameBox = document.querySelector(settings.selectors.nameBox);
+
+            var conversationId = document.querySelector(settings.selectors.conversationId);
+
+            // Send the user message
+            Api.sendUserStory(emailBox.value, internalizationStoryBox.value, externalizationStoryBox.value, nameBox.value, conversationId.value);
+
+            // Clear input box for further messages
+            emailBox.value = '';
+            internalizationStoryBox.value = '';
+            Common.fireEvent(emailBox, 'input');
+            var contactForm = document.querySelector(settings.selectors.sentStoryForm);
+            contactForm.className = 'hide';
+            var notification = document.querySelector(settings.selectors.notification);
+            notification.className = '';
+        }
+    }
+
+    // Handles the submission of input
+    function saveDraft(event) {
         // Submit on enter key, dis-allowing blank messages
         var emailBox = document.querySelector(settings.selectors.emailBox);
         if(emailBox.value ){
