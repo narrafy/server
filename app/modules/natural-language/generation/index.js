@@ -37,7 +37,7 @@ async function getStoryStub(conversation_id){
             stories[story_key] = story
         }
         return {
-            user_name: user_name,
+            name: user_name,
             email: email,
             story: stories
         }

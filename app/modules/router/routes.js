@@ -63,19 +63,65 @@ module.exports = (app) => {
 		res.sendStatus(200)
 	})
 
-    app.post('/api/story/send', async (req, res) => {
+    app.get('/story', async function (req, res) {
+
+        var conversation_id = req.query['conversation_id']
+        if (conversation_id !== null) {
+
+            let drafts = await db.getStory(conversation_id)
+            let model = {}
+            if(drafts.length === 0){
+                //no user drafts, just stub
+                let stub = await Conversation.getStoryStub(conversation_id)
+                model = {
+                    "user_name": stub.user_name,
+                    "email": stub.email,
+                    "conversation_id": conversation_id,
+                    "internalization": stub.story.internalization,
+                    "externalization": stub.story.externalization
+                }
+            } else {
+                model = drafts[0]
+            }
+            res.render('profile/user.ejs', model)
+        } else {
+            res.sendStatus(500)
+        }
+    })
+
+	app.post('/api/story/send', async (req, res) => {
 
         let data = {
             email: req.body.email,
             conversation_id: req.body.conversation_id,
-			name: req.body.name,
-			ps: "P.S. We help people better understand themselves.",
+			user_name: req.body.user_name,
 			internalization: req.body.internalization,
 			externalization: req.body.externalization,
             date: new Date()
+        }
+        await db.saveStory(data)
+
+        mailService.bot(data, "P.S. We help people better understand themselves.")
+
+		await db.addSubscriber({
+			email: data.email,
+			date: data.date
+		})
+
+		res.sendStatus(200)
+    })
+
+    app.post('/api/story/save', async (req, res) => {
+
+        let data = {
+            email: req.body.email,
+            conversation_id: req.body.conversation_id,
+            user_name: req.body.user_name,
+            internalization: req.body.internalization,
+            externalization: req.body.externalization,
+            date: new Date()
         };
         await db.saveStory(data)
-        mailService.bot(data)
         res.sendStatus(200)
     })
 
@@ -164,39 +210,6 @@ module.exports = (app) => {
 	app.get('/contact', (req, res) => {
 		res.render('foundation/contact.ejs')
 	})
-
-    app.get('/story', async function (req, res) {
-
-        var conversation_id = req.query['conversation_id']
-        if (conversation_id !== null) {
-            let story = await db.getStory(conversation_id)
-			if(story.length>0){
-            	let latestStory = story[0]
-                res.render('dashboard/user.ejs', {
-                	"conversation_id": conversation_id,
-                    "internalization": latestStory.internalization,
-                    "externalization": latestStory.externalization
-                })
-			} else {
-				res.render('dashboard/come-back-later.ejs')
-			}
-        } else {
-            res.sendStatus(500)
-        }
-    })
-
-    app.get('/dashboard', async function (req, res) {
-
-        let conversation_id = req.query['conversation_id']
-        let data = await Conversation.getStoryStub(conversation_id)
-        res.render('dashboard/index.ejs', {
-        	"conversation_id": conversation_id,
-        	"user_name": data.user_name,
-			"email": data.email,
-			"internalization": data.story.internalization,
-			"externalization": data.story.externalization
-		})
-    })
 
     //free ssl encryption
     app.get('/.well-known/acme-challenge/:content', (req, res) => {

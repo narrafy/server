@@ -100,19 +100,22 @@ async function getTranscript(conversation_id) {
 async function saveSubscriber(data) {
 	return dbConnection
 		.collection(collection.subscribers)
-		.save(data)
+        .replaceOne({ conversation_id: data.conversation_id }, data , { upsert: true })
+		.then(() => data)
 }
 
 async function saveStory(data) {
-	return dbConnection.collection(collection.stories)
-		.insertOne(data)
+	return dbConnection
+		.collection(collection.stories)
+		.replaceOne({ conversation_id: data.conversation_id }, data , { upsert: true })
 		.then(() => data)
 }
 
 async function getStory(conversation_id) {
 	return dbConnection.collection(collection.stories)
 		.find({conversation_id: conversation_id})
-        .sort({$natural: 1})
+        .sort({date: -1}) //.sort({"date":-1})
+        .limit(1)
         .toArray()
 }
 

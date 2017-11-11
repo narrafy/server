@@ -9,11 +9,11 @@ function getTranscript(transcript) {
     return `<html><body><ul>{transcriptHtml}</ul><body/></html>`
 }
 
-function getStory(data) {
+function getStory(data, ps) {
 
     let header = "<html><body>"
     let content = ""
-    let h2 = "<h2>" + "The Story of " + data.name +"</h2>"
+    let h2 = "<h2>" + "The Story of " + data.user_name +"</h2>"
     content += h2
 
     if(data.internalization){
@@ -26,8 +26,8 @@ function getStory(data) {
         content += "<p style='font-size: medium'>" + data.externalization + "</p>"
     }
 
-    if(data.ps){
-        content += "<h4>" + data.ps + "</h4>"
+    if(ps){
+        content += "<h4>" + ps + "</h4>"
     }
 
     let footer = "<hr/><p>Have a nice day! <a href='https://www.narrafy.io'>Narrafy Team</a></p>" +

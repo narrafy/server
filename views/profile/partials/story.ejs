@@ -1,0 +1,99 @@
+
+<section id="contact" class="section-secondary">
+    <div class="container">
+        <h2 class="text-center"> The story of Lisa </h2>
+        <div class="row row-eq-height">
+            <div class="col-md-2 ">
+            </div>
+            <div class="col-md-10">
+
+                <div id="send-story-form">
+
+                    <div class="form-group">
+
+                        <p>
+                            Once upon a time, there was a hero - Lisa. She was doing just fine in her own kingdom.
+                            However, one day, Rose got challenged by a villain - the Full-on. It was “maybe not being heard,
+                            made to feel unimportant as a child that made her vulnerable to Full-on.
+                            The villain usually shows up when the person Rose is speaking to, doesn't understand or acknowledge what she is saying.
+                            The villain is smart. It takes over by using tricks like making Rose feeling discounted or minimized.
+                            It has an effect on Rose's relationships. Full-on escalates arguments with her daughter.
+                            And it makes Rose’s life challenging. She feels less important and less respected by her daughter.
+                            It blinds her in the moment of conflict. But Rose has her own way to fight back.
+                            When she is with scaringly angry people, she practice detached compassion, strongly repressing her
+                            feelings for safety sake. Last time she managed to fight back was when she was with a friend, allowing
+                            her to initiate the topic of conversation. She knows what she experience to be true for her without
+                            expecting others to understand or agree, just knowing is enough.
+                            She prefers to simply sit with her knowledge without needing to necessarily share it.
+                        </p>
+                    </div>
+
+                    <div class="form-group">
+                        <h4 class="text-center"> Your story </h4>
+                        <input id="conversation-id" type="hidden" value="<%= conversation_id%>">
+                    </div>
+
+                    <div class="form-group">
+                        <input id="name-box" type="name" value="<%= user_name %>" name="user_name" class="form-input-text form-control" placeholder="Name" required="required">
+                    </div>
+
+                    <div class="form-group">
+                        <textarea id="internalization-story-box" value="" name="internalization" class="form-input-text form-control" rows="10" placeholder="Internalization Exercise" required="required"><%= internalization%></textarea>
+                    </div>
+
+                    <p> Here you can find the ingredients, you bake your own story. Be creative! </p>
+
+                    <div class="form-group">
+                        <textarea id="externalization-story-box" value="" name="externalization" class="form-input-text form-control" rows="20" placeholder="Externalization Exercise" required="required"><%= externalization%></textarea>
+                        <input id="email-box" type="email" value="<%= email%>" name="email" class="form-input-text form-control" placeholder="Email" required="required">
+                    </div>
+
+                    <div class="send-button bottom-margin">
+                        <button type="submit" onclick="User.saveDraft(this)" class="btn  btn-primary">Save Draft</button>
+                        <button type="submit" onclick="User.sendStory(this)" class="btn  btn-primary">Email Story</button>
+                        <div id="save-story-notification" class="hide">
+                            <span class="text-center big">
+                                Saved.
+                            </span>
+                        </div>
+
+                        <div id="need-email-notification" class="hide">
+                            <span class="text-center big" style="color: red">
+                                Please provide a valid email.
+                            </span>
+                        </div>
+
+                        <div id="send-story-notification" class="hide">
+                            <span class="text-center big">
+                                Sent. Check you inbox
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <hr>
+
+        <div class="row row-eq-height">
+            <div class="col-md-2"></div>
+            <div class="col-md-10 col-md-offset-2">
+                <div class="form-group">
+
+                    <p> P.S. Follow us on Social Media. We love Medium btw. We will anonymously post the story of the day there.
+                    </p>
+
+                    <ul class="social-network social-circle">
+
+                        <li><a href="https://medium.com/narrafy" class="icoMedium" title="Medium"><i class="fa fa-medium"></i></a></li>
+                        <li><a href="https://www.facebook.com/narrafy" class="icoFacebook" title="Facebook"><i class="fa fa-facebook"></i></a></li>
+                        <li><a href="https://twitter.com/narrafy" class="icoTwitter" title="Twitter"><i class="fa fa-twitter"></i></a></li>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

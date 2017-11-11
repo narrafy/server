@@ -242,7 +242,16 @@ var ContactInput = (function(){
             var conversationId = document.querySelector(settings.selectors.conversationId);
 
             // Send the user message
-            Api.sendUserStory(emailBox.value, internalizationStoryBox.value, externalizationStoryBox.value, nameBox.value, conversationId.value);
+            var story = {
+                email: emailBox.value,
+                internalization: internalizationStoryBox.value,
+                externalization: externalizationStoryBox.value,
+                user_name: nameBox.value,
+                conversation_id: conversationId.value
+            }
+
+            // Send the user message
+            Api.sendUserStory(story);
 
             // Clear input box for further messages
             emailBox.value = '';
@@ -272,7 +281,15 @@ var ContactInput = (function(){
             var conversationId = document.querySelector(settings.selectors.conversationId);
 
             // Send the user message
-            Api.sendUserStory(emailBox.value, internalizationStoryBox.value, externalizationStoryBox.value, nameBox.value, conversationId.value);
+            var story = {
+                email: emailBox.value,
+                internalization: internalizationStoryBox.value,
+                externalization: externalizationStoryBox.value,
+                user_name: nameBox.value,
+                conversation_id: conversationId.value
+            }
+
+            Api.saveUserStory(story);
 
             // Clear input box for further messages
             emailBox.value = '';

@@ -1,17 +1,25 @@
 
 var Api = (function(){
     var requestPayload;
+
     var responsePayload;
+
     var messageEndpoint = '/api/message';
+
     var contactEndpoint = '/api/contact';
+
     var sendStoryEndpoint = '/api/story/send';
+
+    var saveStoryEndpoint = '/api/story/save';
+
     var subscribeEndpoint = '/api/subscribe';
 
     //publicly accessible methods defined
     return {
         sendRequest: sendRequest,
         sendContactRequest: sendContactRequest,
-        sendUserStory: sendStory,
+        sendUserStory: sendUserStory,
+        saveUserStory: saveUserStory,
         sendSubscribeRequest: sendSubscribeRequest,
 
         //The request/response getters/setter are defined here to prevent internal methods
@@ -96,22 +104,45 @@ var Api = (function(){
         http.send(params);
     }
 
+    function sendUserStory(data) {
+        sendStory(data, sendStoryEndpoint)
+    }
+
+    function saveUserStory(data) {
+        saveStory(data, saveStoryEndpoint)
+    }
+
     //send a message request to the server
-    function sendStory(email, internalization, externalization, name, conversation_id){
+    function saveStory(data, endPoint){
+
+        //Build the http request
+        var http  = new XMLHttpRequest();
+        http.open('POST', endPoint, true);
+        http.setRequestHeader('Content-type','application/json');
+        var params = JSON.stringify(data);
+        //send request
+        http.send(params);
+    }
+
+    //send a message request to the server
+    function sendStory(data, endPoint){
+
+        var email = data.email;
+
         //Build request payload
         var sendStoryForm = {};
         if(email){
             sendStoryForm = {
-                email: email,
-                internalization: internalization,
-                externalization: externalization,
-                name: name,
-                conversation_id: conversation_id
+                email: data.email,
+                internalization: data.internalization,
+                externalization: data.externalization,
+                user_name: data.user_name,
+                conversation_id: data.conversation_id
             };
         }
         //Build the http request
         var http  = new XMLHttpRequest();
-        http.open('POST', sendStoryEndpoint, true);
+        http.open('POST', endPoint, true);
         http.setRequestHeader('Content-type','application/json');
         var params = JSON.stringify(sendStoryForm);
         //send request
