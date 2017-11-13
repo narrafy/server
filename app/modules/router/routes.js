@@ -73,12 +73,15 @@ module.exports = (app) => {
             if(drafts.length === 0){
                 //no user drafts, just stub
                 let stub = await Conversation.getStoryStub(conversation_id)
-                model = {
-                    "user_name": stub.user_name,
-                    "email": stub.email,
-                    "conversation_id": conversation_id,
-                    "internalization": stub.story.internalization,
-                    "externalization": stub.story.externalization
+				if(stub){
+                    model = {
+                        "user_name": stub.user_name,
+                        "email": stub.email,
+                        "conversation_id": conversation_id,
+                        "internalization": stub.story.internalization,
+                        "externalization": stub.story.externalization
+                    }
+                    await db.saveStory(stub)
                 }
             } else {
                 model = drafts[0]

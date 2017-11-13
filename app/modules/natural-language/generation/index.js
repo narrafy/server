@@ -16,7 +16,7 @@ function mineResponse(data) {
 
 async function getStoryStub(conversation_id){
 
-    const conversation = await db.getContextById(conversation_id)
+    const conversation = await db.getContextById(conversation_id, 1)
     let story_templates = await db.getStoryTemplates()
     let email = ""
     let user_name = ""

@@ -31,7 +31,6 @@ var Api = (function(){
 
             var newPayloadArray = JSON.parse(newPayloadStr)
             requestPayload = newPayloadArray;
-            console.log(requestPayload)
         },
         getResponsePayload: function(){
             return responsePayload;
@@ -39,7 +38,6 @@ var Api = (function(){
         setResponsePayload: function (newPayloadStr) {
             var responsePayloadArray = JSON.parse(newPayloadStr);
             responsePayload = responsePayloadArray;
-            console.log(responsePayload)
         }
     };
 
@@ -55,10 +53,12 @@ var Api = (function(){
         if(context){
             context.quick_replies = '';
             context.customer_id = "378327679207724"
+            context.web_user = true
             payloadToWatson.context = context;
         }else{
             payloadToWatson.context = {
-                customer_id : "378327679207724"
+                customer_id : "378327679207724",
+                web_user: true
             }
         }
 
@@ -70,6 +70,16 @@ var Api = (function(){
             if(http.readyState === 4 && http.status === 200
             &&http.responseText){
                 Api.setResponsePayload(http.responseText);
+                //first request
+                if(!context){
+                    var cookieName = "conversation_id";
+                    var firstContext = JSON.parse(http.responseText);
+                    var conversation_id = firstContext.context.conversation_id;
+                    createCookie(cookieName, conversation_id, 30)
+                    /*if(!getCookie(cookieName)){
+
+                    }*/
+                }
             }
         };
         var params = JSON.stringify(payloadToWatson);
@@ -165,5 +175,35 @@ var Api = (function(){
         //send request
         http.send(params);
     }
+
+    function createCookie(name, value, days) {
+        var expires;
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toGMTString();
+        }
+        else {
+            expires = "";
+        }
+        document.cookie = name + "=" + value + expires + "; path=/";
+    }
+
+    function getCookie(c_name) {
+        if (document.cookie.length > 0) {
+            c_start = document.cookie.indexOf(c_name + "=");
+            if (c_start != -1) {
+                c_start = c_start + c_name.length + 1;
+                c_end = document.cookie.indexOf(";", c_start);
+                if (c_end == -1) {
+                    c_end = document.cookie.length;
+                }
+                return unescape(document.cookie.substring(c_start, c_end));
+            }
+        }
+        return "";
+    }
+
+
 
 }());

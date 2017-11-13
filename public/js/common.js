@@ -6,7 +6,8 @@ var Common = (function () {
         buildDomElement: buildDomElementFromJson,
         fireEvent: fireEvent,
         listForEach: listForEach,
-        deleteDomElements: deleteDomElements
+        deleteDomElements: deleteDomElements,
+        copyLink: copyLink
     };
     // Take in JSON object and build a DOM element out of it
     // (Limited in scope, cannot necessarily create arbitrary DOM elements)
@@ -21,6 +22,14 @@ var Common = (function () {
     //    }],
     //    "children: [{other similarly structured JSON objects...}, {...}]
     //  }
+
+    function copyLink() {
+        var copyText = document.getElementById("webLink");
+        copyText.select();
+        document.execCommand("Copy");
+        alert("Copied the text: " + copyText.value);
+    }
+
     function buildDomElementFromJson(domJson){
         //Create a DOM element with the given tag name
         var element = document.createElement(domJson.tagName);

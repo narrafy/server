@@ -211,19 +211,28 @@ async function messengerRequest(body) {
     }
 }
 
-async function webRequest(id, body) {
+async function webRequest(id, body, conversation_id) {
     var data = {};
-    if (body) {
-        if (body.input) {
+    if (body)
+    {
+        if (body.input){
             data.text = body.input.text
         }
-        if (body.context) {
-            data.context = body.context
 
+        if (body.context)
+        {
+            data.context = body.context
             let customer_id = body.context.customer_id
-            const { access_token, workspace } = await setContextConfig(customer_id)
+            const {access_token, workspace} = await setContextConfig(customer_id)
             data.access_token = access_token
             data.workspace = workspace
+            /*
+              if(conversation_id && !body.context.hasOwnProperty("system")) {
+                 let ctxArray = await db.getContextById(conversation_id, 2)
+                 if (ctxArray.length > 1) {
+                    data.context = ctxArray[1].context
+               }
+            }*/
         }
     }
 
@@ -239,7 +248,8 @@ module.exports = {
 	messengerRequest: messengerRequest,
 
 	async web(req) {
-		return webRequest(req.sessionID, req.body)
+        let conversation_id = req.cookies["conversation_id"]
+		return webRequest(req.sessionID, req.body, conversation_id)
 	},
 
     getStoryStub: nlg.getStoryStub,

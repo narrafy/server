@@ -170,7 +170,6 @@ h2,
 }
 
 .message-inner p:before {
-    content: ".";
     border-left: 4px solid #7A5B6B;
 }
 
@@ -194,6 +193,10 @@ input#subscribe-box {
     list-style: none;
     display: inline-block;
     color: #fff;
+}
+
+.bottom-margin {
+    text-align: right;
 }
 
 ul.social {

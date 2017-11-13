@@ -34,12 +34,12 @@ async function getContext(input) {
 			.then((stored_log) => ({input, stored_log}))
 }
 
-async function getContextByConversationId(id) {
+async function getContextByConversationId(id, limit) {
     return dbConnection
         .collection(collection.log)
         .find({conversation_id: id},{ context: 1 })
         .sort({date: -1})
-		.limit(1)
+		.limit(limit)
 		.toArray()
 }
 

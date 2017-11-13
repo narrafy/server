@@ -172,7 +172,6 @@ var ConversationPanel = (function(){
                     // your code
                     if(prop==="title"){
                         quick_replies.push(obj[prop]);
-                        console.log(prop + " = " + obj[prop]);
                     }
                 }
             }
@@ -319,10 +318,10 @@ var ConversationPanel = (function(){
         scrollBottomChat();
     };
 
-    function sendMessage(inputBoxId)
-    {
+    function sendMessage(inputBoxId) {
         var inputBox = document.getElementById(inputBoxId);
         fireChatEvent(inputBox);
         loadingAnimation()
     }
+
 }());

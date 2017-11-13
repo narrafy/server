@@ -79,7 +79,7 @@ var User = (function(){
     }
 
     // Handles the submission of input
-    function saveDraft(event) {
+    function saveDraft() {
 
         // Submit on enter key, dis-allowing blank messages
         var emailBox = document.querySelector(settings.selectors.emailBox);
