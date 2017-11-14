@@ -223,6 +223,17 @@ footer p {
     .hidemobile {
         display: none;
     }
+    .chat-container {
+        padding-top: 40px !important;
+        margin: 0 auto;
+        max-width: 768px;
+    }
+    .title{
+        margin-top: 30px !important;
+    }
+    #subscribe {
+        margin-bottom: 20px !important;
+    }
 }
 
 #subscribe {
