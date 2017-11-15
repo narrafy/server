@@ -55,10 +55,16 @@ var Api = (function(){
             context.customer_id = "378327679207724"
             context.web_user = true
             payloadToWatson.context = context;
+            if (window.location.hostname == "localhost"){
+                payloadToWatson.context.localhost = true;
+            }
         }else{
             payloadToWatson.context = {
                 customer_id : "378327679207724",
                 web_user: true
+            }
+            if (window.location.hostname == "localhost"){
+                payloadToWatson.context.localhost = true;
             }
         }
 

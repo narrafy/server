@@ -77,6 +77,7 @@ function shouldEnableBot(conversation) {
 }
 
 function is3RdNode(conversation) {
+    if(conversation.context && conversation.context.localhost) return false
 	return conversation.context &&
 		conversation.context.system &&
 		conversation.context.system.dialog_request_counter === 3
