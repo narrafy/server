@@ -25,7 +25,6 @@ function pos(sentence){
         var word = taggedWord[0];
         var tag = taggedWord[1];
 
-
         if(isActionPOS(tag))
         {
            actions.push(word)
@@ -73,6 +72,17 @@ function isSubjectPOS(tag){
         tag === "PRP"
 }
 
+function parseProblemNode(input)
+{
+    let words = new postag.Lexer().lex(input);
+    if(words.length===1) return input
+    let myRegexp = /.*too\s*(\w+)/g;
+    let match = myRegexp.exec(input);
+    if(match.length>0)
+        return match[1]
+    return input
+}
+
 async function analyze(parameters) {
     return new Promise((resolve, reject) => {
         nluClient.analyze(parameters, function (err, response) {
@@ -86,5 +96,6 @@ async function analyze(parameters) {
 }
 
 module.exports = exports = {
-    pos:pos
+    pos:pos,
+    parseProblemNode: parseProblemNode
 }

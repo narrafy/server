@@ -1,6 +1,7 @@
 const db = require('../db')
 const emailService = require('../email')
 const config = require('../config')
+const nlu = require('../natural-language/understanding')
 
 /* tasks to run after the context of a conversation is pushed to the database
  * it's usually to send an email or parse the context variable */
@@ -19,9 +20,17 @@ async function runContextTasks(conversation) {
                     date: new Date(),
                 };
                 db.addSubscriber(data)
-                data.url = config.app.url + "/dashboard"+"?conversation_id="+ conversation_id
+                data.url = config.app.url + "/story"+"?conversation_id="+ conversation_id
                 emailService.adminbot(data)
             }
+    }
+
+    if(isPersonDescriptionNode(conversation)){
+        let problem = nlu.parseProblemNode(context.problem.text)
+        context.problem = {
+            text: problem,
+            parsed: true
+        }
     }
 
     if(shouldEnableBot(conversation))
@@ -60,8 +69,14 @@ function validateEmail(email) {
 function isRequestStory(conversation) {
 	return conversation.entities &&
 		conversation.entities[0] &&
-        (conversation.entities[0].entity === "email" ||
-            conversation.entities[0].entity === "link" )
+        conversation.entities[0].entity === "email"
+}
+
+function isPersonDescriptionNode(conversation){
+    return conversation.context &&
+        conversation.context.problem &&
+        conversation.context.problem.text &&
+        conversation.context.problem.parsed === false
 }
 
 function shouldPauseBot(conversation) {

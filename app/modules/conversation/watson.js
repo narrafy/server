@@ -5,8 +5,7 @@ const conversation = new WatsonClient({
 	username: config.conversation.username,
 	password: config.conversation.password,
 	url: config.conversation.url,
-	version_date: '2017-02-03',
-	version: 'v1'
+	version_date: '2017-05-26'
 })
 
 function createPayload(data) {
