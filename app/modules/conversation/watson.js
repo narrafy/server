@@ -5,7 +5,10 @@ const conversation = new WatsonClient({
 	username: config.conversation.username,
 	password: config.conversation.password,
 	url: config.conversation.url,
-	version_date: '2017-05-26'
+	version_date: '2017-05-26',
+	/* headers: {
+        "X-Watson-Learning-Opt-Out": "1"
+    }*/
 })
 
 function createPayload(data) {
