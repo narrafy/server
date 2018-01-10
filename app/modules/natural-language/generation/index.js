@@ -20,6 +20,7 @@ async function getStoryStub(conversation_id){
     let story_templates = await db.getStoryTemplates()
     let email = ""
     let user_name = ""
+    let cc = ""
 
     if(conversation && conversation.length > 0){
         let ctx = conversation[0].context
@@ -39,7 +40,8 @@ async function getStoryStub(conversation_id){
         return {
             name: user_name,
             email: email,
-            story: stories
+            story: stories,
+            cc: cc
         }
     }
 }

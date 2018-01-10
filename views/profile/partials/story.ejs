@@ -1,31 +1,14 @@
 
 <section id="contact" class="section-secondary">
     <div class="container">
-        <h2 class="text-center"> The story of Kari </h2>
         <div class="row row-eq-height">
             <div class="col-md-2 ">
             </div>
             <div class="col-md-10">
                 <div id="send-story-form">
                     <div class="form-group">
-                        <p>
-                            Once, upon a time, there was a girl: Kari. As a child, she dreamed to help other people.
-                            She was attending the healing school of the kingdom to learn how to.
-                            After 6 long springs, she finally finished it. It was a school where people were taught to do magic,
-                            use potions and work with unbelievable machinery. It was the time to look for a position at the local crafts fairs.
-                            Not much luck in the beginning. It was a poor kingdom. And if you didn't know someone in the royal healing department,
-                            it's tough to get something. \nEven worse, one day, Livia got challenged by a villain! His name was Self-Criticism.
-                            It was him that made Livia forget about her beauty, skills and knowledge. It was him that made her forget about her
-                            long life dream of helping other people. The villain would constantly undermine her. He would use tips and tricks
-                            like making her: mistrustful and doubt herself. But, Kari managed to fight back. Several times.
-                            She knows that Self Criticism can be defeated. And she silently is preparing a plan to fight back!
-                            And maybe, one day, she will fulfil her long life dream to help people.
-                        </p>
-                    </div>
-
-                    <div class="form-group">
-                        <h4 class="text-center"> Your story </h4>
-                        <p> Here you can find the ingredients, you bake your own story. Be creative! </p>
+                        <h4 class="text-center"> The story </h4>
+                        <p> Here you can find the ingredients, you bake a story. Be creative! </p>
                         <input id="conversation-id" type="hidden" value="<%= conversation_id%>">
                     </div>
 
@@ -40,7 +23,10 @@
                     <div class="form-group">
                         <textarea id="externalization-story-box" value="" name="externalization" class="form-input-text form-control" rows="20" placeholder="Externalization Exercise" required="required"><%= externalization%></textarea>
                         <input id="email-box" type="email" value="<%= email%>" name="email" class="form-input-text form-control" placeholder="Email" required="required">
+                        <input id="cc-box" type="email" value="<%= cc%>" name="cc" class="form-input-text form-control" placeholder="Email">
                     </div>
+
+
 
                     <div class="form-group">
                         <div class="send-button bottom-margin">

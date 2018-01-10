@@ -79,7 +79,8 @@ module.exports = (app) => {
                         "email": stub.email,
                         "conversation_id": conversation_id,
                         "internalization": stub.story.internalization,
-                        "externalization": stub.story.externalization
+                        "externalization": stub.story.externalization,
+						"cc": stub.story.cc
                     }
                     await db.saveStory(stub)
                 }
@@ -96,15 +97,21 @@ module.exports = (app) => {
 
         let data = {
             email: req.body.email,
+			cc: req.body.cc,
             conversation_id: req.body.conversation_id,
 			user_name: req.body.user_name,
 			internalization: req.body.internalization,
 			externalization: req.body.externalization,
-            date: new Date()
+            date: new Date(),
+			cc: req.body.cc
         }
         await db.saveStory(data)
 
-        mailService.bot(data, "P.S. We help people better understand themselves.")
+        mailService.bot(data, "P.S. at Narrafy we help people better understand themselves.")
+		if(data.cc){
+        	data.email = data.cc;
+        	mailService.bot(data, "P.S. at Narrafy we help people better understand themselves.");
+		}
 
 		await db.addSubscriber({
 			email: data.email,
@@ -122,7 +129,8 @@ module.exports = (app) => {
             user_name: req.body.user_name,
             internalization: req.body.internalization,
             externalization: req.body.externalization,
-            date: new Date()
+            date: new Date(),
+			cc: req.body.cc
         };
         await db.saveStory(data)
         res.sendStatus(200)

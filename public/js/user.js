@@ -4,6 +4,7 @@ var User = (function(){
     var settings = {
         selectors: {
             emailBox: '#email-box',
+            ccbox: '#cc-box',
             messageBox: '#contact-box',
             internalizationStoryBox: "#internalization-story-box",
             externalizationStoryBox: "#externalization-story-box",
@@ -57,9 +58,12 @@ var User = (function(){
 
             var conversationId = document.querySelector(settings.selectors.conversationId);
 
+            var ccBox = document.querySelector(settings.selectors.ccbox);
+
             // Send the user message
             var story = {
                 email: emailBox.value,
+                cc: ccBox.value,
                 internalization: internalizationStoryBox.value,
                 externalization: externalizationStoryBox.value,
                 user_name: nameBox.value,
@@ -84,6 +88,8 @@ var User = (function(){
         // Submit on enter key, dis-allowing blank messages
         var emailBox = document.querySelector(settings.selectors.emailBox);
 
+        var ccBox = document.querySelector(settings.selectors.ccbox);
+
         var internalizationStoryBox = document.querySelector(settings.selectors.internalizationStoryBox);
 
         var externalizationStoryBox = document.querySelector(settings.selectors.externalizationStoryBox);
@@ -95,10 +101,11 @@ var User = (function(){
         // Send the user message
         var story = {
             email: emailBox.value,
+            cc: ccBox.value,
             internalization: internalizationStoryBox.value,
             externalization: externalizationStoryBox.value,
             user_name: nameBox.value,
-            conversation_id: conversationId.value
+            conversation_id: conversationId.value,
         }
 
         Api.saveUserStory(story);

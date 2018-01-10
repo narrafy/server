@@ -150,6 +150,7 @@ var Api = (function(){
         if(email){
             sendStoryForm = {
                 email: data.email,
+                cc: data.cc,
                 internalization: data.internalization,
                 externalization: data.externalization,
                 user_name: data.user_name,
