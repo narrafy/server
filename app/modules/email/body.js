@@ -47,13 +47,12 @@ function getAdminEmailBody(data){
 function getSubscriberReply() {
     return "<html><body><p>" + "Hey! We received your email." +
         " We will contact you when we have something important to share." +
-        " Otherwise, we don't bother innocent people!" + "</p>" +
         "<p>Have a nice day! <a href='https://www.narrafy.io'>Narrafy Team</a></p></body></html>"
 }
 
 function getUserReply() {
     return "<html><body><p>" + "Hi! We received your email." +
-        " We will contact as soon as possible. Thank you for your interest!" +
+        " We will contact you as soon as possible. Thank you for your interest!" +
         "</p>" +
         "<p><a href='https://www.narrafy.io'>Narrafy Team</a> </p></body></html>"
 }
