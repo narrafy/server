@@ -9,7 +9,8 @@ module.exports = exports = {
 	},
 
 	mongoDb: {
-		uri:   process.env.MONGODB_URI || 'mongodb://localhost:27017/narrafy'
+		uri:   process.env.MONGODB_URI || 'mongodb://localhost:27017/narrafy',
+		secret: process.env.SESSION_SECRET
 	},
 
 	sendGrid: {
