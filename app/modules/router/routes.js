@@ -16,7 +16,6 @@ module.exports = (app) => {
             res.send(req.query['hub.challenge'])
 
             /* Configure Facebook */
-
             fb.init({
                 greeting: customerConfig.facebook.greeting_message,
                 cta: customerConfig.facebook.cta,

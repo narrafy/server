@@ -1,102 +1,109 @@
 const config = require('../config')
-const SendGrid = require('sendgrid')(config.sendGrid.apiKey)
-const MailHelper = require('sendgrid').mail
 const log = require('../log')
 const body = require('./body')
 
-function send(mail) {
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(config.sendGrid.apiKey);
 
-	const request = SendGrid.emptyRequest({
-		method: 'POST',
-		path: '/v3/mail/send',
-		body: mail.toJSON(),
-	})
-
-    SendGrid.API(request,(error, response) => {
-        if(error)
-            return console.log(error);
-        console.log(response.statusCode);
-    });
+function send(msg) {
+    sgMail.send(msg);
 }
 
 function admin(message) {
-	const fromEmail = new MailHelper.Email(config.sendGrid.contactEmail)
-	const toEmail = new MailHelper.Email(config.sendGrid.adminEmail)
-	const subject = config.app.name
-	const content = new MailHelper.Content('text/plain', message)
-	const mail = new MailHelper.Mail(fromEmail, subject, toEmail, content)
-	return send(mail)
+
+    const msg = {
+        to: config.sendGrid.adminEmail,
+        from: config.sendGrid.contactEmail,
+        subject: config.app.name,
+        text: message,
+    };
+	return send(msg)
 }
 
 
 function adminbot(data) {
-    const fromEmail = new MailHelper.Email(config.sendGrid.adminEmail)
-    const toEmail = new MailHelper.Email(config.sendGrid.adminEmail)
-    const subject = config.app.name
-	const emailBody = body.adminemail(data)
-    const content = new MailHelper.Content('text/html', emailBody)
-    const mail = new MailHelper.Mail(fromEmail, subject, toEmail, content)
-    return send(mail)
+
+    const emailBody = body.adminEmail(data)
+    const msg = {
+        to: config.sendGrid.adminEmail,
+        from: config.sendGrid.adminEmail,
+        subject: config.app.name,
+        html: emailBody,
+    };
+    return send(msg)
 }
 
 function bot(data, ps) {
-    const fromEmail = new MailHelper.Email(config.sendGrid.adminEmail)
-    const toEmail = new MailHelper.Email(data.email)
-    const subject = "The story of " + data.user_name
     const emailBody = body.story(data, ps)
-    const content = new MailHelper.Content('text/html', emailBody)
-    const mail = new MailHelper.Mail(fromEmail, subject, toEmail, content)
-    return send(mail)
+	const msg = {
+        to: data.email,
+        from: config.sendGrid.adminEmail,
+        subject: "The story of " + data.user_name,
+        html: emailBody,
+    };
+    return send(msg)
 }
 
 
 function contact(data) {
-    const fromEmail = new MailHelper.Email(data.email)
-    const toEmail = new MailHelper.Email(config.sendGrid.contactEmail)
-    const subject = "Message from " + data.name
-    const content = new MailHelper.Content('text/plain', data.message)
-    const mail = new MailHelper.Mail(fromEmail, subject, toEmail, content)
-    return send(mail)
+    const msg = {
+        to: config.sendGrid.contactEmail,
+        from: data.email,
+        subject: "Message from " + data.name,
+        text: data.message,
+    };
+    return send(msg)
 }
 
 function transcript(email, transcript) {
-	const fromEmail = new MailHelper.Email(email)
-	const toEmail = new MailHelper.Email(config.sendGrid.adminEmail)
-	const subject = "Exercise Transcript"
+
 	const emailBody = body.transcript(transcript)
-	const content = new MailHelper.Content('text/html', emailBody)
-	const mail = new MailHelper.Mail(fromEmail, subject, toEmail, content)
-	return send(mail)
+    const msg = {
+        to: email,
+		cc: config.sendGrid.adminEmail,
+        from: config.sendGrid.adminEmail,
+        subject: "Narrafy Conversation Transcript",
+        html: emailBody,
+    };
+	return send(msg)
 }
 
 function story(email, story) {
-    let fromEmail = new MailHelper.Email(email)
-    let toEmail = new MailHelper.Email(config.sendGrid.adminEmail)
-    let subject = "A story of hope from Narrafy"
+
     let emailBody = body.story(story)
-    let content = new MailHelper.Content('text/html', emailBody)
-    let mail = new MailHelper.Mail(fromEmail, subject, toEmail, content)
-	return send(mail)
+    const msg = {
+        to: config.sendGrid.adminEmail,
+        from: email,
+        subject: "A story of hope from Narrafy",
+        html: emailBody,
+    };
+	return send(msg)
 }
 
 function subscriber(email) {
-	const fromEmail = new MailHelper.Email(config.sendGrid.adminEmail)
-	const toEmail = new MailHelper.Email(email)
-	const subject = "Narrafy got your email"
-	const emailBody = body.subscriberReply()
-	const content = new MailHelper.Content('text/html', emailBody)
-	const mail = new MailHelper.Mail(fromEmail, subject, toEmail, content)
-	return send(mail)
+
+    const emailBody = body.subscriberReply()
+    const msg = {
+        to: email,
+        from: config.sendGrid.adminEmail,
+        subject: "Narrafy got your email",
+        html: emailBody,
+    };
+
+	return send(msg)
 }
 
 function user(email) {
-	const fromEmail = new MailHelper.Email(config.sendGrid.contactEmail)
-	const toEmail = new MailHelper.Email(email)
-	const subject = "We've got your message!"
-	const emailBody = body.userReply()
-	const content = new MailHelper.Content('text/html', emailBody)
-	const mail = new MailHelper.Mail(fromEmail, subject, toEmail, content)
-	return send(mail)
+
+	let emailBody = body.userReply()
+    const msg = {
+        to: email,
+        from: config.sendGrid.contactEmail,
+        subject: "We've got your message!",
+        html: emailBody,
+    };
+
+	return send(msg)
 }
 
 module.exports = {

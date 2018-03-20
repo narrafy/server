@@ -1,12 +1,26 @@
 const config = require('../config')
 
-function getTranscript(transcript) {
+function transcriptBody(transcript) {
 
-    const transcriptHtml = transcript.map(record => {
-        return i % 2 ? `<li>${record}</li>` : `<li><strong>${record}</strong></li>`
-    }).join('')
+    let startBody =  "<html><body><div>"
+    let message = "<h4>" + "Thank you for training our conversational robot!" +"</h4>"
+    let k = transcript.length;
+    let transcriptHtml = "";
+    for(let i = 0; i < k; i ++){
+        if(i%2){
+            transcriptHtml += "<li><strong>" + transcript[i] + "</strong></li>"
+        }else {
+            transcriptHtml += "<li>" + transcript[i] + "</li>"
+        }
+    }
 
-    return `<html><body><ul>{transcriptHtml}</ul><body/></html>`
+    let footer = "<hr/><p>Have a nice day! <a href='https://www.narrafy.io'>Narrafy Team</a>.</p>"
+
+    let ps = "<p> P.S. If curiosity is your childhood friend, take a look at our <a href='https://medium.com/narrafy'>blog</a>.</p>"
+
+    let endBody = "</div><body/></html>"
+
+    return startBody + message + "<ul>" + transcriptHtml + "</ul>" + footer + ps + endBody
 }
 
 function getStory(data, ps) {
@@ -62,6 +76,6 @@ module.exports = {
     userReply: getUserReply,
     subscriberReply: getSubscriberReply,
     story: getStory,
-    transcript: getTranscript,
-    adminemail: getAdminEmailBody,
+    transcript: transcriptBody,
+    adminEmail: getAdminEmailBody,
 }

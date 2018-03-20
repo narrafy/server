@@ -83,18 +83,24 @@ async function getTranscript(conversation_id) {
 			transcript.push(conversation.input.text)
 		}
 		if (conversation.output && conversation.output.text) {
-			transcript.push(conversation.output.text)
+            conversation.output.text.forEach(entry => {
+                transcript.push(entry)
+			})
 		}
 	})
 
-	if (transcript.length > 0) {
-		const data = {
-			conversation_id: conversation_id,
-			transcript: transcript,
-			date: new Date()
-		}
-		await dbConnection.collection(collection.transcript).save(data)
-	}
+	return transcript;
+}
+
+async function saveTranscript (conversation_id, transcript){
+    if (transcript.length > 0) {
+        const data = {
+            conversation_id: conversation_id,
+            transcript: transcript,
+            date: new Date()
+        }
+        await dbConnection.collection(collection.transcript).save(data)
+    }
 }
 
 async function saveSubscriber(data) {
@@ -143,6 +149,7 @@ module.exports = exports = {
 
 	connect: connect,
 	getTranscript: getTranscript,
+	saveTranscript: saveTranscript,
 
 	getContext: getContext,
     pushContext: pushContext,

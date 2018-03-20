@@ -10,7 +10,7 @@ async function runContextTasks(conversation) {
     let context = conversation.context
     const conversation_id = context.conversation_id
 
-    if (isRequestStory(conversation)) {
+    if (hasEmail(conversation)) {
             let email = getEmailFromContext(conversation)
             if(email)
             {
@@ -21,7 +21,11 @@ async function runContextTasks(conversation) {
                 };
                 db.addSubscriber(data)
                 data.url = config.app.url + "/story"+"?conversation_id="+ conversation_id
-                emailService.adminbot(data)
+                const transcript = await db.getTranscript(conversation_id)
+                if(transcript){
+                    emailService.transcript(email, transcript)
+                    await db.saveTranscript(transcript, conversation_id)
+                }
             }
     }
 
@@ -66,7 +70,7 @@ function validateEmail(email) {
 }
 
 
-function isRequestStory(conversation) {
+function hasEmail(conversation) {
 	return conversation.entities &&
 		conversation.entities[0] &&
         conversation.entities[0].entity === "email"
