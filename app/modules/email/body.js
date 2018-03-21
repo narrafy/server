@@ -1,5 +1,21 @@
 const config = require('../config')
 
+function getFooter(){
+    let footer = "<hr/><p>Have a nice day! <a href='https://www.narrafy.io'>Narrafy Team</a>.</p>"
+
+    let ps = "<p> P.S. If curiosity is your childhood friend, take a look at our <a href='https://medium.com/narrafy'>blog</a>.</p>"
+
+    return footer + ps
+}
+
+function getFooter(username){
+    let footer = "<hr/><p>" + "username"  + "<a href='https://www.narrafy.io'>Narrafy Team</a> wishes you a nice day!</p>"
+
+    let ps = "<p> P.S. If curiosity is your childhood friend, take a look at our <a href='https://medium.com/narrafy'>blog</a>.</p>"
+
+    return footer + ps
+}
+
 function transcriptBody(transcript) {
 
     let startBody =  "<html><body><div>"
@@ -14,13 +30,11 @@ function transcriptBody(transcript) {
         }
     }
 
-    let footer = "<hr/><p>Have a nice day! <a href='https://www.narrafy.io'>Narrafy Team</a>.</p>"
-
-    let ps = "<p> P.S. If curiosity is your childhood friend, take a look at our <a href='https://medium.com/narrafy'>blog</a>.</p>"
+    let footer = getFooter()
 
     let endBody = "</div><body/></html>"
 
-    return startBody + message + "<ul>" + transcriptHtml + "</ul>" + footer + ps + endBody
+    return startBody + message + "<ul>" + transcriptHtml + "</ul>" + footer + endBody
 }
 
 function getStory(data, ps) {
@@ -44,8 +58,7 @@ function getStory(data, ps) {
         content += "<h4>" + ps + "</h4>"
     }
 
-    let footer = "<hr/><p>Have a nice day! <a href='https://www.narrafy.io'>Narrafy Team</a></p>" +
-        "<body/></html>"
+    let footer = getFooter()
 
     return header + content + footer
 
@@ -59,20 +72,28 @@ function getAdminEmailBody(data){
 }
 
 function getSubscriberReply() {
-    return "<html><body><p>" + "Hey! We received your email." +
-        " We will contact you when we have something important to share." +
-        "<p>Have a nice day! <a href='https://www.narrafy.io'>Narrafy Team</a></p></body></html>"
+    return "<html><body><p>" + "We have received your email." +
+        " As soon as we have something important to share we will contact you." +
+        "<p><a href='https://www.narrafy.io'>Narrafy Team</a> wishes you a nice day!</p></body></html>"
 }
 
-function getUserReply() {
-    return "<html><body><p>" + "Hi! We received your email." +
-        " We will contact you as soon as possible. Thank you for your interest!" +
-        "</p>" +
-        "<p><a href='https://www.narrafy.io'>Narrafy Team</a> </p></body></html>"
+function getUserReply(username) {
+
+    let startBody =  "<html><body><div>"
+
+    let message = "<h4>" + "Thank you for reaching out!" +"</h4>"
+
+    let htmlBody = "<p> We received your email and will contact you as soon as possible. </p>";
+
+    let footer = getFooter(username)
+
+    let endBody = "</div><body/></html>"
+
+    return startBody + message + htmlBody + footer + endBody
+
 }
 
 module.exports = {
-
     userReply: getUserReply,
     subscriberReply: getSubscriberReply,
     story: getStory,

@@ -58,6 +58,7 @@
     "request": "^2.83.0",
     "request-promise-native": "^1.0.5",
     "sendgrid": "^4.7.1",
+    "vis": "^4.21.0",
     "watson-developer-cloud": "^2.40.0"
   },
   "devDependencies": {

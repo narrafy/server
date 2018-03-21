@@ -62,7 +62,7 @@ function transcript(email, transcript) {
         to: email,
 		cc: config.sendGrid.adminEmail,
         from: config.sendGrid.adminEmail,
-        subject: "Narrafy Conversation Transcript",
+        subject: "Conversation Transcript",
         html: emailBody,
     };
 	return send(msg)
@@ -74,7 +74,7 @@ function story(email, story) {
     const msg = {
         to: config.sendGrid.adminEmail,
         from: email,
-        subject: "A story of hope from Narrafy",
+        subject: "A story from Narrafy",
         html: emailBody,
     };
 	return send(msg)

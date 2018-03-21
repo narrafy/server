@@ -197,6 +197,10 @@ module.exports = (app) => {
 		res.render('index.ejs')
 	})
 
+	app.get('/stats', (req,res) => {
+		res.render('analytics/index.ejs')
+	})
+
 	app.get('/timeline', (req, res) => {
 		res.render('foundation/timeline.ejs')
 	})
