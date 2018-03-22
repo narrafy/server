@@ -16,7 +16,18 @@
 
 <section class="section slider">
     <div class="container">
-        <div id="visualization"></div>
+        <div class="row">
+            <ul class="list-group">
+                <li class="list-group-item"> Conversations ( total number ): <span class="label label-success">  <%= total_count%> </span> </li>
+                <li class="list-group-item"> Session time ( average minutes ): <span class="label label-success"> <%= avg_minutes%> </span>  </li>
+                <li class="list-group-item"> Answered questions ( average number ): <span class="label label-success"> <%= avg_counter %> </span> </li>
+            </ul>
+        </div>
+        <div class="row">
+            <div class="container">
+                <div id="visualization"></div>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -28,19 +39,30 @@
 <script type="text/javascript">
 
     var container = document.getElementById('visualization');
+
+
     var items = [
-        {x: '2014-06-11', y: 10},
-        {x: '2014-06-12', y: 25},
-        {x: '2014-06-13', y: 30},
-        {x: '2014-06-14', y: 10},
-        {x: '2014-06-15', y: 15},
-        {x: '2014-06-16', y: 30}
+
+    <% dataset.forEach(function(item) { %>
+
+     {x: <%= item.minutes %> , y: <%= item.counter %>},
+
+    <% }); %>
+
     ];
 
+
     var dataset = new vis.DataSet(items);
+
     var options = {
-        start: '2014-06-10',
-        end: '2014-06-18'
+        style:'bar',
+        barChart: {width:50, align:'center'}, // align: left, center, right
+        drawPoints: false,
+        dataAxis: {
+            icons:true
+        },
+        orientation:'top',
+        legend:  { enabled: 'true' }
     };
     var graph2d = new vis.Graph2d(container, dataset, options);
 

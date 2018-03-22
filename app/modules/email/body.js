@@ -9,9 +9,9 @@ function getFooter(){
 }
 
 function getFooter(username){
-    let footer = "<hr/><p>" + "username"  + "<a href='https://www.narrafy.io'>Narrafy Team</a> wishes you a nice day!</p>"
 
-    let ps = "<p> P.S. If curiosity is your childhood friend, take a look at our <a href='https://medium.com/narrafy'>blog</a>.</p>"
+    let footer = "<p>" + username  + "<a href='https://www.narrafy.io'>Narrafy Team</a> wishes you a nice day!</p>"
+    let ps = "<hr/><p> P.S. If curiosity is your childhood friend, take a look at our <a href='https://medium.com/narrafy'>blog</a>.</p>"
 
     return footer + ps
 }

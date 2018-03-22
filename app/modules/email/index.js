@@ -93,9 +93,9 @@ function subscriber(email) {
 	return send(msg)
 }
 
-function user(email) {
+function user(email, user) {
 
-	let emailBody = body.userReply()
+	let emailBody = body.userReply(user)
     const msg = {
         to: email,
         from: config.sendGrid.contactEmail,

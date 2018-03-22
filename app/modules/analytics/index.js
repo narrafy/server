@@ -1,31 +1,34 @@
-db.getCollection('conversations').aggregate(
-    [
-        {
-            "$match": { "id": null }
-        },
-        {
-            $group :
-                {
-                    _id : "$conversation_id",
-                    conversations: { $push: "$$ROOT" }
-                }
-        },
-        {$unwind: "$conversations"},
-        {$group: {
-            _id: "$_id",
-            firstItem: { $first: "$conversations"},
-            lastItem: { $last: "$conversations"},
-            countItem: { "$sum": 1 }
-        }},
 
-        { "$project": {
+const db = require('../db')
 
-            "minutes": {
-                "$divide": [{ "$subtract": [ "$lastItem.date", "$firstItem.date" ] }, 1000*60]
-            },
-            "counter": "$lastItem.context.system.dialog_request_counter"
-        },
 
-        }
-    ]
-)
+async function getStats()
+{
+    let model= {};
+    let avg_model = await db.getAvgStats()
+
+    if(avg_model && avg_model.length>0){
+        model.avg_minutes = Number((avg_model[0].minutes).toFixed(2));
+        model.avg_counter = Number((avg_model[0].counter).toFixed(2));
+    }
+
+    let total_count = await db.getConversationCount()
+    if(total_count && total_count.length > 0){
+        model.total_count = total_count[0].total_doc
+    }
+    model.dataset = [];
+
+    let dataset = await db.getConversationDataSet()
+    dataset.forEach(item =>
+    {
+        model.dataset.push(item)
+    })
+
+    return model
+}
+
+
+module.exports = {
+
+    getStatsModel: getStats
+}

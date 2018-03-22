@@ -1,6 +1,7 @@
 const db = require('../db')
 const log = require('../log')
 const Conversation = require('../conversation/conversation')
+const Analytics = require ('../analytics')
 const Nlg = require('../natural-language/generation')
 const mailService = require('../email')
 const config = require('../config')
@@ -58,7 +59,7 @@ module.exports = (app) => {
         };
 		await db.addInquiry(data)
         mailService.contact(data)
-        mailService.user(data.email)
+        mailService.user(data.email, data.name)
 		res.sendStatus(200)
 	})
 
@@ -197,8 +198,10 @@ module.exports = (app) => {
 		res.render('index.ejs')
 	})
 
-	app.get('/stats', (req,res) => {
-		res.render('analytics/index.ejs')
+	app.get('/stats', async (req,res) => {
+
+		let model = await Analytics.getStatsModel()
+		res.render('analytics/index.ejs', model)
 	})
 
 	app.get('/timeline', (req, res) => {
