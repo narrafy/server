@@ -220,7 +220,7 @@ async function getConversationDataSet(){
 
             },
             {
-                "$match": { "counter": {$gt: 2 } , "minutes": {$lt: 120} }
+                "$match": { "counter": {$gt: 2 } , "minutes": {$lt: 40} }
             }
         ],
         {

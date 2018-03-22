@@ -21,7 +21,7 @@ async function getStats()
     let dataset = await db.getConversationDataSet()
     dataset.forEach(item =>
     {
-        model.dataset.push(item)
+        model.dataset.push({counter: item.counter,minutes: Number((item.minutes).toFixed(2))});
     })
 
     return model

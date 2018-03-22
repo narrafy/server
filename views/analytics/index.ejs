@@ -1,10 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-    <script src="js/vis.js"></script>
-    <link href="css/vis.css" rel="stylesheet" type="text/css" />
-
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <% include ../partials/head %>
 </head>
 
@@ -14,23 +11,25 @@
     <% include ../partials/navbar %>
 </header>
 
-<section class="section slider">
+<section class="section analytics">
     <div class="container">
         <div class="row">
-            <ul class="list-group">
-                <li class="list-group-item"> Conversations ( total number ): <span class="label label-success">  <%= total_count%> </span> </li>
-                <li class="list-group-item"> Session time ( average minutes ): <span class="label label-success"> <%= avg_minutes%> </span>  </li>
-                <li class="list-group-item"> Answered questions ( average number ): <span class="label label-success"> <%= avg_counter %> </span> </li>
-            </ul>
+            <div class="col-md-12">
+                <div id="visualization"></div>
+            </div>
+
         </div>
         <div class="row">
-            <div class="container">
-                <div id="visualization"></div>
+            <div class="col-md-5">
+                <ul class="list-group">
+                    <li class="list-group-item"> Session time ( average minutes ): <span class="label label-success"> <%= avg_minutes%> </span>  </li>
+                    <li class="list-group-item"> Answered questions ( average number ): <span class="label label-success"> <%= avg_counter %> </span> </li>
+                    <li class="list-group-item"> Conversations ( total number ): <span class="label label-success">  <%= total_count%> </span> </li>
+                </ul>
             </div>
         </div>
     </div>
 </section>
-
 
 <% include ../partials/subscribe %>
 
@@ -38,35 +37,58 @@
 
 <script type="text/javascript">
 
-    var container = document.getElementById('visualization');
-
-
-    var items = [
+    var xArray = [];
+    var yArray = [];
 
     <% dataset.forEach(function(item) { %>
-
-     {x: <%= item.minutes %> , y: <%= item.counter %>},
-
+        xArray.push(<%= item.counter %>);
+        yArray.push(<%= item.minutes %>);
     <% }); %>
 
-    ];
 
+    var trace =
+        {
+            x: yArray,
+            y: xArray,
+            type: 'bar',
+        }
+    ;
 
-    var dataset = new vis.DataSet(items);
+    var data = [trace];
 
-    var options = {
-        style:'bar',
-        barChart: {width:50, align:'center'}, // align: left, center, right
-        drawPoints: false,
-        dataAxis: {
-            icons:true
+    var layout = {
+        title: 'Narrafy Analytics',
+        //barmode: 'stack',
+        yaxis: {
+            title: 'Questions answered',
+            range: [ 0, 40 ],
+            titlefont: {
+                size: 16,
+                color: 'rgb(107, 107, 107)'
+            },
+            tickfont: {
+                size: 14,
+                color: 'rgb(107, 107, 107)'
+            }
         },
-        orientation:'top',
-        legend:  { enabled: 'true' }
+        xaxis: {
+            title: 'Session time (minutes)',
+            range: [ 0, 15 ],
+            titlefont: {
+                size: 16,
+                color: 'rgb(107, 107, 107)'
+            },
+            tickfont: {
+                size: 14,
+                color: 'rgb(107, 107, 107)'
+            }
+        },
     };
-    var graph2d = new vis.Graph2d(container, dataset, options);
+
+    Plotly.newPlot('visualization', data, layout);
 
 </script>
+
 </body>
 </html>
 

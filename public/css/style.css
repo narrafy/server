@@ -17,6 +17,14 @@
 
 }
 
+.analytics {
+    padding: 70px 0 0px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+
+}
+
 .slider-chat {
     padding: 110px 61px 69px 350px;
     text-align: center;
