@@ -32,7 +32,6 @@
 </section>
 
 <% include ../partials/subscribe %>
-
 <% include ../partials/footer %>
 
 <script type="text/javascript">
@@ -46,16 +45,12 @@
     <% }); %>
 
 
-    var trace =
-        {
+    var trace = {
             x: yArray,
             y: xArray,
             type: 'bar',
-        }
-    ;
-
+        };
     var data = [trace];
-
     var layout = {
         title: 'Narrafy Analytics',
         //barmode: 'stack',
@@ -84,11 +79,9 @@
             }
         },
     };
-
     Plotly.newPlot('visualization', data, layout);
 
 </script>
-
 </body>
 </html>
 

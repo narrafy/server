@@ -51,19 +51,13 @@ var User = (function(){
                 return;
             }
             var internalizationStoryBox = document.querySelector(settings.selectors.internalizationStoryBox);
-
             var externalizationStoryBox = document.querySelector(settings.selectors.externalizationStoryBox);
-
             var nameBox = document.querySelector(settings.selectors.nameBox);
-
             var conversationId = document.querySelector(settings.selectors.conversationId);
-
-            var ccBox = document.querySelector(settings.selectors.ccbox);
 
             // Send the user message
             var story = {
                 email: emailBox.value,
-                cc: ccBox.value,
                 internalization: internalizationStoryBox.value,
                 externalization: externalizationStoryBox.value,
                 user_name: nameBox.value,
@@ -88,8 +82,6 @@ var User = (function(){
         // Submit on enter key, dis-allowing blank messages
         var emailBox = document.querySelector(settings.selectors.emailBox);
 
-        var ccBox = document.querySelector(settings.selectors.ccbox);
-
         var internalizationStoryBox = document.querySelector(settings.selectors.internalizationStoryBox);
 
         var externalizationStoryBox = document.querySelector(settings.selectors.externalizationStoryBox);
@@ -101,7 +93,6 @@ var User = (function(){
         // Send the user message
         var story = {
             email: emailBox.value,
-            cc: ccBox.value,
             internalization: internalizationStoryBox.value,
             externalization: externalizationStoryBox.value,
             user_name: nameBox.value,

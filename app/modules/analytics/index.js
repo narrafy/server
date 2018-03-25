@@ -7,7 +7,7 @@ async function getStats()
     let model= {};
     let avg_model = await db.getAvgStats()
 
-    if(avg_model && avg_model.length>0){
+    if(avg_model && avg_model.length > 0) {
         model.avg_minutes = Number((avg_model[0].minutes).toFixed(2));
         model.avg_counter = Number((avg_model[0].counter).toFixed(2));
     }

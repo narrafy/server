@@ -2,17 +2,13 @@ const config = require('../config')
 
 function getFooter(){
     let footer = "<hr/><p>Have a nice day! <a href='https://www.narrafy.io'>Narrafy Team</a>.</p>"
-
-    let ps = "<p> P.S. If curiosity is your childhood friend, take a look at our <a href='https://medium.com/narrafy'>blog</a>.</p>"
-
+    let ps = "<p> P.S. If curiosity is your childhood friend, take a look at our <a href='https://medium.com/narrafy/2018-q1-c6d60cab5612'>blog</a>.</p>"
     return footer + ps
 }
 
 function getFooter(username){
-
-    let footer = "<p>" + username  + "<a href='https://www.narrafy.io'>Narrafy Team</a> wishes you a nice day!</p>"
-    let ps = "<hr/><p> P.S. If curiosity is your childhood friend, take a look at our <a href='https://medium.com/narrafy'>blog</a>.</p>"
-
+    let footer = "<p>" + username  + "<a href='https://www.narrafy.io'> Narrafy Team</a> wishes you a nice day!</p>"
+    let ps = "<hr/><p> P.S. If curiosity is your childhood friend, take a look at our <a href='https://medium.com/narrafy/2018-q1-c6d60cab5612'>blog</a>.</p>"
     return footer + ps
 }
 

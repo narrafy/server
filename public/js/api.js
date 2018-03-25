@@ -144,13 +144,11 @@ var Api = (function(){
     function sendStory(data, endPoint){
 
         var email = data.email;
-
         //Build request payload
         var sendStoryForm = {};
         if(email){
             sendStoryForm = {
                 email: data.email,
-                cc: data.cc,
                 internalization: data.internalization,
                 externalization: data.externalization,
                 user_name: data.user_name,
