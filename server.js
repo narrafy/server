@@ -12,7 +12,7 @@ const config = require('./app/modules/config')
 /* Bootstrap middleware */
 app.use(morgan('dev'))
 app.use(cookieParser())
-app.use(bodyParser())
+
 app.use(bodyParser.urlencoded({
 	'extended': 'true'
 }))

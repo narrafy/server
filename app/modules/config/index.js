@@ -1,6 +1,9 @@
+const db = require('../db')
 require('dotenv').config({silent: true})
 
-module.exports = exports = {
+
+
+module.exports = {
 
 	app: {
 		port: process.env.PORT || 3000,

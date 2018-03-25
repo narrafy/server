@@ -4,11 +4,9 @@ var User = (function(){
     var settings = {
         selectors: {
             emailBox: '#email-box',
-            ccbox: '#cc-box',
             messageBox: '#contact-box',
-            internalizationStoryBox: "#internalization-story-box",
-            externalizationStoryBox: "#externalization-story-box",
             nameBox: '#name-box',
+            storiesBox: '#story-box',
             conversationId: '#conversation-id',
             contactForm: '#contact-form',
             sentStoryForm: '#send-story-form',
@@ -34,8 +32,6 @@ var User = (function(){
         return re.test(email);
     }
 
-
-
     // Handles the submission of input
     function sendStory(event) {
         // Submit on enter key, dis-allowing blank messages
@@ -50,17 +46,13 @@ var User = (function(){
                 notification.className = '';
                 return;
             }
-            var internalizationStoryBox = document.querySelector(settings.selectors.internalizationStoryBox);
-            var externalizationStoryBox = document.querySelector(settings.selectors.externalizationStoryBox);
-            var nameBox = document.querySelector(settings.selectors.nameBox);
+            var storyBox = document.querySelector(settings.selectors.storiesBox);
             var conversationId = document.querySelector(settings.selectors.conversationId);
 
             // Send the user message
             var story = {
                 email: emailBox.value,
-                internalization: internalizationStoryBox.value,
-                externalization: externalizationStoryBox.value,
-                user_name: nameBox.value,
+                story: storyBox.value,
                 conversation_id: conversationId.value
             }
 
@@ -69,7 +61,7 @@ var User = (function(){
 
             // Clear input box for further messages
             emailBox.value = '';
-            internalizationStoryBox.value = '';
+            storyBox.value = '';
             Common.fireEvent(emailBox, 'input');
             var notification = document.querySelector(settings.selectors.sendStoryNotification);
             notification.className = '';
@@ -81,30 +73,22 @@ var User = (function(){
 
         // Submit on enter key, dis-allowing blank messages
         var emailBox = document.querySelector(settings.selectors.emailBox);
-
-        var internalizationStoryBox = document.querySelector(settings.selectors.internalizationStoryBox);
-
-        var externalizationStoryBox = document.querySelector(settings.selectors.externalizationStoryBox);
-
-        var nameBox = document.querySelector(settings.selectors.nameBox);
-
+        var storiesBox = document.querySelector(settings.selectors.storiesBox);
         var conversationId = document.querySelector(settings.selectors.conversationId);
 
-        // Send the user message
-        var story = {
-            email: emailBox.value,
-            internalization: internalizationStoryBox.value,
-            externalization: externalizationStoryBox.value,
-            user_name: nameBox.value,
-            conversation_id: conversationId.value,
+        if(emailBox.value && storiesBox.value)
+        {
+            // Send the user message
+            var story = {
+                email: emailBox.value,
+                story: storiesBox.value,
+                conversation_id: conversationId.value,
+            }
+            Api.saveUserStory(story);
+            // Clear input box for further messages
+            var notification = document.querySelector(settings.selectors.saveDraftNotification);
+            notification.className = '';
         }
-
-        Api.saveUserStory(story);
-
-        // Clear input box for further messages
-
-        var notification = document.querySelector(settings.selectors.saveDraftNotification);
-        notification.className = '';
     }
 
 }());

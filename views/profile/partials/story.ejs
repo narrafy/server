@@ -15,15 +15,10 @@
                     </div>
 
                     <div class="form-group">
-                        <input id="name-box" type="name" value="<%= user_name %>" name="user_name" class="form-input-text form-control" placeholder="Name" required="required">
+                        <textarea id="story-box" value="" name="story" class="form-input-text form-control" rows="20" placeholder="Transcript" required="required"><%= transcript%></textarea>
                     </div>
 
                     <div class="form-group">
-                        <textarea id="internalization-story-box" value="" name="internalization" class="form-input-text form-control" rows="10" placeholder="Internalization Exercise" required="required"><%= internalization%></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <textarea id="externalization-story-box" value="" name="externalization" class="form-input-text form-control" rows="20" placeholder="Externalization Exercise" required="required"><%= externalization%></textarea>
                         <input id="email-box" type="email" value="<%= email%>" name="email" class="form-input-text form-control" placeholder="Email" required="required">
                     </div>
 
@@ -48,28 +43,21 @@
                             </span>
                             </div>
                         </div>
-
                     </div>
-
                 </div>
             </div>
-
         </div>
-
         <hr>
-
         <div class="row row-eq-height">
             <div class="col-md-2"></div>
             <div class="col-md-10 col-md-offset-2">
                 <div class="form-group">
-                    <p> P.S. Follow us on Social Media. We love Medium btw.
+                    <p> P.S. Follow us on Social Media.
                     </p>
                     <ul class="social-network social-circle">
-
                         <li><a href="https://medium.com/narrafy" class="icoMedium" title="Medium"><i class="fa fa-medium"></i></a></li>
                         <li><a href="https://www.facebook.com/narrafy" class="icoFacebook" title="Facebook"><i class="fa fa-facebook"></i></a></li>
                         <li><a href="https://twitter.com/narrafy" class="icoTwitter" title="Twitter"><i class="fa fa-twitter"></i></a></li>
-
                     </ul>
                 </div>
             </div>
@@ -78,8 +66,6 @@
 </section>
 
 <script type="text/javascript">
-
     setInterval(function(){
         User.saveDraft(this)}, 20000)
-
 </script>

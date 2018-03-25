@@ -1,8 +1,7 @@
-const db = require('../db')
+const customer = require ('../customer')
 const log = require('../log')
 const Conversation = require('../conversation/conversation')
 const Analytics = require ('../analytics')
-const Nlg = require('../natural-language/generation')
 const mailService = require('../email')
 const config = require('../config')
 const fb = require('../facebook-api')
@@ -12,7 +11,7 @@ module.exports = (app) => {
 	app.get('/webhook', async function (req, res) {
 
 		let customerVerifyToken =  req.query['hub.verify_token'];
-		let customerConfig = await db.getCustomerByToken(customerVerifyToken);
+		let customerConfig = await config.getCustomerByToken(customerVerifyToken);
 		if (customerConfig && (customerConfig.facebook.verify_token === customerVerifyToken)) {
             res.send(req.query['hub.challenge'])
 
@@ -57,74 +56,21 @@ module.exports = (app) => {
             source: "contact form",
             date: new Date()
         };
-		await db.addInquiry(data)
+		await customer.addInquiry(data)
         mailService.contact(data)
         mailService.user(data.email, data.name)
 		res.sendStatus(200)
 	})
 
-    app.get('/story', async function (req, res) {
-
-        var conversation_id = req.query['conversation_id']
-        if (conversation_id !== null) {
-
-            let drafts = await db.getStory(conversation_id)
-            let model = {}
-            if(drafts.length === 0){
-                //no user drafts, just stub
-                let stub = await Conversation.getStoryStub(conversation_id)
-				if(stub){
-                    model = {
-                        "user_name": stub.user_name,
-                        "email": stub.email,
-                        "conversation_id": conversation_id,
-                        "internalization": stub.story.internalization,
-                        "externalization": stub.story.externalization,
-                    }
-                    await db.saveStory(stub)
-                }
-            } else {
-                model = drafts[0]
-            }
-            res.render('profile/user.ejs', model)
-        } else {
-            res.sendStatus(500)
-        }
-    })
-
 	app.post('/api/story/send', async (req, res) => {
 
-        let data = {
-            email: req.body.email,
-            conversation_id: req.body.conversation_id,
-			user_name: req.body.user_name,
-			internalization: req.body.internalization,
-			externalization: req.body.externalization,
-            date: new Date()
-        }
-        await db.saveStory(data)
-
-        mailService.bot(data, "P.S. We help people better understand themselves.")
-
-		await db.addSubscriber({
-			email: data.email,
-			date: data.date
-		})
-
+        let data = await Analytics.saveStory(req.body)
+        mailService.bot(data)
 		res.sendStatus(200)
     })
 
     app.post('/api/story/save', async (req, res) => {
-
-        let data = {
-            email: req.body.email,
-            conversation_id: req.body.conversation_id,
-            user_name: req.body.user_name,
-            internalization: req.body.internalization,
-            externalization: req.body.externalization,
-            date: new Date()
-        }
-        await db.saveStory(data)
+		await Analytics.saveStory(req.body)
         res.sendStatus(200)
     })
 
@@ -133,7 +79,7 @@ module.exports = (app) => {
             email: req.body.email,
             date: new Date(),
         };
-		await db.addSubscriber(data)
+		await customer.addSubscriber(data)
         mailService.admin("Congrats, another user just subscribed!")
         mailService.subscriber(data.email)
 		res.sendStatus(200)
@@ -142,7 +88,7 @@ module.exports = (app) => {
 	app.get('/api/transcript/get', async (req, res) => {
 		var conversation_id = req.query['conversation_id']
 		if (conversation_id !== null) {
-			const transcript = await db.getTranscript(conversation_id)
+			const transcript = await Analytics.getTranscript(conversation_id)
 			res.json(transcript)
 		} else {
 			res.sendStatus(500)
@@ -154,7 +100,7 @@ module.exports = (app) => {
 		var conversation_id = req.query['conversation_id']
 		var email = req.query['email']
 		if (conversation_id !== null) {
-			const transcript = await db.getTranscript(conversation_id)
+			const transcript = await Analytics.getTranscript(conversation_id)
 			if(transcript)
 				mailService.transcript(email, transcript)
 			res.sendStatus(200)
@@ -163,28 +109,15 @@ module.exports = (app) => {
 		}
 	})
 
-	app.get('/api/story/get', async (req, res) => {
+    app.get('/story', async function (req, res) {
 
-		let conversation_id = "561d304c-f378-4b84-a6ae-04f67fec0182"
-		let interview_type = "internalization"
-
-		if (conversation_id !== null) {
-			let data = {
-				conversation_id: conversation_id,
-				interview_type: interview_type
-			};
-
-			try {
-                const story = await Nlg.getStoryStub(data);
-                res.json(story);
-			} catch (e) {
-				console.log(e.stack);
-			}
-
-		} else {
-			res.sendStatus(500)
-		}
-	})
+        let model = await Analytics.getStoryModel(req.query['conversation_id'])
+        if (model) {
+            res.render('profile/user.ejs', model)
+        } else {
+            res.sendStatus(500)
+        }
+    })
 
 	app.get('/', (req, res) => {
 		res.render('index.ejs')

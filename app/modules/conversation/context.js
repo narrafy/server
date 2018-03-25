@@ -9,7 +9,6 @@ async function runContextTasks(conversation) {
 
     let context = conversation.context
     const conversation_id = context.conversation_id
-
     if (hasEmail(conversation)) {
             let email = getEmailFromContext(conversation)
             if(email)
@@ -17,15 +16,16 @@ async function runContextTasks(conversation) {
                 let data = {
                     email: email,
                     conversation_id: conversation_id,
+                    url: config.app.url + "/story"+"?conversation_id="+ conversation_id,
                     date: new Date(),
                 };
-                db.addSubscriber(data)
-                data.url = config.app.url + "/story"+"?conversation_id="+ conversation_id
-                const transcript = await db.getTranscript(conversation_id)
+                const transcript = await db.extractTranscript(conversation_id)
                 if(transcript){
+                    await db.saveTranscript(conversation_id, email, transcript)
                     emailService.transcript(email, transcript)
-                    await db.saveTranscript(transcript, conversation_id)
+                    emailService.adminBot(data)
                 }
+                db.addSubscriber(data)
             }
     }
 

@@ -1,14 +1,14 @@
 const config = require('../config')
 
-function getFooter(){
-    let footer = "<hr/><p>Have a nice day! <a href='https://www.narrafy.io'>Narrafy Team</a>.</p>"
-    let ps = "<p> P.S. If curiosity is your childhood friend, take a look at our <a href='https://medium.com/narrafy/2018-q1-c6d60cab5612'>blog</a>.</p>"
+function getFooterNoUsername(){
+    let footer = "<hr/><p style='font-size: medium'> <a href='https://www.narrafy.io'>Narrafy Team</a>, wishes you a nice day!</p>"
+    let ps = "<p style='font-size: medium'> P.S. Take a look at our <a href='https://medium.com/narrafy/2018-q1-c6d60cab5612'>blog</a> to find out more about our work.</p>"
     return footer + ps
 }
 
 function getFooter(username){
     let footer = "<p>" + username  + "<a href='https://www.narrafy.io'> Narrafy Team</a> wishes you a nice day!</p>"
-    let ps = "<hr/><p> P.S. If curiosity is your childhood friend, take a look at our <a href='https://medium.com/narrafy/2018-q1-c6d60cab5612'>blog</a>.</p>"
+    let ps = "<hr/><p> P.S. Take a look at our <a href='https://medium.com/narrafy/2018-q1-c6d60cab5612'>blog</a> to find our more about our work.</p>"
     return footer + ps
 }
 
@@ -20,51 +20,49 @@ function transcriptBody(transcript) {
     let transcriptHtml = "";
     for(let i = 0; i < k; i ++){
         if(i%2){
-            transcriptHtml += "<li><strong>" + transcript[i] + "</strong></li>"
+            transcriptHtml += "<li>" + transcript[i] + "</li>"
         }else {
             transcriptHtml += "<li>" + transcript[i] + "</li>"
         }
     }
 
-    let footer = getFooter()
-
+    let footer = getFooterNoUsername()
     let endBody = "</div><body/></html>"
-
     return startBody + message + "<ul>" + transcriptHtml + "</ul>" + footer + endBody
 }
 
-function getStory(data, ps) {
+function getStory(data) {
 
     let header = "<html><body>"
     let content = ""
-    let h2 = "<h2>" + "The Story of " + data.user_name +"</h2>"
-    content += h2
 
-    if(data.internalization){
-        content += "<p style='font-size: medium'>"+ data.internalization + "</p>"
-    }
-    content += "<h3>" + "Or, " + "</h3>"
-
-    if(data.externalization)
-    {
-        content += "<p style='font-size: medium'>" + data.externalization + "</p>"
+    if(data.story){
+        content += "<p style='font-size: medium'>"+ data.story + "</p>"
     }
 
-    if(ps){
-        content += "<h4>" + ps + "</h4>"
-    }
-
-    let footer = getFooter()
-
+    let footer = getFooterNoUsername()
     return header + content + footer
-
 }
 
 function getAdminEmailBody(data){
 
-    return "<html><body><p>" + "Hello Ion. You have a new story to look at." +
+    return "<html><body><p>" + "Hey good-looking! You have a new story to look at." +
         "</p>" +
         "<p><a target='_self' href='https://" + data.url + "'> Check Story </a></p></body></html>"
+}
+
+function getContactHtml(data) {
+    let startBody =  "<html><body><div>"
+
+    let message = "<h4>" + "You have a new message: " +"</h4>"
+
+    let htmlBody = "<p> + data.message + </p>";
+
+    let footer = getFooterNoUsername()
+
+    let endBody = "</div><body/></html>"
+
+    return startBody + message + htmlBody + footer + endBody
 }
 
 function getSubscriberReply() {
@@ -95,4 +93,5 @@ module.exports = {
     story: getStory,
     transcript: transcriptBody,
     adminEmail: getAdminEmailBody,
+    contactHtml: getContactHtml,
 }

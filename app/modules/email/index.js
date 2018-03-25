@@ -10,7 +10,6 @@ function send(msg) {
 }
 
 function admin(message) {
-
     const msg = {
         to: config.sendGrid.adminEmail,
         from: config.sendGrid.contactEmail,
@@ -20,37 +19,35 @@ function admin(message) {
 	return send(msg)
 }
 
-
 function adminbot(data) {
-
     const emailBody = body.adminEmail(data)
     const msg = {
         to: config.sendGrid.adminEmail,
-        from: config.sendGrid.adminEmail,
-        subject: config.app.name,
+        from: data.email,
+        subject: "A story from Narrafy",
         html: emailBody,
     };
     return send(msg)
 }
 
-function bot(data, ps) {
-    const emailBody = body.story(data, ps)
+function bot(data) {
+    const emailBody = body.story(data)
 	const msg = {
         to: data.email,
         from: config.sendGrid.adminEmail,
-        subject: "The story of " + data.user_name,
+        subject: "A Narrafy Story",
         html: emailBody,
     };
     return send(msg)
 }
 
-
 function contact(data) {
+    let emailBody = body.contactHtml(data)
     const msg = {
         to: config.sendGrid.contactEmail,
         from: data.email,
         subject: "Message from " + data.name,
-        text: data.message,
+        html: emailBody,
     };
     return send(msg)
 }
@@ -60,7 +57,6 @@ function transcript(email, transcript) {
 	const emailBody = body.transcript(transcript)
     const msg = {
         to: email,
-		cc: config.sendGrid.adminEmail,
         from: config.sendGrid.adminEmail,
         subject: "Conversation Transcript",
         html: emailBody,
@@ -88,8 +84,7 @@ function subscriber(email) {
         from: config.sendGrid.adminEmail,
         subject: "Narrafy got your email",
         html: emailBody,
-    };
-
+    }
 	return send(msg)
 }
 
@@ -101,8 +96,7 @@ function user(email, user) {
         from: config.sendGrid.contactEmail,
         subject: "We've got your message!",
         html: emailBody,
-    };
-
+    }
 	return send(msg)
 }
 
@@ -113,8 +107,7 @@ module.exports = {
 	transcript: transcript,
 	story: story,
 	bot: bot,
-	adminbot: adminbot,
-
+	adminBot: adminbot,
 	admin(message) {
 		return admin(message)
 	},

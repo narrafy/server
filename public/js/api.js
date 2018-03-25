@@ -148,11 +148,9 @@ var Api = (function(){
         var sendStoryForm = {};
         if(email){
             sendStoryForm = {
+                conversation_id: data.conversation_id,
                 email: data.email,
-                internalization: data.internalization,
-                externalization: data.externalization,
-                user_name: data.user_name,
-                conversation_id: data.conversation_id
+                story: data.story
             };
         }
         //Build the http request
@@ -208,7 +206,5 @@ var Api = (function(){
         }
         return "";
     }
-
-
 
 }());

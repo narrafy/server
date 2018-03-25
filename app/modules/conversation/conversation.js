@@ -2,9 +2,9 @@ const facebookApi = require('../facebook-api')
 const watson = require('./watson')
 const context = require('./context')
 const config = require('../config')
+const customer = require('../customer')
 const nlg = require('../natural-language/generation')
 const email = require('../email')
-const db = require('../db')
 const log = require('../log')
 
 async function reply(input, stored_log) {
@@ -39,7 +39,7 @@ async function reply(input, stored_log) {
                     //return from function, don't push the context, human is talking
                     return conversation
                 }else{
-                    //then push to db
+                    //then push to storage
                     await context.pushContext(request.id, conversation)
                 }
             }
@@ -126,7 +126,7 @@ async function updateMessage(id, conversation) {
 
 async function setContextConfig(customer_id) {
     //refactor use projection to return only this two fields
-    let customerConfig = await db.getConfig(customer_id)
+    let customerConfig = await customer.getConfig(customer_id)
     if(customerConfig)
         return { access_token: customerConfig.facebook.access_token, workspace: customerConfig.conversation.workspace}
     return null
@@ -226,13 +226,6 @@ async function webRequest(id, body, conversation_id) {
             const {access_token, workspace} = await setContextConfig(customer_id)
             data.access_token = access_token
             data.workspace = workspace
-            /*
-              if(conversation_id && !body.context.hasOwnProperty("system")) {
-                 let ctxArray = await db.getContextById(conversation_id, 2)
-                 if (ctxArray.length > 1) {
-                    data.context = ctxArray[1].context
-               }
-            }*/
         }
     }
 
@@ -253,5 +246,4 @@ module.exports = {
 	},
 
     getStoryStub: nlg.getStoryStub,
-    getStory: db.getStory
 }

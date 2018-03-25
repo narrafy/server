@@ -67,39 +67,43 @@ async function saveInquiry(data) {
 		.save(data)
 }
 
-async function getTranscript(conversation_id) {
-
-	const conversations = await dbConnection
-		.collection(collection.log)
-		.find({conversation_id: conversation_id})
-		.sort({$natural: 1})
-		.toArray()
-
-	const transcript = []
-
-	conversations.forEach(conversation => {
-		if (conversation.input && conversation.input.text) {
-			transcript.push(conversation.input.text)
-		}
-		if (conversation.output && conversation.output.text) {
+async function extractTranscript(conversation_id) {
+    const conversations = await dbConnection
+        .collection(collection.log)
+        .find({conversation_id: conversation_id})
+        .sort({$natural: 1})
+        .toArray()
+    const transcript = []
+    conversations.forEach(conversation => {
+        if (conversation.input && conversation.input.text) {
+            transcript.push(conversation.input.text)
+        }
+        if (conversation.output && conversation.output.text) {
             conversation.output.text.forEach(entry => {
                 transcript.push(entry)
-			})
-		}
-	})
-
-	return transcript;
+            })
+        }
+    })
+    return transcript;
 }
 
-async function saveTranscript (conversation_id, transcript){
-    if (transcript.length > 0) {
-        const data = {
-            conversation_id: conversation_id,
-            transcript: transcript,
-            date: new Date()
-        }
-        await dbConnection.collection(collection.transcript).save(data)
+async function getTranscript(conversation_id) {
+
+    return dbConnection.collection(collection.transcript)
+        .findOne({conversation_id : conversation_id})
+}
+
+async function saveTranscript (conversation_id, email, transcript){
+    const data = {
+        conversation_id: conversation_id,
+        email: email,
+        transcript: transcript,
+        date: new Date()
     }
+    await dbConnection
+        .collection(collection.transcript)
+        .replaceOne({ conversation_id: data.conversation_id }, data , { upsert: true })
+        .then(() => data)
 }
 
 async function saveSubscriber(data) {
@@ -131,7 +135,7 @@ async function getStoryTemplates() {
         .toArray()
 }
 
-async function getCustomerConfig(customer_id){
+async function getCustomerConfigurationFile(customer_id){
     return dbConnection.collection(collection.customer)
         .findOne({customer_id : customer_id})
 }
@@ -290,6 +294,7 @@ module.exports = exports = {
     getConversationDataSet: getConversationDataSet,
 
 	getTranscript: getTranscript,
+    extractTranscript: extractTranscript,
 	saveTranscript: saveTranscript,
 
 	getContext: getContext,
@@ -300,7 +305,7 @@ module.exports = exports = {
 	saveStory: saveStory,
 	getStory: getStory,
 
-	getConfig: getCustomerConfig,
+	getConfigurationFile: getCustomerConfigurationFile,
     getCustomerByToken: getCustomerConfigByToken,
 
 	async addInquiry(data) {

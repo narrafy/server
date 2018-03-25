@@ -5,8 +5,6 @@ var ContactInput = (function(){
         selectors: {
             emailBox: '#email-box',
             messageBox: '#contact-box',
-            internalizationStoryBox: "#internalization-story-box",
-            externalizationStoryBox: "#externalization-story-box",
             nameBox: '#name-box',
             conversationId: '#conversation-id',
             contactForm: '#contact-form',
@@ -24,8 +22,6 @@ var ContactInput = (function(){
     return {
         init: init,
         contactSubmit: contactSubmit,
-        sendStory: sendStory,
-        saveDraft: saveDraft,
         subscribeKeyDown: subscribeKeyDown,
         subscribeSubmit: subscribeSubmit
     };
@@ -124,8 +120,6 @@ var ContactInput = (function(){
             });
             // Move chat to the most recent messages when new messages are added
             scrollToChatBottom();
-
-
         }
     }
 
@@ -194,7 +188,6 @@ var ContactInput = (function(){
         }
     }
 
-
     function validateEmail(email) {
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(email);
@@ -224,84 +217,6 @@ var ContactInput = (function(){
             notification.className = '';
         }
     }
-
-    // Handles the submission of input
-    function sendStory(event) {
-        // Submit on enter key, dis-allowing blank messages
-        var emailBox = document.querySelector(settings.selectors.emailBox);
-        if(emailBox.value ){
-            if(!validateEmail(emailBox.value)){
-                return;
-            }
-            var internalizationStoryBox = document.querySelector(settings.selectors.internalizationStoryBox);
-
-            var externalizationStoryBox = document.querySelector(settings.selectors.externalizationStoryBox);
-
-            var nameBox = document.querySelector(settings.selectors.nameBox);
-
-            var conversationId = document.querySelector(settings.selectors.conversationId);
-
-            // Send the user message
-            var story = {
-                email: emailBox.value,
-                internalization: internalizationStoryBox.value,
-                externalization: externalizationStoryBox.value,
-                user_name: nameBox.value,
-                conversation_id: conversationId.value
-            }
-
-            // Send the user message
-            Api.sendUserStory(story);
-
-            // Clear input box for further messages
-            emailBox.value = '';
-            internalizationStoryBox.value = '';
-            Common.fireEvent(emailBox, 'input');
-            var contactForm = document.querySelector(settings.selectors.sentStoryForm);
-            contactForm.className = 'hide';
-            var notification = document.querySelector(settings.selectors.notification);
-            notification.className = '';
-        }
-    }
-
-    // Handles the submission of input
-    function saveDraft(event) {
-        // Submit on enter key, dis-allowing blank messages
-        var emailBox = document.querySelector(settings.selectors.emailBox);
-        if(emailBox.value ){
-            if(!validateEmail(emailBox.value)){
-                return;
-            }
-            var internalizationStoryBox = document.querySelector(settings.selectors.internalizationStoryBox);
-
-            var externalizationStoryBox = document.querySelector(settings.selectors.externalizationStoryBox);
-
-            var nameBox = document.querySelector(settings.selectors.nameBox);
-
-            var conversationId = document.querySelector(settings.selectors.conversationId);
-
-            // Send the user message
-            var story = {
-                email: emailBox.value,
-                internalization: internalizationStoryBox.value,
-                externalization: externalizationStoryBox.value,
-                user_name: nameBox.value,
-                conversation_id: conversationId.value
-            }
-
-            Api.saveUserStory(story);
-
-            // Clear input box for further messages
-            emailBox.value = '';
-            internalizationStoryBox.value = '';
-            Common.fireEvent(emailBox, 'input');
-            var contactForm = document.querySelector(settings.selectors.sentStoryForm);
-            contactForm.className = 'hide';
-            var notification = document.querySelector(settings.selectors.notification);
-            notification.className = '';
-        }
-    }
-
 
     // Handles the submission of input
     function inputKeyDown(event, inputBox) {
@@ -343,5 +258,4 @@ var ContactInput = (function(){
         var notification = document.querySelector(settings.selectors.subscribeNotification);
         notification.className = 'text-center';
     }
-
 }());
