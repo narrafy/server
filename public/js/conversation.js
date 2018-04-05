@@ -19,6 +19,7 @@ var ConversationPanel = (function(){
         inputKeyDown: inputKeyDown,
         sendMessage: sendMessage,
         sendQuickReply: sendQuickReply,
+        copyLink: copyLink,
         scrollToChatBottom: scrollToChatBottom
     };
 
@@ -135,7 +136,6 @@ var ConversationPanel = (function(){
                 currentDiv.classList.add('load');
             });
             // Move chat to the most recent messages when new messages are added
-
         }
     }
 
@@ -166,12 +166,13 @@ var ConversationPanel = (function(){
 
                 var obj = newPayload.context.quick_replies[key];
                 for (var prop in obj) {
+
                     // skip loop if the property is from prototype
                     if(!obj.hasOwnProperty(prop)) continue;
 
                     // your code
-                    if(prop==="title"){
-                        quick_replies.push(obj[prop]);
+                    if(prop === "title"){
+                        quick_replies.push({ title: obj[prop], payload: obj["payload"]});
                     }
                 }
             }
@@ -189,20 +190,60 @@ var ConversationPanel = (function(){
                 }];
                 if(quick_replies&&quick_replies.length > 0){
                     quick_replies.forEach((item) => {
-                        secondRankChildren.push({
-                            'tagName': 'button',
-                            'text': item,
-                            'attributes':[
-                                {
-                                    'name':'class',
-                                    'value':'btn btn-default btn-outline quick-reply'
-                                },
-                                {
-                                    'name':'onclick',
-                                    'value':'ConversationPanel.sendQuickReply("'+ item +'")'
-                                }
-                            ]
-                        });
+
+                        if(item.title === "Copy link")
+                        {
+                            secondRankChildren.push({
+                                'tagName': 'button',
+                                'text': item.title,
+                                'attributes':[
+                                    {
+                                        'name':'class',
+                                        'value':'btn btn-default btn-outline quick-reply'
+                                    },
+                                    {
+                                        'name':'onclick',
+                                        'value':'ConversationPanel.copyLink("'+ item.payload +'")'
+                                    }
+                                ]
+                            });
+                            secondRankChildren.push({
+                                'tagName': 'input',
+                                'attributes':[
+                                    {
+                                        'name':'type',
+                                        'value':'hidden'
+                                    },
+                                    {
+                                        'name':'id',
+                                        'value': item.payload
+                                    },
+                                    {
+                                        'name':'value',
+                                        'value': item.payload
+                                    }
+                                ]
+                            });
+
+                        } else {
+                            secondRankChildren.push({
+                                'tagName': 'button',
+                                'text': item.title,
+                                'attributes':[
+                                    {
+                                        'name':'class',
+                                        'value':'btn btn-default btn-outline quick-reply'
+                                    },
+                                    {
+                                        'name':'onclick',
+                                        'value':'ConversationPanel.sendQuickReply("'+ item.title +'")'
+                                    }
+                                ]
+                            });
+
+                        }
+
+
                     });
                 }
                 var quickReplyWrapper = {
@@ -270,6 +311,22 @@ var ConversationPanel = (function(){
         Common.deleteDomElements('.quick-reply');
         sendUserMessage(text);
     }
+
+    function copyLink(id) {
+        /* Get the text field */
+        var copyText = document.getElementById(id);
+
+        /* Select the text field */
+        copyText.select();
+
+        /* Copy the text inside the text field */
+        document.execCommand("Copy");
+
+        /* Alert the copied text */
+        alert("Link copied: " + copyText.value);
+    }
+
+
 
     function sendUserMessage(value){
         // Retrieve the context from the previous server response

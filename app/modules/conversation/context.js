@@ -43,8 +43,8 @@ async function runContextTasks(conversation) {
     if(shouldPauseBot(conversation))
         context.bot_active = false
         
-    //if (is3RdNode(conversation))
-    //   emailService.admin("Someone is talking to the bot. Remember to train on the input!")
+    if (is3RdNode(conversation))
+       emailService.admin("Someone is talking to the bot. Remember to train on the input!")
 
     if(conversation.context.help_request || conversation.context.email_admin){
         emailService.admin("Help is needed! Check the facebook page ASAP!")
