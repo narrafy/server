@@ -2,13 +2,13 @@ const config = require('../config')
 
 function getFooterNoUsername(){
     let footer = "<hr/><p style='font-size: medium'> <a href='https://www.narrafy.io'>Narrafy Team</a>, wishes you a nice day!</p>"
-    let ps = "<p style='font-size: medium'> P.S. Take a look at our <a href='https://medium.com/narrafy/2018-q1-c6d60cab5612'>blog</a> to find out more about our work.</p>"
+    let ps = "<p style='font-size: medium'> P.S. Take a look at our <a href='https://medium.com/symbiosis-humans-and-ai'>blog</a> to find out more about our work.</p>"
     return footer + ps
 }
 
 function getFooter(username){
     let footer = "<p>" + username  + "<a href='https://www.narrafy.io'> Narrafy Team</a> wishes you a nice day!</p>"
-    let ps = "<hr/><p> P.S. Take a look at our <a href='https://medium.com/narrafy/2018-q1-c6d60cab5612'>blog</a> to find our more about our work.</p>"
+    let ps = "<hr/><p> P.S. Take a look at our <a href='https://medium.com/symbiosis-humans-and-ai'>blog</a> to find our more about our work.</p>"
     return footer + ps
 }
 
