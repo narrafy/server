@@ -104,6 +104,4 @@ function is3RdNode(conversation) {
 
 module.exports = {
 	runContextTasks: runContextTasks,
-	pushContext: db.pushContext,
-	getContext: db.getContext,
 }

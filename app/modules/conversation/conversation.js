@@ -1,20 +1,17 @@
 const facebookApi = require('../facebook-api')
 const watson = require('./watson')
 const context = require('./context')
-const config = require('../config')
-const customer = require('../customer')
 const nlg = require('../natural-language/generation')
 const email = require('../email')
-const log = require('../log')
 
-async function reply(input, stored_log) {
+async function reply(input, stored_log, setcontext, db) {
 
 	//populate the request object to send to watson
 	const request = watson.populateRequest(input, stored_log)
 
     if(!request.workspace)
     {
-        const { access_token, workspace } = await setContextConfig(input.customer_id)
+        const { access_token, workspace } = setcontext;
         if(access_token)
             request.access_token = access_token
         if(workspace)
@@ -40,7 +37,7 @@ async function reply(input, stored_log) {
                     return conversation
                 }else{
                     //then push to storage
-                    await context.pushContext(request.id, conversation)
+                    await db.pushContext(request.id, conversation)
                 }
             }
 
@@ -87,7 +84,7 @@ async function sendReplyToFacebook(id, conversation, text) {
     console.log("Watson replies with: " + message.text + " " + id)
 }
 
-async function updateMessage(id, conversation) {
+async function updateMessage(id, conversation, db) {
     var responseText = null
 
     if (conversation.output) {
@@ -96,7 +93,7 @@ async function updateMessage(id, conversation) {
         await context.runContextTasks(conversation)
 
         //then push context
-        await context.pushContext(id, conversation)
+        await db.pushContext(id, conversation)
 
         if (conversation.output.text && conversation.output.text[0]) {
             let messages = await nlg.message(conversation)
@@ -117,37 +114,31 @@ async function updateMessage(id, conversation) {
 
     await context.runContextTasks(conversation)
 
-    await context.pushContext(id, conversation)
+    await db.pushContext(id, conversation)
 
     let messages = await nlg.message(responseText)
 
     return { conversation, messages }
 }
 
-async function setContextConfig(customer_id) {
-    //refactor use projection to return only this two fields
-    let customerConfig = await customer.getConfig(customer_id)
-    if(customerConfig)
-        return { access_token: customerConfig.facebook.access_token, workspace: customerConfig.conversation.workspace}
-    return null
-}
+async function getContextAndReply(data, context, db){
 
-async function getContextAndReply(data){
     const {input, stored_log} = await context.getContext(data)
 
-    await reply(input, stored_log)
+    await reply(input, stored_log, context, db)
 }
 
-async function PauseBot(data) {
+async function PauseBot(data, context, db) {
 
     data.text = "shutdown"
 
     const {input, stored_log} = await context.getContext(data)
 
-    const conversation = await reply(input, stored_log)
+
+    const conversation = await reply(input, stored_log, context)
 
     //store the fact that the bot is disabled
-    context.pushContext(data.sender, conversation)
+    db.pushContext(data.sender, conversation)
 
     let dt = {
         id: data.sender,
@@ -163,7 +154,7 @@ async function PauseBot(data) {
     email.admin("Check the facebook page!")
 }
 
-async function messengerRequest(body) {
+async function messengerRequest(body, context, db) {
     var events = body.entry[0].messaging
     for (var i = 0; i < events.length; i++) {
         var event = events[i]
@@ -179,7 +170,7 @@ async function messengerRequest(body) {
             switch (event.postback.payload) {
                 //user interacts with the page for the first time.
                 case 'optin': {
-                    await getContextAndReply(data)
+                    await getContextAndReply(data, context, db)
                 }
                     break
                 case 'CONTACT_REQUEST': {
@@ -193,7 +184,7 @@ async function messengerRequest(body) {
 
                     data.text= "let's try again"
 
-                    await getContextAndReply(data)
+                    await getContextAndReply(data, context, db)
                 }
                     break
                 default:
@@ -205,34 +196,16 @@ async function messengerRequest(body) {
         if (event.message) {
             if (event.message.text) {
                 data.text = event.message.text
-                await getContextAndReply(data)
+                await getContextAndReply(data, context, db)
             }
         }
     }
 }
 
-async function webRequest(id, body, conversation_id) {
-    var data = {};
-    if (body)
-    {
-        if (body.input){
-            data.text = body.input.text
-        }
-
-        if (body.context)
-        {
-            data.context = body.context
-            let customer_id = body.context.customer_id
-            const {access_token, workspace} = await setContextConfig(customer_id)
-            data.access_token = access_token
-            data.workspace = workspace
-        }
-    }
-
+async function webRequest(id, data, db) {
     //Send the input to the conversation service
     data = await watson.ask(data);
-
-    return updateMessage(id, data)
+    return updateMessage(id, data, db)
 }
 
 
@@ -240,9 +213,8 @@ module.exports = {
 
 	messengerRequest: messengerRequest,
 
-	async web(req) {
-        let conversation_id = req.cookies["conversation_id"]
-		return webRequest(req.sessionID, req.body, conversation_id)
+	async web(id, data, db) {
+		return webRequest(id, data, db)
 	},
 
     getStoryStub: nlg.getStoryStub,

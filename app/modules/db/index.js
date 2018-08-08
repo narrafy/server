@@ -1,5 +1,3 @@
-const log = require('../log')
-const config = require('../config')
 const mongoClient = require('mongodb')
 
 require('dotenv').config({silent: true})
@@ -305,7 +303,7 @@ module.exports = exports = {
 	saveStory: saveStory,
 	getStory: getStory,
 
-	getConfigurationFile: getCustomerConfigurationFile,
+	getConfig: getCustomerConfigurationFile,
     getCustomerByToken: getCustomerConfigByToken,
 
 	async addInquiry(data) {

@@ -1,6 +1,6 @@
-const db = require('../db')
 
-async function getStats()
+
+async function getStats(db)
 {
     let model= {};
     let avg_model = await db.getAvgStats()
@@ -25,7 +25,7 @@ async function getStats()
     return model
 }
 
-async function getStoryModel(conversation_id)
+async function getStoryModel(conversation_id, db)
 {
     let story = await db.getStory(conversation_id)
     if(story.length > 0){
@@ -57,7 +57,7 @@ async function getStoryModel(conversation_id)
     }
 }
 
-function saveStory(data) {
+function saveStory(data, db) {
     let entry = {
         conversation_id: data.conversation_id,
         email: data.email,

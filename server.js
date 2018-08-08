@@ -5,8 +5,7 @@ const flash = require('connect-flash')
 const morgan = require('morgan')
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
-const session = require('express-session')
-const db = require('./app/modules/db')
+const db = require('./app/modules/db/psql')
 const config = require('./app/modules/config')
 
 /* Bootstrap middleware */
@@ -27,17 +26,15 @@ app.use(flash())
 app.use(express.static(__dirname + "/public"))
 
 /* Connect to DB */
-db
-	.connect(config.mongoDb.uri)
+db.
+connect(config.db_settings.posgres)
 	.then(() => logger.info('Connected to DB.'))
-	.catch((error) => {
-		logger.error('Failed to connect to DB.')
-		logger.error(error)
-	})
+	.catch((error) => {logger.error('Failed to connect to DB.')
+		logger.error(error)})
 
 
 /* Bootstrap routes*/
-require('./app/modules/router/routes.js')(app)
+require('./app/modules/router/routes.js')(app, db)
 
 /* Start server */
 app.listen(config.app.port)
