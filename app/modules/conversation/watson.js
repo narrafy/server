@@ -57,7 +57,6 @@ async function ask(data) {
 			}
 		})
 	})
-
 }
 
 function populateRequest(input, stored_log) {

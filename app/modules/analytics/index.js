@@ -1,5 +1,3 @@
-
-
 async function getStats(db)
 {
     let model= {};

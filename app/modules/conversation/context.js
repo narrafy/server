@@ -1,11 +1,10 @@
-const db = require('../db')
 const emailService = require('../email')
 const config = require('../config')
 const nlu = require('../natural-language/understanding')
 
 /* tasks to run after the context of a conversation is pushed to the database
  * it's usually to send an email or parse the context variable */
-async function runContextTasks(conversation) {
+async function runContextTasks(conversation, db) {
 
     let context = conversation.context
     const conversation_id = context.conversation_id
@@ -19,7 +18,8 @@ async function runContextTasks(conversation) {
                     url: config.app.url + "/story"+"?conversation_id="+ conversation_id,
                     date: new Date(),
                 };
-                const transcript = await db.extractTranscript(conversation_id)
+                let conversations = await db.getConversationLog(conversation_id, db)
+                const transcript = buildTranscript(conversations)
                 if(transcript){
                     await db.saveTranscript(conversation_id, email, transcript)
                     emailService.transcript(email, transcript)
@@ -55,6 +55,22 @@ async function runContextTasks(conversation) {
         emailService.admin("Narrafy is struggling! Check the facebook page ASAP!")
         conversation.context.email_admin = false
     }
+}
+
+function buildTranscript(conversations)
+{
+    const transcript = []
+    conversations.forEach(conversation => {
+        if (conversation.input && conversation.input.text) {
+            transcript.push(conversation.input.text)
+        }
+        if (conversation.output && conversation.output.text) {
+            conversation.output.text.forEach(entry => {
+                transcript.push(entry)
+            })
+        }
+    })
+    return transcript;
 }
 
 function getEmailFromContext(conversation){

@@ -65,24 +65,13 @@ async function saveInquiry(data) {
 		.save(data)
 }
 
-async function extractTranscript(conversation_id) {
+async function getConversationLog(conversation_id) {
     const conversations = await dbConnection
         .collection(collection.log)
         .find({conversation_id: conversation_id})
         .sort({$natural: 1})
         .toArray()
-    const transcript = []
-    conversations.forEach(conversation => {
-        if (conversation.input && conversation.input.text) {
-            transcript.push(conversation.input.text)
-        }
-        if (conversation.output && conversation.output.text) {
-            conversation.output.text.forEach(entry => {
-                transcript.push(entry)
-            })
-        }
-    })
-    return transcript;
+    return conversations;
 }
 
 async function getTranscript(conversation_id) {
@@ -292,7 +281,7 @@ module.exports = exports = {
     getConversationDataSet: getConversationDataSet,
 
 	getTranscript: getTranscript,
-    extractTranscript: extractTranscript,
+    getConversationLog: getConversationLog,
 	saveTranscript: saveTranscript,
 
 	getContext: getContext,

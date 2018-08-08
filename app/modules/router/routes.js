@@ -113,7 +113,7 @@ module.exports = (app, db) => {
 	app.get('/api/transcript/get', async (req, res) => {
 		var conversation_id = req.query['conversation_id']
 		if (conversation_id !== null) {
-			const transcript = await Analytics.getTranscript(conversation_id, db)
+			const transcript = await db.getTranscript(conversation_id, db)
 			res.json(transcript)
 		} else {
 			res.sendStatus(500)
@@ -125,7 +125,7 @@ module.exports = (app, db) => {
 		var conversation_id = req.query['conversation_id']
 		var email = req.query['email']
 		if (conversation_id !== null) {
-			const transcript = await Analytics.getTranscript(conversation_id, db)
+			const transcript = await db.getTranscript(conversation_id, db)
 			if(transcript)
 				mailService.transcript(email, transcript)
 			res.sendStatus(200)

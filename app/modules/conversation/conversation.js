@@ -27,7 +27,7 @@ async function reply(input, stored_log, setcontext, db) {
         if (conversation && conversation.output) {
 
 		    //run tasks first, context might change here
-            await context.runContextTasks(conversation)
+            await context.runContextTasks(conversation, db)
 
             let ctx = conversation.context
 
@@ -90,7 +90,7 @@ async function updateMessage(id, conversation, db) {
     if (conversation.output) {
 
         //run context tasks first
-        await context.runContextTasks(conversation)
+        await context.runContextTasks(conversation, db)
 
         //then push context
         await db.pushContext(id, conversation)
@@ -112,7 +112,7 @@ async function updateMessage(id, conversation, db) {
         }
     }
 
-    await context.runContextTasks(conversation)
+    await context.runContextTasks(conversation, db)
 
     await db.pushContext(id, conversation)
 

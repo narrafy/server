@@ -11,7 +11,7 @@ module.exports = {
 
 	db_settings: {
 		mongo:   process.env.MONGODB_URI || 'mongodb://localhost:27017/narrafy',
-		posgres: process.env.POSGRES_URI || 'postgresql://localhost:5432/test',
+		posgres: process.env.POSGRES_URI, //|| 'postgresql://localhost:5432/test',
 		secret: process.env.SESSION_SECRET
 	},
 
