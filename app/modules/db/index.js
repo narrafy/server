@@ -41,22 +41,10 @@ async function getContextByConversationId(id, limit) {
 		.toArray()
 }
 
-async function pushContext(id, conversation) {
-
-	const dbConversation = {
-		id: id,
-		conversation_id: conversation.context.conversation_id,
-		intents: conversation.intents,
-		entities: conversation.entities,
-		input: conversation.input,
-		output: conversation.output,
-		context: conversation.context,
-		date: new Date()
-	}
-
+async function pushContext(doc) {
 	return dbConnection
 		.collection(collection.log)
-		.insertOne(dbConversation)
+		.insertOne(doc)
 }
 
 async function saveInquiry(data) {
@@ -136,7 +124,7 @@ async function getCustomerConfigByToken(verifyToken){
 //and average questions answered
 async function getAvgStats() {
 
-    return dbConnection.collection(collection.log).aggregate([
+    let query = await dbConnection.collection(collection.log).aggregate([
         {
             $group :
                 {
@@ -153,14 +141,13 @@ async function getAvgStats() {
         }},
 
         { "$project": {
-
             "minutes": {
                 "$divide": [{ "$subtract": [ "$lastItem.date", "$firstItem.date" ] }, 1000*60]
             },
             "counter": "$lastItem.context.system.dialog_request_counter"
+            },
         },
 
-        },
         {
             "$match": { "counter": {$gt: 2 } , "minutes": {$lt: 120} }
         },
@@ -170,7 +157,7 @@ async function getAvgStats() {
             minutes: {$avg: "$minutes"},
             counter: {$avg: "$counter"},
         }}
-    ],
+        ],
         {
             cursor: {
                 batchSize: 10000
@@ -180,6 +167,8 @@ async function getAvgStats() {
         }, null
     ).toArray()
         .then((stats) => stats)
+
+    return {minutes: query.minutes, counter: query.counter};
 }
 
 // get the dataset pair <minutes_spent, number_of_questions>
@@ -205,7 +194,7 @@ async function getConversationDataSet(){
 
             { "$project": {
 
-                "minutes": {"$divide": [{ "$subtract": [ "$lastItem.date", "$firstItem.date" ] }, 1000*60]  },
+                "minutes": {"$divide": [{ "$subtract": [ "$lastItem.date", "$firstItem.date" ] }, 1000*60]},
                 "counter": "$lastItem.context.system.dialog_request_counter"
             },
 

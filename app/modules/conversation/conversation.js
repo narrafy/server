@@ -37,7 +37,10 @@ async function reply(input, stored_log, setcontext, db) {
                     return conversation
                 }else{
                     //then push to storage
-                    await db.pushContext(request.id, conversation)
+                    conversation.id = request.id;
+                    conversation.date = new Date();
+
+                    await db.pushContext(conversation)
                 }
             }
 
@@ -93,7 +96,10 @@ async function updateMessage(id, conversation, db) {
         await context.runContextTasks(conversation, db)
 
         //then push context
-        await db.pushContext(id, conversation)
+        conversation.id = id;
+        conversation.date = new Date();
+
+        await db.pushContext(conversation)
 
         if (conversation.output.text && conversation.output.text[0]) {
             let messages = await nlg.message(conversation)
@@ -114,7 +120,10 @@ async function updateMessage(id, conversation, db) {
 
     await context.runContextTasks(conversation, db)
 
-    await db.pushContext(id, conversation)
+    conversation.id = id;
+    conversation.date = new Date();
+
+    await db.pushContext(conversation)
 
     let messages = await nlg.message(responseText)
 
@@ -136,9 +145,11 @@ async function PauseBot(data, context, db) {
 
 
     const conversation = await reply(input, stored_log, context)
+    conversation.id = data.sender;
+    conversation.date = new Date();
 
     //store the fact that the bot is disabled
-    db.pushContext(data.sender, conversation)
+    await db.pushContext(conversation)
 
     let dt = {
         id: data.sender,

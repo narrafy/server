@@ -4,6 +4,7 @@ const Analytics = require ('../analytics')
 const mailService = require('../email')
 const config = require('../config')
 const fb = require('../facebook-api')
+const mig = require('../db/migrate')
 
 module.exports = (app, db) => {
 
@@ -57,7 +58,6 @@ module.exports = (app, db) => {
                 data.workspace = workspace
             }
         }
-
 
 		const {conversation, messages} = await Conversation.web(session_id, data, db)
 
@@ -151,6 +151,9 @@ module.exports = (app, db) => {
 	app.get('/stats', async (req,res) => {
 
 		let model = await Analytics.getStatsModel(db)
+        model.limit_questions = 40;
+        model.limit_minutes_spent = 40;
+
 		res.render('analytics/index.ejs', model)
 	})
 
@@ -190,4 +193,32 @@ module.exports = (app, db) => {
             return { access_token: customerConfig.facebook.access_token, workspace: customerConfig.conversation.workspace}
         return null
     }
+
+    app.get('/api/migrate/customer', async(req, res) => {
+        await mig.migrateCustomer();
+    })
+
+    /*
+
+	app.get('/api/migrate/conversation', async(req, res) => {
+		await mig.migrateConversation();
+	})
+
+    app.get('/api/migrate/story', async(req, res) => {
+        await mig.migrateStory();
+    })
+
+    app.get('/api/migrate/template', async(req, res) => {
+        await mig.migrateStoryTemplate();
+    })
+
+    app.get('/api/migrate/subscriber', async(req, res) => {
+        await mig.migrateSubscriber();
+    })
+
+    app.get('/api/migrate/transcript', async(req, res) => {
+        await mig.migrateTranscript();
+    })
+
+    */
 }

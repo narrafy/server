@@ -20,9 +20,14 @@ async function runContextTasks(conversation, db) {
                 };
                 let conversations = await db.getConversationLog(conversation_id, db)
                 const transcript = buildTranscript(conversations)
+                let doc = {
+                    email: email,
+                    conversation_id: conversation_id,
+                    transcript: transcript
+                }
                 if(transcript){
-                    await db.saveTranscript(conversation_id, email, transcript)
-                    emailService.transcript(email, transcript)
+                    await db.saveTranscript(doc.transcript)
+                    emailService.transcript(email, doc.transcript)
                     emailService.adminBot(data)
                 }
                 db.addSubscriber(data)

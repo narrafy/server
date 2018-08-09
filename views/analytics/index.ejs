@@ -22,9 +22,9 @@
         <div class="row">
             <div class="col-md-5">
                 <ul class="list-group">
-                    <li class="list-group-item"> Session time ( average minutes ): <span class="label label-success"> <%= avg_minutes%> </span>  </li>
-                    <li class="list-group-item"> Answered questions ( average number ): <span class="label label-success"> <%= avg_counter %> </span> </li>
-                    <li class="list-group-item"> Conversations ( total number ): <span class="label label-success">  <%= total_count%> </span> </li>
+                    <li class="list-group-item"> Session time (average minutes): <span class="label label-success"> &nbsp; <%= avg_minutes%> </span>  </li>
+                    <li class="list-group-item"> Answered questions (average number): <span class="label label-success"> &nbsp; <%= avg_counter %> </span> </li>
+                    <li class="list-group-item"> Conversation sample: <span class="label label-success"> &nbsp; <%= total_count%> </span> </li>
                 </ul>
             </div>
         </div>
@@ -56,7 +56,7 @@
         //barmode: 'stack',
         yaxis: {
             title: 'Questions answered',
-            range: [ 0, 40 ],
+            range: [ 0, <%= limit_questions %> ],
             titlefont: {
                 size: 16,
                 color: 'rgb(107, 107, 107)'
@@ -68,7 +68,7 @@
         },
         xaxis: {
             title: 'Session time (minutes)',
-            range: [ 0, 15 ],
+            range: [ 1, <% limit_minutes_spent%> ],
             titlefont: {
                 size: 16,
                 color: 'rgb(107, 107, 107)'
