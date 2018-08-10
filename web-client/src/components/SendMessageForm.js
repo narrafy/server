@@ -1,7 +1,6 @@
-import React from 'react'
+import React, {Component} from 'react'
 
-class SendMessageForm extends React.Component{
-
+class SendMessageForm extends Component{
 
     constructor()
     {
@@ -36,7 +35,7 @@ class SendMessageForm extends React.Component{
                 <input
                     onChange={this.handleChange}
                     value = {this.state.message}
-                    placeholder="Text me maybe"
+                    placeholder="Text me maybe, here is my phone number"
                     type="text" />
             </form>
         )
