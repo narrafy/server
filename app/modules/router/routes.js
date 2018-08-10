@@ -8,7 +8,7 @@ const mig = require('../db/migrate')
 
 module.exports = (app, db) => {
 
-	app.get('/api/webhook', async function (req, res) {
+	app.get('/webhook', async function (req, res) {
 
 		let customerVerifyToken =  req.query['hub.verify_token'];
 		let customerConfig = await config.getCustomerByToken(customerVerifyToken);
@@ -27,7 +27,7 @@ module.exports = (app, db) => {
 		}
 	})
 
-	app.post('/api/webhook', async function (req, res) {
+	app.post('/webhook', async function (req, res) {
 
         let customer_id = body.context.customer_id;
 
@@ -37,7 +37,7 @@ module.exports = (app, db) => {
 		res.sendStatus(200)
 	})
 
-	app.post('/api/message', async function (req, res) {
+	app.post('/message', async function (req, res) {
 
         let session_id = req.sessionID;
 		let body = req.body;
