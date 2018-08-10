@@ -37,7 +37,7 @@ module.exports = (app, db) => {
 		res.sendStatus(200)
 	})
 
-	app.post('/message', async function (req, res) {
+	app.post('/api/message', async function (req, res) {
 
         let session_id = req.sessionID;
 		let body = req.body;
