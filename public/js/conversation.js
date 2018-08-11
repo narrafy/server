@@ -188,7 +188,7 @@ var ConversationPanel = (function(){
                     'tagName': 'p',
                     'text': currentText
                 }];
-                if(quick_replies&&quick_replies.length > 0){
+                if(quick_replies && quick_replies.length > 0){
                     quick_replies.forEach((item) => {
 
                         if(item.title === "Copy link")

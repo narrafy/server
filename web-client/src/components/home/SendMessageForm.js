@@ -30,14 +30,17 @@ class SendMessageForm extends Component{
 
     render(){
         return (
-            <form onSubmit={this.handleSubmit}
-                className="send-message-form">
-                <input
-                    onChange={this.handleChange}
-                    value = {this.state.message}
-                    placeholder="Text me maybe, here is my phone number"
-                    type="text" />
-            </form>
+                <div className="input-group chat-input">
+                    <form onSubmit={this.handleSubmit}
+                          className="send-message-form">
+                        <input className="textInput"
+                               onChange={this.handleChange}
+                               value = {this.state.message}
+                               placeholder="Text me maybe"
+                               type="text" />
+                        <input id="enter" type="submit" value="enter" onSubmit={this.handleSubmit} />
+                    </form>
+                </div>
         )
     }
 }

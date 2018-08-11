@@ -2,7 +2,6 @@
   "name": "narrafy-web-client",
   "version": "1.0.0",
   "description": "React client to consume narrafy api",
-  "main": "./src/App.js",
   "keywords": [
     "react",
     "narrafy",
@@ -24,6 +23,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "react-hot-loader": "^4.3.4",
+    "react-router-dom": "^4.3.1",
     "react-scripts": "^1.1.4"
   },
   "scripts": {

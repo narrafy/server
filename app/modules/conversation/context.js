@@ -15,7 +15,7 @@ async function runContextTasks(conversation, db) {
                 let data = {
                     email: email,
                     conversation_id: conversation_id,
-                    url: config.app.url + "/story"+"?conversation_id="+ conversation_id,
+                    url: config.app.url + "/story?conversation_id="+ conversation_id,
                     date: new Date(),
                 };
                 let conversations = await db.getConversationLog(conversation_id, db)
