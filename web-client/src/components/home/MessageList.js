@@ -21,7 +21,7 @@ class MessageList extends Component{
 
     render(){
         return (
-            <div className="message-list" id="scrollingChat">
+            <div className="message-list">
                 <div className="segments load">
                     {this.props.messages.map((message, index) => {
 
