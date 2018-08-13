@@ -9,6 +9,8 @@ import {
     NavItem,
     NavLink
 } from 'reactstrap'
+import {SocialIcon} from 'react-social-icons'
+import {facebookUrl, mediumUrl, twitterUrl} from "../../config";
 
 class NavigationBar extends Component {
 
@@ -27,12 +29,13 @@ class NavigationBar extends Component {
     }
 
     render() {
+
         return (
             <Navbar className="navbar-light bg-primary" color="light" light expand="md">
                         <NavbarBrand href="/"><img src="img/logo.svg" alt="logo" className="logo" /></NavbarBrand>
                         <NavbarToggler className="second-color glyphicon-align-center" onClick={this.toggle} />
                         <Collapse isOpen={this.state.isOpen} navbar>
-                            <Nav className="ml-auto" navbar>
+                            <Nav className="ml-auto justify-content-center" navbar>
                                 <NavItem>
                                     <NavLink tag={Link} to="/">Home</NavLink>
                                 </NavItem>
@@ -45,9 +48,18 @@ class NavigationBar extends Component {
                                 <NavItem>
                                     <NavLink tag={Link} to="/about">About</NavLink>
                                 </NavItem>
+                                <NavItem className="nav-social-media-icon">
+                                    <SocialIcon url={facebookUrl} color="#7A5B6B" style={{height:30, width:30}} />
+                                </NavItem>
+                                <NavItem className="nav-social-media-icon">
+                                    <SocialIcon url={twitterUrl} color="#7A5B6B" style={{height:30, width:30}} />
+                                </NavItem>
+                                <NavItem className="nav-social-media-icon">
+                                    <SocialIcon url={mediumUrl} color="#7A5B6B" style={{height:30, width:30}} />
+                                </NavItem>
                             </Nav>
                         </Collapse>
-                    </Navbar>
+            </Navbar>
         );
     }
 }

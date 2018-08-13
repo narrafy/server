@@ -18,6 +18,7 @@
     "css-loader": "^0.28.11",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
+    "react-social-icons": "^3.0.0",
     "style-loader": "^0.21.0"
   },
   "dependencies": {
@@ -29,10 +30,13 @@
     "plotly.js": "^1.39.4",
     "react-hot-loader": "^4.3.4",
     "react-plotly.js": "^2.2.0",
+    "react-responsive-carousel": "^3.1.41",
     "react-router-bootstrap": "^0.24.4",
     "react-router-dom": "^4.3.1",
     "react-scripts": "^1.1.4",
-    "reactstrap": "^6.3.1"
+    "react-slick": "^0.23.1",
+    "reactstrap": "^6.3.1",
+    "slick-carousel": "^1.8.1"
   },
   "scripts": {
     "start": "react-scripts start",

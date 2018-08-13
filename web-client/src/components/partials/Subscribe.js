@@ -3,6 +3,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faPaperPlane} from '@fortawesome/free-solid-svg-icons'
 import ApiClient from "../../api/ApiClient"
 import {subscribeEndPoint} from '../../config'
+import {Form, FormGroup, Label, Input, Button, Row, Col} from 'reactstrap'
 
 class Subscribe extends Component
 {
@@ -68,25 +69,19 @@ class Subscribe extends Component
                     <div className="container">
                         <div className="row">
                             <div className="col-md-12 text-center">
-                                <h3 className="title">Subscribe for updates</h3>
+                                <h2 className="title">Sign up</h2>
                                 <form onSubmit={this.handleSubmit}>
                                     <div id="subscribe-div" className="form-inline col-md-6 offset-md-3 text-center"
-                                         role="form">
+                                     role="form">
                                         <div className="form-group">
-                                            <input type="text"
-                                                   className="form-control"
-                                                   id="subscribe-box"
-                                                   onChange={this.handleChange}
-                                                   onKeyDown={this.handleChange}
-                                                   type="email"
-                                                   placeholder="Your Email"
-                                                   name="email"
-                                                   required />
+                                        <input className="form-control" id="subscribe-box"
+                                               onChange={this.handleChange}
+                                               onKeyDown={this.handleChange}
+                                               placeholder="Your Email" name="email" type="text" />
                                         </div>
-                                        <button type="submit"
-                                                className="btn btn-secondary btn-signup"
-                                                onClick={this.handleSubmit}>
-                                            <FontAwesomeIcon icon={faPaperPlane}/>
+                                        <button type="submit" className="btn btn-secondary btn-subscribe"
+                                            onClick={this.handleSubmit} >
+                                            Submit
                                         </button>
                                     </div>
                                 </form>

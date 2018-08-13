@@ -104,7 +104,7 @@ class Contact extends Component
                                               onChange={this.handleChange}
                                               required="required" ></textarea>
                                         </div>
-                                        <div className="send-button bottom-margin">
+                                        <div className="form-group send-button">
                                             <button type="submit" onSubmit={this.handleSubmit}
                                                     className="btn  btn-primary">Send Message
                                             </button>
