@@ -28,7 +28,7 @@ class NavigationBar extends Component {
 
     render() {
         return (
-            <Navbar className="navbar-light bg-primary" color="light" light expand="md" toggleable>
+            <Navbar className="navbar-light bg-primary" color="light" light expand="md">
                         <NavbarBrand href="/"><img src="img/logo.svg" alt="logo" className="logo" /></NavbarBrand>
                         <NavbarToggler className="second-color glyphicon-align-center" onClick={this.toggle} />
                         <Collapse isOpen={this.state.isOpen} navbar>
@@ -37,7 +37,7 @@ class NavigationBar extends Component {
                                     <NavLink tag={Link} to="/">Home</NavLink>
                                 </NavItem>
                                 <NavItem>
-                                    <NavLink target="_blank" href="https://arxiv.org/abs/1712.03080">Research</NavLink>
+                                    <NavLink target="_blank"  rel="noopener noreferrer" href="https://arxiv.org/abs/1712.03080">Research</NavLink>
                                 </NavItem>
                                 <NavItem>
                                     <NavLink tag={Link} to="/stats">Stats</NavLink>

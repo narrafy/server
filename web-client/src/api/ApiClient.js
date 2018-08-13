@@ -6,15 +6,23 @@ export default class ApiClient{
     constructor(){
         this.defaultOptions = {headers: {'Content-Type': 'application/json'}};
         this.post = this.post.bind(this)
+        this.get = this.get.bind(this)
     }
 
-    post(config, data, cb)
+    post(endPoint, data, cb)
     {
-        axios.post(config.apiUrl, data, this.defaultOptions)
+        axios.post(endPoint, data, this.defaultOptions)
             .then(res=>{
                 cb(res)
             })
             .catch(err => console.log(err));
+    }
+    get(endPoint, cb)
+    {
+        axios.get(endPoint, cb)
+            .then(res => {
+                cb(res)
+            })
     }
 
 }

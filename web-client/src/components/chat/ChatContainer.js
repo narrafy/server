@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import MessageList from './MessageList'
 import SendMessageForm from './SendMessageForm'
-import ApiClient from '../../api/APIUtils'
+import ApiClient from '../../api/ApiClient'
 import {sendMessageEndPoint} from '../../config/index'
 
 class ChatContainer extends Component
@@ -33,10 +33,8 @@ class ChatContainer extends Component
                 res.data.context,
                 res.data.context.quick_replies)
         }
-        let config = {
-            apiUrl: sendMessageEndPoint
-        }
-        this.apiClient.post(config, data, cb)
+
+        this.apiClient.post(sendMessageEndPoint, data, cb)
     }
 
     updateState(sender, text, context, quick_replies)

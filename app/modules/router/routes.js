@@ -148,6 +148,22 @@ module.exports = (app, db) => {
 		res.render('index.ejs')
 	})
 
+	app.get('/api/analytics/conversation/count', async (req, res) =>{
+
+        let total_count = await db.getConversationCount()
+        res.json(total_count[0])
+	})
+
+    app.get('/api/analytics/conversation/dataset', async (req, res) =>{
+        let dataset = await db.getConversationDataSet()
+        res.json(dataset)
+    })
+
+    app.get('/api/analytics/conversation/avg', async (req, res) =>{
+        let avg = await db.getAvgStats()
+        res.json(avg)
+    })
+
 	app.get('/stats', async (req,res) => {
 
 		let model = await Analytics.getStatsModel(db)
@@ -199,7 +215,6 @@ module.exports = (app, db) => {
     })
 
     /*
-
 	app.get('/api/migrate/conversation', async(req, res) => {
 		await mig.migrateConversation();
 	})
@@ -219,6 +234,5 @@ module.exports = (app, db) => {
     app.get('/api/migrate/transcript', async(req, res) => {
         await mig.migrateTranscript();
     })
-
     */
 }

@@ -5,6 +5,7 @@ import App from "./App.js";
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import Home from './components/home'
 import About from './components/about'
+import Analytics from './components/analytics'
 import NavigationBar from './components/partials/NavigationBar'
 
 ReactDOM.render(
@@ -14,6 +15,8 @@ ReactDOM.render(
             <App />
             <Route exact path="/" component={Home} />
             <Route path="/about" component={About} />
+            <Route path="/stats" component={Analytics} />
+
         </div>
     </Router>),
 document.getElementById("app"));

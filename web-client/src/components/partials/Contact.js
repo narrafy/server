@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import ApiClient from '../../api/APIUtils'
+import ApiClient from '../../api/ApiClient'
 import {contactEndPoint} from '../../config'
 
 class Contact extends Component
@@ -27,15 +27,13 @@ class Contact extends Component
                 isSubmitted: true
             })
         }
-        let config = {
-            apiUrl: contactEndPoint
-        }
+
         const data = {
             name: this.state.name,
             message: this.state.message,
             email: this.state.email
         }
-        this.apiClient.post(config, data, cb)
+        this.apiClient.post(contactEndPoint, data, cb)
     }
 
     handleChange(e)

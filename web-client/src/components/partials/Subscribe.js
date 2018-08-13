@@ -1,12 +1,11 @@
 import React, {Component} from 'react'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faPaperPlane} from '@fortawesome/free-solid-svg-icons'
-import ApiClient from "../../api/APIUtils"
+import ApiClient from "../../api/ApiClient"
 import {subscribeEndPoint} from '../../config'
 
 class Subscribe extends Component
 {
-
     constructor(){
         super()
 
@@ -28,15 +27,11 @@ class Subscribe extends Component
             })
         }
 
-        let config = {
-            apiUrl: subscribeEndPoint
-        }
-
         const data = {
             email: this.state.email
         }
 
-        this.apiClient.post(config, data, cb)
+        this.apiClient.post(subscribeEndPoint, data, cb)
     }
 
     handleChange(e)
@@ -49,9 +44,7 @@ class Subscribe extends Component
         })
     }
 
-
     render(){
-
         if(this.state.isSubscribed)
         {
             return(
