@@ -7,6 +7,7 @@ import Home from './components/home'
 import About from './components/about'
 import Analytics from './components/analytics'
 import NavigationBar from './components/partials/NavigationBar'
+import Privacy from './components/partials/Privacy'
 
 ReactDOM.render(
     (<Router>
@@ -16,7 +17,7 @@ ReactDOM.render(
             <Route exact path="/" component={Home} />
             <Route path="/about" component={About} />
             <Route path="/stats" component={Analytics} />
-
+            <Route path="/privacy-policy" component={Privacy} />
         </div>
     </Router>),
 document.getElementById("app"));
