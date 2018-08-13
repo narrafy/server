@@ -11,7 +11,6 @@ function Partner()
                     <div className="col-md-4 col-md-offset-2 member-image">
                         <img src="img/simula.png" width="100px" height="100px" alt="icon"
                              className="team img-responsive" />
-
                     </div>
                     <div className="col-md-8 member-text">
                         <h4> The Simula Garage</h4>
@@ -40,7 +39,6 @@ function Partner()
                         </p>
                         <a href="http://www.innovasjonnorge.no/" target="_blank" className="fa fa-link"
                            title="Linkedin"></a>
-
                     </div>
                 </div>
 
@@ -55,9 +53,7 @@ function Partner()
                             association, specialized in running counseling trainings
                             and offering psychological services.
                         </p>
-
                         <a href="http://www.psiterra.ro" target="_blank" className="fa fa-link" title="Linkedin"></a>
-
                     </div>
                 </div>
             </div>

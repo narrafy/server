@@ -2,11 +2,10 @@ import React, {Component} from 'react'
 import MessageList from './MessageList'
 import SendMessageForm from './SendMessageForm'
 import ApiClient from '../../api/APIUtils'
-import {sendMessageEndPoint} from '../../config'
+import {sendMessageEndPoint} from '../../config/index'
 
 class ChatContainer extends Component
 {
-
     constructor(){
         super()
         this.state = {
