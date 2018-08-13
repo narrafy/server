@@ -7,8 +7,7 @@ import {
     NavbarBrand,
     Nav,
     NavItem,
-    NavLink,
-    Container
+    NavLink
 } from 'reactstrap'
 
 class NavigationBar extends Component {
@@ -29,17 +28,16 @@ class NavigationBar extends Component {
 
     render() {
         return (
-                <Container fluid={true}>
-                    <Navbar color="light" light expand="md">
-                        <NavbarBrand href="/"><img src="img/logo.svg" alt="logo" className="logo hidemobile" /></NavbarBrand>
-                        <NavbarToggler onClick={this.toggle} />
+            <Navbar className="navbar-light bg-primary" color="light" light expand="md" toggleable>
+                        <NavbarBrand href="/"><img src="img/logo.svg" alt="logo" className="logo" /></NavbarBrand>
+                        <NavbarToggler className="second-color glyphicon-align-center" onClick={this.toggle} />
                         <Collapse isOpen={this.state.isOpen} navbar>
                             <Nav className="ml-auto" navbar>
                                 <NavItem>
                                     <NavLink tag={Link} to="/">Home</NavLink>
                                 </NavItem>
                                 <NavItem>
-                                    <NavLink href="https://arxiv.org/abs/1712.03080">Research</NavLink>
+                                    <NavLink target="_blank" href="https://arxiv.org/abs/1712.03080">Research</NavLink>
                                 </NavItem>
                                 <NavItem>
                                     <NavLink tag={Link} to="/stats">Stats</NavLink>
@@ -50,7 +48,6 @@ class NavigationBar extends Component {
                             </Nav>
                         </Collapse>
                     </Navbar>
-                </Container>
         );
     }
 }

@@ -27,20 +27,19 @@ class SendMessageForm extends Component{
             }
         )
     }
-
     render(){
         return (
-                <div className="input-group chat-input">
-                    <form onSubmit={this.handleSubmit}
-                          className="send-message-form">
-                        <input className="textInput"
-                               onChange={this.handleChange}
-                               value = {this.state.message}
-                               placeholder="Text me maybe"
-                               type="text" />
-                        <input id="enter" type="submit" value="enter" onSubmit={this.handleSubmit} />
-                    </form>
-                </div>
+            <div className="chat-input">
+                <form onSubmit={this.handleSubmit}
+                      className="send-message-form">
+                    <input className="textInput"
+                           onChange={this.handleChange}
+                           value = {this.state.message}
+                           placeholder="Text me maybe"
+                           type="text" />
+                    <input id="enter" type="submit" value="enter" onSubmit={this.handleSubmit} />
+                </form>
+            </div>
         )
     }
 }

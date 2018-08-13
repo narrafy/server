@@ -16,93 +16,23 @@ html, body {
     color: 	#3e5869;
 }
 
-#root {
+#app {
     height: 100%;
+    padding-right: 0 !important;
+    padding-left: 0 !important;
 }
 
-
-.logo{
-    border: 0;
-    border-top-style: none;
-    border-right-style: none;
-    border-bottom-style: none;
-    border-left-style: none;
-    max-width: 100%;
+.second-color{
+    background-color: lightgray;
 }
 
 /* REST OF CSS */
-.rooms-list {
-    box-sizing: border-box;
-    padding: 10px;
-    background-color: var(--main-color);
-    overflow: scroll;
-    height: 100%;
-}
 
-.rooms-list ul {
-    list-style-type: none;
-    padding: 0;
-    overflow: scroll;
-}
-
-.rooms-list li {
-    margin: 10px 0;
-}
-
-.rooms-list h3 {
-    margin: 5px 0;
-    color: var(--secondary-color);
-}
-
-.rooms-list .room a {
-    color: var(--secondary-text-color);
-    font-weight: 600;
-    text-decoration: none;
-}
-
-.rooms-list .room.active a {
-    color: var(--secondary-color);
-}
-
-.new-room-form {
-    padding: 0 5px;
-    background: var(--secondary-color);
-    color: var(--main-text-color);
-}
-
-.new-room-form form {
-    height: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.new-room-form input {
-    width: 135px;
-    background: var(--secondary-color);
-}
-
-.new-room-form button {
-    background: var(--secondary-color);
-    color: var(--main-text-color);
-    border: 0;
-}
-
-.new-room-form input::placeholder {
-    color: var(--main-text-color);
-    font-weight: 200;
-}
-
-.new-room-form input:focus {
-    outline-width: 0;
-}
-
-.new-room-form input {
-    border: 0;
-}
-
-.new-room-form button {
-    border: 0;
+.chat-container {
+    padding-top: 50px;
+    margin: 0 auto;
+    max-width: 768px;
+    padding-bottom: 20px ;
 }
 
 .message {
@@ -123,7 +53,7 @@ html, body {
     border-radius: 8px;
 }
 
-/*
+
 .message-list {
     box-sizing: border-box;
     padding-left: 6px;
@@ -132,8 +62,6 @@ html, body {
     overflow: scroll;
     background: var(--secondary-color);
 }
-*/
-
 
 .send-message-form {
     background: var(--send-message-form);
@@ -163,14 +91,8 @@ html, body {
     top: 10px;
 }
 
-.chat-container {
-    padding-top: 50px;
-    margin: 0 auto;
-    max-width: 768px;
-    padding-bottom: 20px ;
-}
-.message-list,
-.chat-input {
+
+.message-list, .chat-input {
     padding-left: 2rem;
     padding-right: 2rem;
 }
