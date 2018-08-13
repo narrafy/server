@@ -27,6 +27,7 @@ class SendMessageForm extends Component{
             }
         )
     }
+
     render(){
         return (
             <div className="chat-input">

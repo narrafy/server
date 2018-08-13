@@ -2,7 +2,6 @@ import React from 'react'
 
 class QuickReply extends React.Component
 {
-
     constructor(){
         super()
         this.handleOnClick = this.handleOnClick.bind(this)
@@ -18,7 +17,6 @@ class QuickReply extends React.Component
             <button type="button" onClick={this.handleOnClick} className="btn btn-default btn-outline quick-reply">{this.props.title}</button>
         )
     }
-
 }
 
 

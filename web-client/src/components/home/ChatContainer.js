@@ -1,9 +1,10 @@
-import React from 'react'
+import React, {Component} from 'react'
 import MessageList from './MessageList'
 import SendMessageForm from './SendMessageForm'
-import axios from "axios";
+import ApiClient from '../../api/APIUtils'
+import {sendMessageEndPoint} from '../../config'
 
-class ChatContainer extends React.Component
+class ChatContainer extends Component
 {
 
     constructor(){
@@ -18,22 +19,25 @@ class ChatContainer extends React.Component
                 web_user : true
             }
         }
+        this.apiClient = new ApiClient()
         this.sendMessage = this.sendMessage.bind(this)
         this.updateState = this.updateState.bind(this)
         this.callApi = this.callApi.bind(this)
-        this.apiUrl = "/api/message";
-        this.defaultOptions = {headers: {'Content-Type': 'application/json'}};
+
     }
 
     callApi(data)
     {
-        axios.post(this.apiUrl, data, this.defaultOptions)
-            .then(res=>{
-                this.updateState("Narrafy",
-                    res.data.output.text,
-                    res.data.context, res.data.context.quick_replies)
-            })
-            .catch(err => console.log(err));
+        let cb = res =>{
+            this.updateState("Narrafy",
+                res.data.output.text,
+                res.data.context,
+                res.data.context.quick_replies)
+        }
+        let config = {
+            apiUrl: sendMessageEndPoint
+        }
+        this.apiClient.post(config, data, cb)
     }
 
     updateState(sender, text, context, quick_replies)
