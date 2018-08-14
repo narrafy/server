@@ -29,8 +29,8 @@ class MessageList extends Component{
                         if(message.quick_replies)
                         {
                             return (
-                                <div className={className}>
-                                    <QuickReplyMessage key={index} class="message-inner"
+                                <div key={index} className={className}>
+                                    <QuickReplyMessage class="message-inner"
                                              quickReplies={message.quick_replies}
                                              username={message.senderId}
                                              text={message.text}
@@ -38,7 +38,6 @@ class MessageList extends Component{
                                     />
                                 </div>
                             )
-
                         }else{
                             return (
                                 <div className={className}>

@@ -15,7 +15,7 @@ ReactDOM.render(
         <div>
             <NavigationBar/>
             <App />
-            <Route exact path="/" component={Home} />
+            <Route exact path="/" component={Home}  />
             <Route path="/about" component={About} />
             <Route path="/stats" component={Analytics} />
             <Route path="/privacy-policy" component={Privacy} />

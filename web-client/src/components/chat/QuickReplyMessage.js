@@ -36,9 +36,9 @@ class QuickReplyMessage extends Component
                 <div className="message-username">{this.props.username}</div>
                 <p> {this.props.text} </p>
                 {
-                    this.props.quickReplies.map((reply)=>{
+                    this.props.quickReplies.map((reply, index)=>{
                         return(
-                            <QuickReply sendQuickReply = {this.sendQuickReply} title = {reply.title} />
+                            <QuickReply key={index} sendQuickReply = {this.sendQuickReply} title = {reply.title} />
                         )
                     })
                 }

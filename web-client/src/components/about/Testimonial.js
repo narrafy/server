@@ -17,7 +17,7 @@ const Testimonial = () => {
         <section id="testimonials">
 
             <div className="container">
-                <div className="quote"><img src={logo} /></div>
+                <div className="quote"><img src={logo} alt="logo" /></div>
                 <Slider {...settings}>
                     <div>
                         <blockquote>

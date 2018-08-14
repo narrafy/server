@@ -5,9 +5,16 @@ import Partner from './Partner'
 import Team from './Team'
 import Testimonial from './Testimonial'
 import Contact from '../partials/Contact'
+import ReactGA from 'react-ga'
 
 class About extends Component
 {
+    constructor()
+    {
+        super()
+        ReactGA.pageview(window.location.pathname + window.location.search)
+    }
+
     render(){
         return(
             <div>

@@ -5,18 +5,19 @@ import ConversationPlot from './ConversationPlot'
 import {analyticsConfig } from '../../config/index'
 import Subscribe from '../partials/Subscribe'
 import Footer from '../partials/Footer'
+import ReactGA from 'react-ga'
 
 class Analytics extends Component
 {
     constructor()
     {
         super()
+        ReactGA.pageview(window.location.pathname + window.location.search)
         this.state = {
             count: "",
             avg: "",
             xQuestions: "",
             yMinutes:"",
-
         }
         this.apiClient = new ApiClient()
     }

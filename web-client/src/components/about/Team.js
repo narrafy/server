@@ -20,7 +20,7 @@ function Team()
                         <a href="https://www.ieee.org/conferences_events/conferences/conferencedetails/index.html?Conf_ID=42793"
                            title="SAI"> IntelliSys Conference </a> London, September 2018.
                     </p>
-                    <a href="https://www.linkedin.com/in/ion-dronic-94446337/" className="fa fa-linkedin"
+                    <a href="https://www.linkedin.com/in/ion-dronic-94446337/" rel="noopener noreferrer" className="fa fa-linkedin"
                        target="_blank" title="Linkedin"></a>
                 </div>
             </div>
@@ -33,7 +33,7 @@ function Team()
                     <h4>Aliona Dronic</h4>
                     <p><strong>Co-Founder</strong> <br/> Couple counselor with a master's degree in psychology.
                     </p>
-                    <a href="https://www.linkedin.com/in/aliona-dronic-0410bb120/" className="fa fa-linkedin"
+                    <a href="https://www.linkedin.com/in/aliona-dronic-0410bb120/" rel="noopener noreferrer" className="fa fa-linkedin"
                        target="_blank" title="Linkedin"></a>
                 </div>
             </div>
@@ -45,7 +45,7 @@ function Team()
                     <h4>Narrafy Bot</h4>
                     <p><strong>Chief Customer Support </strong> <br/> A baby robot, awake when everybody else is
                         sleeping.</p>
-                    <a href="https://m.me/narrafy" target="_blank" className="fa fa-facebook" title="Facebook"></a>
+                    <a href="https://www.narrafy.io" rel="noopener noreferrer" target="_blank" className="fa fa-facebook" title="Facebook"></a>
                 </div>
             </div>
         </div>

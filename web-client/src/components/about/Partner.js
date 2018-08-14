@@ -18,12 +18,12 @@ function Partner()
                     <div className="col-md-8 member-text">
                         <h4> The Simula Garage</h4>
                         <p><strong> The Simula Garage </strong> is an initiative from
-                            <a href="https://www.simula.no/" title="Simula" target="_blank">Simula Research
+                            <a href="https://www.simula.no/" rel="noopener noreferrer" title="Simula" target="_blank">Simula Research
                                 Laboratory</a> that gives
                             ambitious entrepreneurs office space and ongoing technical support. <br/>
                         </p>
 
-                        <a href="https://grundergarasjen.no/" target="_blank" className="fa fa-link" title="Web"></a>
+                        <a href="https://grundergarasjen.no/" target="_blank" rel="noopener noreferrer" className="fa fa-link" title="Web"></a>
 
                     </div>
                 </div>
@@ -40,7 +40,8 @@ function Partner()
                             instrument for
                             innovation and development of Norwegian enterprises and industry.
                         </p>
-                        <a href="http://www.innovasjonnorge.no/" target="_blank" className="fa fa-link"
+                        <a href="http://www.innovasjonnorge.no/" target="_blank" rel="noopener noreferrer"
+                           className="fa fa-link"
                            title="Linkedin"></a>
                     </div>
                 </div>
@@ -56,7 +57,7 @@ function Partner()
                             association, specialized in running counseling trainings
                             and offering psychological services.
                         </p>
-                        <a href="http://www.psiterra.ro" target="_blank" className="fa fa-link" title="Linkedin"></a>
+                        <a href="http://www.psiterra.ro" target="_blank" rel="noopener noreferrer" className="fa fa-link" title="Linkedin"></a>
                     </div>
                 </div>
             </div>
