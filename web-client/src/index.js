@@ -3,6 +3,7 @@ import ReactDOM from "react-dom"
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import App from "./App.js";
 import { BrowserRouter as Router, Route } from 'react-router-dom'
+import registerServiceWorker from './registerServiceWorker';
 import Home from './components/home'
 import About from './components/about'
 import Analytics from './components/analytics'
@@ -21,3 +22,4 @@ ReactDOM.render(
         </div>
     </Router>),
 document.getElementById("app"));
+registerServiceWorker();

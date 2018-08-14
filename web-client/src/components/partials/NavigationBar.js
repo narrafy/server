@@ -10,6 +10,7 @@ import {
     NavLink
 } from 'reactstrap'
 import {SocialIcon} from 'react-social-icons'
+import logo from '../../assets/logo.svg'
 import {facebookUrl, mediumUrl, twitterUrl} from "../../config";
 
 class NavigationBar extends Component {
@@ -29,10 +30,9 @@ class NavigationBar extends Component {
     }
 
     render() {
-
         return (
             <Navbar className="navbar-light bg-primary" color="light" light expand="md">
-                        <NavbarBrand href="/"><img src="img/logo.svg" alt="logo" className="logo" /></NavbarBrand>
+                        <NavbarBrand href="/"><img src={logo} alt="logo" className="logo" /></NavbarBrand>
                         <NavbarToggler className="second-color glyphicon-align-center" onClick={this.toggle} />
                         <Collapse isOpen={this.state.isOpen} navbar>
                             <Nav className="ml-auto justify-content-center" navbar>

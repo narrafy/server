@@ -4,11 +4,10 @@ const Analytics = require ('../analytics')
 const mailService = require('../email')
 const config = require('../config')
 const fb = require('../facebook-api')
-const mig = require('../db/migrate')
 
 module.exports = (app, db) => {
 
-	app.get('/webhook', async function (req, res) {
+	app.get('/api/webhook', async function (req, res) {
 
 		let customerVerifyToken =  req.query['hub.verify_token'];
 		let customerConfig = await config.getCustomerByToken(customerVerifyToken);
@@ -27,7 +26,7 @@ module.exports = (app, db) => {
 		}
 	})
 
-	app.post('/webhook', async function (req, res) {
+	app.post('/api/webhook', async function (req, res) {
 
         let customer_id = body.context.customer_id;
 
@@ -87,18 +86,6 @@ module.exports = (app, db) => {
 		res.sendStatus(200)
 	})
 
-	app.post('/api/story/send', async (req, res) => {
-
-        let data = await Analytics.saveStory(req.body, db)
-        mailService.bot(data)
-		res.sendStatus(200)
-    })
-
-    app.post('/api/story/save', async (req, res) => {
-		await Analytics.saveStory(req.body, db)
-        res.sendStatus(200)
-    })
-
 	app.post('/api/subscribe', async (req, res) => {
 		let data = {
             email: req.body.email,
@@ -110,7 +97,7 @@ module.exports = (app, db) => {
 		res.sendStatus(200)
 	})
 
-	app.get('/api/transcript/get', async (req, res) => {
+	app.get('/api/transcript', async (req, res) => {
 		var conversation_id = req.query['conversation_id']
 		if (conversation_id !== null) {
 			const transcript = await db.getTranscript(conversation_id, db)
@@ -134,7 +121,7 @@ module.exports = (app, db) => {
 		}
 	})
 
-    app.get('/story', async function (req, res) {
+    app.get('/api/story', async function (req, res) {
 
         let model = await Analytics.getStoryModel(req.query['conversation_id'], db)
         if (model) {
@@ -144,11 +131,17 @@ module.exports = (app, db) => {
         }
     })
 
-	/*
-	app.get('/', (req, res) => {
-		res.render('index.ejs')
-	})
-	*/
+    app.post('/api/story/send', async (req, res) => {
+
+        let data = await Analytics.saveStory(req.body, db)
+        mailService.bot(data)
+        res.sendStatus(200)
+    })
+
+    app.post('/api/story/save', async (req, res) => {
+        await Analytics.saveStory(req.body, db)
+        res.sendStatus(200)
+    })
 
 	app.get('/api/analytics/conversation/count', async (req, res) =>{
 
@@ -166,6 +159,12 @@ module.exports = (app, db) => {
         res.json(avg)
     })
 
+    //free ssl encryption
+    app.get('/.well-known/acme-challenge/:content', (req, res) => {
+        res.send(config.sslSecret)
+    })
+
+    /*
 	app.get('/stats', async (req,res) => {
 
 		let model = await Analytics.getStatsModel(db)
@@ -199,10 +198,7 @@ module.exports = (app, db) => {
 		res.render('foundation/contact.ejs')
 	})
 
-    //free ssl encryption
-    app.get('/.well-known/acme-challenge/:content', (req, res) => {
-        res.send(config.sslSecret)
-    })
+	*/
 
     async function setContextConfig(customer_id) {
         //refactor use projection to return only this two fields
@@ -212,11 +208,12 @@ module.exports = (app, db) => {
         return null
     }
 
+    /*
+
     app.get('/api/migrate/customer', async(req, res) => {
         await mig.migrateCustomer();
     })
 
-    /*
 	app.get('/api/migrate/conversation', async(req, res) => {
 		await mig.migrateConversation();
 	})
