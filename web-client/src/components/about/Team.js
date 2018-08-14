@@ -1,4 +1,7 @@
 import React from 'react'
+import ceoPicture from '../../assets/ceo.jpg'
+import coFounderPicture from '../../assets/co-founder.jpg'
+import botPicture from '../../assets/robot.png'
 
 function Team()
 {
@@ -7,7 +10,7 @@ function Team()
             <h2 className="text-center"> Team </h2>
             <div className="row row-eq-height">
                 <div className="col-md-2 col-md-offset-3 member-image">
-                    <img src="img/headshot.jpg" alt="icon" className="team img-responsive"/>
+                    <img src={ceoPicture} alt="icon" className="team img-responsive"/>
                 </div>
                 <div className="col-md-6  member-text">
                     <h4>Ion Dronic</h4>
@@ -24,7 +27,7 @@ function Team()
 
             <div className="row row-eq-height">
                 <div className="col-md-2 col-md-offset-3 member-image">
-                    <img src="img/aliona.jpg" alt="icon" className="team img-responsive"/>
+                    <img src={coFounderPicture} alt="icon" className="team img-responsive"/>
                 </div>
                 <div className="col-md-6  member-text">
                     <h4>Aliona Dronic</h4>
@@ -36,7 +39,7 @@ function Team()
             </div>
             <div className="row row-eq-height">
                 <div className="col-md-2 col-md-offset-2 member-image">
-                    <img src="img/robot.png" alt="icon" className="team img-responsive"/>
+                    <img src={botPicture} alt="icon" className="team img-responsive"/>
                 </div>
                 <div className="col-md-8 member-text">
                     <h4>Narrafy Bot</h4>

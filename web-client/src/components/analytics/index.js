@@ -4,6 +4,7 @@ import ConversationLegend from './ConversationLegend'
 import ConversationPlot from './ConversationPlot'
 import {analyticsConfig } from '../../config/index'
 import Subscribe from '../partials/Subscribe'
+import Footer from '../partials/Footer'
 
 class Analytics extends Component
 {
@@ -67,7 +68,8 @@ class Analytics extends Component
                         </div>
                     </div>
                 </section>
-            <Subscribe />
+                <Subscribe />
+                <Footer/>
             </div>
         )
     }

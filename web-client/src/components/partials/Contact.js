@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import ApiClient from '../../api/ApiClient'
 import {contactEndPoint} from '../../config'
+import contactLogo from '../../assets/contact.jpg'
 
 class Contact extends Component
 {
@@ -55,7 +56,7 @@ class Contact extends Component
                         <h2> Contact </h2>
                         <div className="row row-eq-height">
                             <div className="col-md-2 ">
-                                <img src="img/contact.jpg" alt="icon" className="team img-responsive" />
+                                <img src={contactLogo} alt="icon" className="team img-responsive" />
                             </div>
                             <div className="col-md-8 ">
 

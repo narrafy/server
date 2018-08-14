@@ -1,9 +1,6 @@
 import React, {Component} from 'react'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faPaperPlane} from '@fortawesome/free-solid-svg-icons'
 import ApiClient from "../../api/ApiClient"
 import {subscribeEndPoint} from '../../config'
-import {Form, FormGroup, Label, Input, Button, Row, Col} from 'reactstrap'
 
 class Subscribe extends Component
 {

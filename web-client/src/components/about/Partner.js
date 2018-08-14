@@ -1,4 +1,7 @@
 import React from 'react'
+import simulaLogo from '../../assets/simula.png'
+import psiterraLogo from '../../assets/psiterra.png'
+import innovationNorwayLogo from '../../assets/innovation-norway.jpg'
 
 function Partner()
 {
@@ -9,7 +12,7 @@ function Partner()
 
                 <div className="row row-eq-height">
                     <div className="col-md-4 col-md-offset-2 member-image">
-                        <img src="img/simula.png" width="100px" height="100px" alt="icon"
+                        <img src={simulaLogo} width="100px" height="100px" alt="icon"
                              className="team img-responsive" />
                     </div>
                     <div className="col-md-8 member-text">
@@ -27,7 +30,7 @@ function Partner()
 
                 <div className="row row-eq-height">
                     <div className="col-md-4 col-md-offset-2 member-image">
-                        <img src="img/innovation-norway.jpg" width="250px" height="100px" alt="icon"
+                        <img src={innovationNorwayLogo} width="250px" height="100px" alt="icon"
                              className="team img-responsive" />
 
                     </div>
@@ -44,7 +47,7 @@ function Partner()
 
                 <div className="row row-eq-height">
                     <div className="col-md-4 member-image">
-                        <img src="img/psiterra.png" width="250px" height="150px" alt="icon" className="img-responsive" />
+                        <img src={psiterraLogo} width="250px" height="150px" alt="icon" className="img-responsive" />
 
                     </div>
                     <div className="col-md-8 member-text">

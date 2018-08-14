@@ -1,5 +1,6 @@
 import React from 'react'
 import Slider from 'react-slick'
+import logo from '../../assets/logo.svg'
 
 const Testimonial = () => {
 
@@ -16,7 +17,7 @@ const Testimonial = () => {
         <section id="testimonials">
 
             <div className="container">
-                <div className="quote"><img src="img/logo.svg" /></div>
+                <div className="quote"><img src={logo} /></div>
                 <Slider {...settings}>
                     <div>
                         <blockquote>
