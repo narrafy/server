@@ -9,15 +9,7 @@
   ],
   "author": "Ion Dronic",
   "license": "ISC",
-  "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.3",
-    "babel-loader": "^7.1.4",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-react": "^6.24.1",
-    "css-loader": "^0.28.11",
-    "style-loader": "^0.21.0"
-  },
+  "proxy": "http://localhost:5000/",
   "dependencies": {
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
@@ -38,11 +30,20 @@
     "reactstrap": "^6.3.1",
     "slick-carousel": "^1.8.1"
   },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "css-loader": "^0.28.11",
+    "style-loader": "^0.21.0"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
-  },
-  "proxy": "http://localhost:5000/"
+    "eject": "react-scripts eject",
+    "postinstall": "npm run build"
+  }
 }

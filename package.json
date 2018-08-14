@@ -6,7 +6,7 @@
     "npm": "5.3.0"
   },
   "description": "narrafy - software for counseling",
-  "main": "server.js",
+  "main": "./web-client/src/index.js",
   "scripts": {
     "start":"node server.js",
     "heroku-postbuild":"cd web-client && npm install && npm run build",
