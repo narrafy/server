@@ -72,24 +72,28 @@ class Subscribe extends Component
                 <section id="subscribe">
                     <div className="container">
                         <div className="row">
-                            <div className="col-md-12 text-center">
-                                <h2 className="title">Sign up</h2>
-                                <form onSubmit={this.handleSubmit}>
-                                    <div id="subscribe-div" className="form-inline col-md-6 offset-md-3 text-center">
-                                        <div className={"form-group"}>
-                                            <input className="form-control"
-                                               id="subscribe-box"
-                                               onChange={this.handleChange}
-                                               placeholder="Your Email"
-                                               name="email" type="email" value = {this.state.email}
-                                               required />
-                                        </div>
-                                        <button type="submit" className="btn btn-secondary btn-subscribe"
-                                            onClick={this.handleSubmit} >
-                                            Submit
-                                        </button>
+                            <div className={"col-md-10 col-md-offset-3"}>
+                                <div className="card ">
+                                    <h3 className="card-title title text-center">Sign up for our newsletter</h3>
+                                    <div className={"card-body"}>
+                                        <form onSubmit={this.handleSubmit}>
+                                            <div id="subscribe-div" className="form-inline col-md-6 offset-md-3 text-center">
+                                                <div className={"form-group"}>
+                                                    <input className="form-control"
+                                                           id="subscribe-box"
+                                                           onChange={this.handleChange}
+                                                           placeholder="Your Email"
+                                                           name="email" type="email" value = {this.state.email}
+                                                           required />
+                                                </div>
+                                                <button type="submit" className="btn btn-secondary btn-subscribe"
+                                                        onClick={this.handleSubmit} >
+                                                    Submit
+                                                </button>
+                                            </div>
+                                        </form>
                                     </div>
-                                </form>
+                                </div>
                             </div>
                         </div>
                     </div>
