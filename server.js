@@ -20,12 +20,12 @@ app.use(bodyParser.json({
 	type: 'application/vnd.api+json'
 }))
 
-app.set('view engine', 'ejs')
-app.set('views', __dirname + '/views')
+/*app.set('view engine', 'ejs')
+app.set('views', __dirname + '/views')*/
 app.use(flash())
 
 //server static assets from express
-app.use(express.static(__dirname + "/public"))
+//app.use(express.static(__dirname + "/public"))
 
 /* Bootstrap routes*/
 require('./app/modules/router/routes.js')(app, db)
@@ -36,14 +36,16 @@ const staticFiles = express.static(__dirname + "web-client/build");
 //Serve static files from the React app
 app.use('/*', staticFiles)
 
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname+'/web-client/build/index.html'));
+});
+
 /* Connect to DB */
 db.connect(config.db_settings.posgres)
 	.then(() => logger.info('Connected to DB.'))
 	.catch((error) => {
 		logger.error('Failed to connect to DB.');
 		logger.error(error); });
-
-
 
 
 /* Start server */
