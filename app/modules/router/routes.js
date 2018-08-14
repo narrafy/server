@@ -91,10 +91,12 @@ module.exports = (app, db) => {
             email: req.body.email,
             date: new Date(),
         };
-		await db.addSubscriber(data)
-        mailService.admin("Congrats, another user just subscribed!")
-        mailService.subscriber(data.email)
-		res.sendStatus(200)
+		if(data.email){
+            await db.addSubscriber(data)
+            mailService.admin("Congrats, another user just subscribed!")
+            mailService.subscriber(data.email)
+            res.sendStatus(200)
+        }
 	})
 
 	app.get('/api/transcript', async (req, res) => {

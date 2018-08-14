@@ -16,20 +16,27 @@ class Subscribe extends Component
         this.handleChange = this.handleChange.bind(this)
     }
 
+    isEmailValid(email)
+    {
+        return email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
+    }
+
     handleSubmit(e)
     {
         e.preventDefault();
-        let cb = () =>{
-            this.setState({
-                isSubscribed: true
-            })
-        }
+        if(this.isEmailValid(this.state.email))
+        {
+            let cb = () =>{
+                this.setState({
+                    isSubscribed: true
+                })
+            }
 
-        const data = {
-            email: this.state.email
+            const data = {
+                email: this.state.email
+            }
+            this.apiClient.post(apiConfig.subscribeEndPoint, data, cb)
         }
-
-        this.apiClient.post(apiConfig.subscribeEndPoint, data, cb)
     }
 
     handleChange(e)
@@ -68,13 +75,14 @@ class Subscribe extends Component
                             <div className="col-md-12 text-center">
                                 <h2 className="title">Sign up</h2>
                                 <form onSubmit={this.handleSubmit}>
-                                    <div id="subscribe-div" className="form-inline col-md-6 offset-md-3 text-center"
-                                     role="form">
-                                        <div className="form-group">
-                                        <input className="form-control" id="subscribe-box"
+                                    <div id="subscribe-div" className="form-inline col-md-6 offset-md-3 text-center">
+                                        <div className={"form-group"}>
+                                            <input className="form-control"
+                                               id="subscribe-box"
                                                onChange={this.handleChange}
-                                               onKeyDown={this.handleChange}
-                                               placeholder="Your Email" name="email" type="text" />
+                                               placeholder="Your Email"
+                                               name="email" type="email" value = {this.state.email}
+                                               required />
                                         </div>
                                         <button type="submit" className="btn btn-secondary btn-subscribe"
                                             onClick={this.handleSubmit} >

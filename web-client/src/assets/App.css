@@ -23,6 +23,10 @@ html, body {
     padding-left: 0 !important;
 }
 
+.was-validated .form-control:valid~.invalid-feedback {
+    display: none;
+}
+
 .second-color{
     background-color: lightgray;
 }

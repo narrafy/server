@@ -90,13 +90,13 @@ class Contact extends Component
                                         <div className="form-group">
                                             <input id="name-box" type="name" name="name"
                                                    className="form-input-text form-control" placeholder="Name"
-                                                   required="required" value={this.state.name}
+                                                   required value={this.state.name}
                                                    onChange={this.handleChange} />
                                         </div>
                                         <div className="form-group">
                                             <input id="email-box" type="email" name="email"
                                                    className="form-input-text form-control" placeholder="Email"
-                                                   required="required" value={this.state.email}
+                                                   required value={this.state.email}
                                                    onChange={this.handleChange} />
                                         </div>
                                         <div className="form-group">
@@ -107,7 +107,7 @@ class Contact extends Component
                                               placeholder="Message"
                                               value = {this.state.message}
                                               onChange={this.handleChange}
-                                              required="required" ></textarea>
+                                              required ></textarea>
                                         </div>
                                         <div className="form-group send-button">
                                             <button type="submit" onSubmit={this.handleSubmit}
