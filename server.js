@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const db = require('./app/modules/db/posgres')
 const config = require('./app/modules/config')
+const path = require('path')
 
 /* Bootstrap middleware */
 app.use(morgan('dev'))
@@ -24,17 +25,20 @@ app.use(bodyParser.json({
 app.set('views', __dirname + '/views')*/
 app.use(flash())
 
+const staticFiles = express.static(__dirname + "web-client/build");
+app.use(staticFiles)
+
 //server static assets from express
-//app.use(express.static(__dirname + "/public"))
+app.use(express.static(__dirname + "/public"))
 
 /* Bootstrap routes*/
 require('./app/modules/router/routes.js')(app, db)
 
-
-const staticFiles = express.static(__dirname + "web-client/build");
-
-//Serve static files from the React app
-app.use('/*', staticFiles)
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname+'web-client/build/index.html'));
+});
 
 /* Connect to DB */
 db.connect(config.db_settings.posgres)
@@ -42,7 +46,6 @@ db.connect(config.db_settings.posgres)
 	.catch((error) => {
 		logger.error('Failed to connect to DB.');
 		logger.error(error); });
-
 
 /* Start server */
 app.listen(config.app.port)
