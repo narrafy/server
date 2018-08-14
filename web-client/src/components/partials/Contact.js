@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import ApiClient from '../../api/ApiClient'
-import {contactEndPoint} from '../../config'
+import {apiConfig} from '../../config'
 import contactLogo from '../../assets/contact.jpg'
 
 class Contact extends Component
@@ -34,7 +34,7 @@ class Contact extends Component
             message: this.state.message,
             email: this.state.email
         }
-        this.apiClient.post(contactEndPoint, data, cb)
+        this.apiClient.post(apiConfig.contactEndPoint, data, cb)
     }
 
     handleChange(e)

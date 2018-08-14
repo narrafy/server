@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import ApiClient from "../../api/ApiClient"
-import {subscribeEndPoint} from '../../config'
+import {apiConfig} from '../../config'
 
 class Subscribe extends Component
 {
@@ -29,7 +29,7 @@ class Subscribe extends Component
             email: this.state.email
         }
 
-        this.apiClient.post(subscribeEndPoint, data, cb)
+        this.apiClient.post(apiConfig.subscribeEndPoint, data, cb)
     }
 
     handleChange(e)
