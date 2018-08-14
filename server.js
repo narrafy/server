@@ -36,10 +36,6 @@ const staticFiles = express.static(__dirname + "web-client/build");
 //Serve static files from the React app
 app.use('/*', staticFiles)
 
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname+'/web-client/build/index.html'));
-});
-
 /* Connect to DB */
 db.connect(config.db_settings.posgres)
 	.then(() => logger.info('Connected to DB.'))
