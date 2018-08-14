@@ -8,8 +8,7 @@
   "description": "narrafy - software for counseling",
   "main": "server.js",
   "scripts": {
-    "start":"node server.js",
-    "heroku-postbuild":"npm install && npm start"
+    "start":"node server.js"
   },
   "keywords": [
     "software",
