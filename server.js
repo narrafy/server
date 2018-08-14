@@ -21,15 +21,10 @@ app.use(bodyParser.json({
 	type: 'application/vnd.api+json'
 }))
 
-/*app.set('view engine', 'ejs')
-app.set('views', __dirname + '/views')*/
 app.use(flash())
 
 const staticFiles = express.static(__dirname + "/web-client/build");
 app.use(staticFiles)
-
-//server static assets from express
-//app.use(express.static(__dirname + "/public"))
 
 /* Bootstrap routes*/
 require('./app/modules/router/routes.js')(app, db)
