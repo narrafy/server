@@ -23,10 +23,12 @@ app.use(bodyParser.json({
 app.set('view engine', 'ejs')
 app.set('views', __dirname + '/views')
 app.use(flash())
+
+//server static assets from express
 app.use(express.static(__dirname + "/public"))
-app.use(express.static(__dirname + "../../web-client/dist"))
 
-
+//Serve static files from the React app
+app.use(express.static(__dirname + "web-client/build"))
 
 /* Connect to DB */
 db.connect(config.db_settings.posgres)
