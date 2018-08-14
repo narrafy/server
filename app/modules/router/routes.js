@@ -164,42 +164,6 @@ module.exports = (app, db) => {
         res.send(config.sslSecret)
     })
 
-    /*
-	app.get('/stats', async (req,res) => {
-
-		let model = await Analytics.getStatsModel(db)
-        model.limit_questions = 40;
-        model.limit_minutes_spent = 40;
-
-		res.render('analytics/index.ejs', model)
-	})
-
-	app.get('/timeline', (req, res) => {
-		res.render('foundation/timeline.ejs')
-	})
-
-	app.get('/about', (req, res) => {
-		res.render('foundation/about.ejs')
-	})
-
-	app.get('/careers', (req, res) => {
-		res.render('foundation/careers.ejs')
-	})
-
-	app.get('/privacy-policy', (req, res) => {
-		res.render('privacy.ejs')
-	})
-
-	app.get('/terms-of-use', (req, res) => {
-		res.render('terms.ejs')
-	})
-
-	app.get('/contact', (req, res) => {
-		res.render('foundation/contact.ejs')
-	})
-
-	*/
-
     async function setContextConfig(customer_id) {
         //refactor use projection to return only this two fields
         let customerConfig = await db.getConfig(customer_id)

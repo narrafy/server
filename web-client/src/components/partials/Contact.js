@@ -49,6 +49,12 @@ class Contact extends Component
 
     render()
     {
+
+        const ContactLogo = () =>
+        {
+            return ( <img src={contactLogo} alt="icon" className="team img-responsive" />)
+        }
+
         if(this.state.isSubmitted){
             return(
                 <section id="contact" className="section-secondary">
@@ -56,10 +62,9 @@ class Contact extends Component
                         <h2> Contact </h2>
                         <div className="row row-eq-height">
                             <div className="col-md-2 ">
-                                <img src={contactLogo} alt="icon" className="team img-responsive" />
+                                <ContactLogo/>
                             </div>
                             <div className="col-md-8 ">
-
                                 <div id="email-notification">
                                     <p className="text-center big">
                                         Thank you for your message. We will get back to you shortly.
@@ -77,8 +82,7 @@ class Contact extends Component
                         <h2> Contact </h2>
                         <div className="row row-eq-height">
                             <div className="col-md-2 ">
-                                <img src="img/contact.jpg" alt="icon" className="team img-responsive" />
-
+                                <ContactLogo/>
                             </div>
                             <div className="col-md-8 ">
                                 <div id="contact-form">
