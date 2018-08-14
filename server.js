@@ -27,8 +27,14 @@ app.use(flash())
 //server static assets from express
 app.use(express.static(__dirname + "/public"))
 
+/* Bootstrap routes*/
+require('./app/modules/router/routes.js')(app, db)
+
+
+const staticFiles = express.static(__dirname + "web-client/build");
+
 //Serve static files from the React app
-app.use(express.static(__dirname + "web-client/build"))
+app.use('/*', staticFiles)
 
 /* Connect to DB */
 db.connect(config.db_settings.posgres)
@@ -38,8 +44,7 @@ db.connect(config.db_settings.posgres)
 		logger.error(error); });
 
 
-/* Bootstrap routes*/
-require('./app/modules/router/routes.js')(app, db)
+
 
 /* Start server */
 app.listen(config.app.port)

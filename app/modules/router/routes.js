@@ -144,9 +144,11 @@ module.exports = (app, db) => {
         }
     })
 
+	/*
 	app.get('/', (req, res) => {
 		res.render('index.ejs')
 	})
+	*/
 
 	app.get('/api/analytics/conversation/count', async (req, res) =>{
 
