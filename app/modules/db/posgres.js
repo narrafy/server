@@ -1,5 +1,6 @@
-const { Pool } = require('pg');
+const { Pool, Client } = require('pg');
 const uuidV1 = require('uuid/v1');
+const {db_settings} = require('../config')
 
 let pool = null;
 
@@ -19,7 +20,8 @@ const collection = {
 function connect(uri){
 
     pool = new Pool({
-        connectionString: uri, ssl: true
+        connectionString: uri,
+        ssl: true
     });
     return pool.connect();
 }
@@ -30,6 +32,15 @@ async function singleResultQuery(query)
         let res = await pool.query(query);
         let result = res.rows[0];
         return result;
+    }catch (e) {
+        console.log(e.stack);
+    }
+}
+
+function multipleRowsQueryCb(query, cb)
+{
+    try {
+        pool.query(query, cb);
     }catch (e) {
         console.log(e.stack);
     }
@@ -215,70 +226,66 @@ async function saveSubscriber(doc)
 
 // get the dataset pair <minutes_spent, number_of_questions>
 // main kpi: how many minutes a person spends with a the robot and how many questions he is answering
-async function getConversationDataSet()
+async function getConversationDataSet(minQuestions, minMinutes, cb)
 {
     let query = {
         text: "select conversation_id,\n" +
-        "        EXTRACT(MINUTES FROM date_last_entry::timestamp - date_first_entry::timestamp) as minutes, \n" +
-        "        EXTRACT(Seconds FROM date_last_entry::timestamp - date_first_entry::timestamp) as seconds, \n" +
-        "        counter from \n" +
-        "        (select \n" +
-        "        conversation_id,\n" +
-        "         (array_agg(date)),\n" +
-        "        (array_agg(date))[1] as date_first_entry, \n" +
-        "        (array_agg(date))[count(conversation_id)] as date_last_entry, \n" +
-        "        count(conversation_id) as counter \n" +
-        "        from conversation group by conversation_id having count(conversation_id)>1) as x\n" +
-        "        group by conversation_id, date_last_entry, date_first_entry, counter\n" +
-        "        having EXTRACT(MINUTES FROM date_last_entry::timestamp - date_first_entry::timestamp)>0",
-        values: []
+        "EXTRACT(MINUTES FROM date_last_entry::timestamp - date_first_entry::timestamp) as minutes,\n" +
+        "EXTRACT(Seconds FROM date_last_entry::timestamp - date_first_entry::timestamp) as seconds,\n" +
+        "counter from\n" +
+        "       (select\n" +
+        "                conversation_id,\n" +
+        "                (array_agg(date order by date asc))[1] as date_first_entry,\n" +
+        "                (array_agg(date order by date asc))[count(conversation_id)] as date_last_entry,\n" +
+        "                count(conversation_id) as counter\n" +
+        "                from conversation group by conversation_id having count(conversation_id)>$1) as x\n" +
+        "group by conversation_id, date_last_entry, date_first_entry, counter having EXTRACT(Minutes FROM date_last_entry::timestamp - date_first_entry::timestamp)>=$2",
+        values: [minQuestions, minMinutes]
     }
-
     return await multipleRowsQuery(query)
 }
 
-// number of total conversations , with more than 2 request counters ( a person interacted with the bot )
+// number of total conversations , with more than 3 request counters ( a person interacted with the bot )
 // and less than 2 hours between first interaction and the last one
 // ( a person could leave the pc, come back later, loosing attention span )
-async function getTotalCount() {
+async function getTotalCount(minQuestions, minCounter) {
 
     let query = {
-        text: "select count(*) as total_doc from \n" +
-        "(select conversation_id,\n" +
-        "        EXTRACT(MINUTES FROM date_last_entry::timestamp - date_first_entry::timestamp) as minutes, \n" +
-        "        EXTRACT(Seconds FROM date_last_entry::timestamp - date_first_entry::timestamp) as seconds, \n" +
-        "        counter from \n" +
-        "        (select \n" +
-        "        conversation_id,\n" +
-        "         (array_agg(date)),\n" +
-        "        (array_agg(date))[1] as date_first_entry, \n" +
-        "        (array_agg(date))[count(conversation_id)] as date_last_entry, \n" +
-        "        count(conversation_id) as counter \n" +
-        "        from conversation group by conversation_id having count(conversation_id)>1) as x\n" +
-        "        group by conversation_id, date_last_entry, date_first_entry, counter\n" +
-        "        having EXTRACT(MINUTES FROM date_last_entry::timestamp - date_first_entry::timestamp)>0) x",
-        values: []
+        text: "select count(*) from (select conversation_id, " +
+        "date_first_entry, " +
+        "EXTRACT(MINUTES FROM date_last_entry::timestamp - date_first_entry::timestamp) as minutes, " +
+        "EXTRACT(Seconds FROM date_last_entry::timestamp - date_first_entry::timestamp) as seconds, " +
+        "date_last_entry," +
+        "counter from " +
+        "       (select " +
+        "                conversation_id," +
+        "                (array_agg(date order by date asc))[1] as date_first_entry, " +
+        "                (array_agg(date order by date asc))[count(conversation_id)] as date_last_entry, " +
+        "                count(conversation_id) as counter" +
+        "                from conversation group by conversation_id having count(conversation_id)>$1) as x " +
+        "group by conversation_id, date_last_entry, date_first_entry, counter having EXTRACT(Minutes FROM date_last_entry::timestamp - date_first_entry::timestamp)>=$2 as hh",
+        values: [minQuestions, minCounter]
     }
 
     return await multipleRowsQuery(query);
 }
 
-async function getAvgStats(){
+async function getAvgStats(minQuestions, minMinutes){
 
     let query = {
-        text: "select avg(seconds)/60 as minutes, CAST (avg(counter) AS DOUBLE PRECISION) as counter " +
-        "from " +
-        "(select conversation_id," +
-        "EXTRACT(MINUTES FROM date_last_entry::timestamp - date_first_entry::timestamp) * 60 + " +
-        "EXTRACT(Seconds FROM date_last_entry::timestamp - date_first_entry::timestamp) as seconds, " +
-        "counter from" +
-        "(select " +
-        "conversation_id, " +
-        "(array_agg(date)), " +
-        "(array_agg(date))[1] as date_first_entry, " +
-        "(array_agg(date))[count(conversation_id)] as date_last_entry, " +
-        "count(conversation_id) as counter from conversation group by conversation_id having count(conversation_id)>1) as x group by conversation_id, date_last_entry, date_first_entry, counter having EXTRACT(MINUTES FROM date_last_entry::timestamp - date_first_entry::timestamp)>0) as kj",
-        values: []
+        text: "select avg(total_seconds)/60 as minutes, CAST (avg(counter) AS DOUBLE PRECISION) as counter from " +
+        "        (select conversation_id," +
+        "        EXTRACT(MINUTES FROM date_last_entry::timestamp - date_first_entry::timestamp) * 60 + " +
+        "        EXTRACT(Seconds FROM date_last_entry::timestamp - date_first_entry::timestamp) as total_seconds, " +
+        "        counter from " +
+        "        (select conversation_id, " +
+        "        (array_agg(date order by date asc))[1] as date_first_entry, " +
+        "        (array_agg(date order by date asc))[count(conversation_id)] as date_last_entry, " +
+        "        count(conversation_id) as counter from conversation group by conversation_id " +
+        "        having count(conversation_id)>$1) as x " +
+        "        group by conversation_id, date_last_entry, date_first_entry, counter " +
+        "        having EXTRACT(MINUTES FROM date_last_entry::timestamp - date_first_entry::timestamp)>=$2) as kj",
+        values: [minQuestions, minMinutes]
     }
 
     return await singleResultQuery(query);
@@ -289,9 +296,17 @@ module.exports = exports = {
 
     connect: connect,
 
-    getConversationCount: getTotalCount,
-    getAvgStats: getAvgStats,
-    getConversationDataSet: getConversationDataSet,
+    getConversationCount (){
+        return getTotalCount(3, 1)
+    },
+
+    getAvgStats(){
+        return getAvgStats(3,1)
+    },
+
+    getConversationDataSet(){
+        return getConversationDataSet(3, 1);
+    },
 
     getTranscript: getTranscript,
     getConversationLog: getConversationLog,

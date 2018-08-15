@@ -124,7 +124,7 @@ async function getCustomerConfigByToken(verifyToken){
 //and average questions answered
 async function getAvgStats() {
 
-    let query = await dbConnection.collection(collection.log).aggregate([
+    await dbConnection.collection(collection.log).aggregate([
         {
             $group :
                 {
@@ -149,7 +149,7 @@ async function getAvgStats() {
         },
 
         {
-            "$match": { "counter": {$gt: 2 } , "minutes": {$lt: 120} }
+            "$match": { "counter": {$gt: 2} , "minutes": {$lt: 120} }
         },
         // then group as normal for the averaging
         {$group: {
@@ -166,9 +166,9 @@ async function getAvgStats() {
             explain: false
         }, null
     ).toArray()
-        .then((stats) => stats)
-
-    return {minutes: query.minutes, counter: query.counter};
+        .then(stats => {
+                return {minutes: stats.minutes, counter: stats.counter}
+        })
 }
 
 // get the dataset pair <minutes_spent, number_of_questions>
@@ -194,13 +194,15 @@ async function getConversationDataSet(){
 
             { "$project": {
 
+                "conversation_id": "$_id",
                 "minutes": {"$divide": [{ "$subtract": [ "$lastItem.date", "$firstItem.date" ] }, 1000*60]},
+                    "seconds": {"$divide": [{ "$subtract": [ "$lastItem.date", "$firstItem.date" ] }, 1000]},
                 "counter": "$lastItem.context.system.dialog_request_counter"
             },
 
             },
             {
-                "$match": { "counter": {$gt: 2 } , "minutes": {$lt: 40} }
+                "$match": { "counter": {$gt: 3 } , "minutes": {$lt: 60} }
             }
         ],
         {

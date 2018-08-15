@@ -40,6 +40,14 @@ html, body {
     padding-bottom: 20px ;
 }
 
+.subscribe-container {
+    padding-top: 50px;
+    margin: 0 auto;
+    max-width: 768px;
+    padding-bottom: 20px ;
+    padding-left: 100px;
+}
+
 .message {
     margin: 15px 0;
 }
@@ -515,14 +523,6 @@ input#subscribe-box {
     text-align: right;
 }
 
-ul.social {
-    text-align: center;
-}
-
-.social a {
-    color: #fff;
-}
-
 footer p {
     color: #fff;
     margin-top: 8px;
@@ -545,6 +545,14 @@ footer p {
         max-width: 768px;
         padding-bottom: 10px !important;
     }
+    .subscribe-container {
+        padding-top: 40px !important;
+        margin: 0 auto;
+        max-width: 768px;
+        padding-bottom: 10px !important;
+        padding-left: 40px !important;
+    }
+
     .title{
         margin-top: 30px !important;
     }
@@ -656,14 +664,6 @@ img {
 
 .form-group {
     margin-bottom: 10px;
-}
-
-#contact {
-    margin-bottom: 50px;
-}
-
-.member-text {
-    margin-bottom: 30px;
 }
 
 .section-primary {
@@ -944,6 +944,15 @@ footer p {
         max-width: 768px;
         padding-bottom: 10px !important;
     }
+
+    .subscribe-container {
+        padding-top: 40px !important;
+        margin: 0 auto;
+        max-width: 768px;
+        padding-bottom: 10px !important;
+        padding-left: 10px;
+    }
+
     .title{
         margin-top: 30px !important;
     }
@@ -1001,25 +1010,6 @@ footer i.fa {
     color: rgba(0, 0, 0, .1);
     text-align: center;
     margin-bottom: 30px;
-}
-
-#testimonials blockquote {
-    text-align: center;
-    border: none;
-}
-
-#testimonials {
-    background-color: #f7f7f7;
-    padding: 80px 0px;
-    margin-top: 80px;
-}
-
-.carousel-indicators li {
-    background-color: #7A5B6B;
-}
-
-ol.carousel-indicators {
-    bottom: -20px;
 }
 
 .hide {

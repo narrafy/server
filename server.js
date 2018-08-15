@@ -36,7 +36,7 @@ app.get('*', (req, res) => {
 });
 
 /* Connect to DB */
-db.connect(config.db_settings.posgres)
+db.connect(config.db_settings.posgres_uri)
 	.then(() => logger.info('Connected to DB.'))
 	.catch((error) => {
 		logger.error('Failed to connect to DB.');

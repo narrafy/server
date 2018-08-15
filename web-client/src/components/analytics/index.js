@@ -32,7 +32,7 @@ class Analytics extends Component
 
         const avgCb = res => {
             this.setState({
-                avg: { questions: res.data.counter, minutes: res.data.minutes }
+                avg: { questions: res.data.counter.toFixed(2), minutes: res.data.minutes.toFixed(2)}
             })
         }
         const dataSetCb = res => {
@@ -45,11 +45,10 @@ class Analytics extends Component
             }
             this.setState({
                 xMinutes: x,
-                yQuestions: y
+                yQuestions: y,
+                count: res.data.length
             })
         }
-
-        this.apiClient.get(analyticsConfig.conversation.countEndPoint, countCb)
         this.apiClient.get(analyticsConfig.conversation.avgEndPoint, avgCb)
         this.apiClient.get(analyticsConfig.conversation.dataSetEndPoint, dataSetCb)
     }

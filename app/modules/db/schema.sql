@@ -77,3 +77,52 @@ CREATE TABLE transcript
     transcript jsonb,
     date date NOT NULL
 );
+
+-- get conversation data set
+
+select conversation_id,
+EXTRACT(MINUTES FROM date_last_entry::timestamp - date_first_entry::timestamp) as minutes,
+EXTRACT(Seconds FROM date_last_entry::timestamp - date_first_entry::timestamp) as seconds,
+counter from
+       (select
+                conversation_id,
+                (array_agg(date order by date asc))[1] as date_first_entry,
+                (array_agg(date order by date asc))[count(conversation_id)] as date_last_entry,
+                count(conversation_id) as counter
+                from conversation group by conversation_id having count(conversation_id)>3) as x
+group by conversation_id, date_last_entry, date_first_entry, counter having EXTRACT(Minutes FROM date_last_entry::timestamp - date_first_entry::timestamp)>=1
+
+--get total count
+
+
+select count(*) from (select conversation_id,
+date_first_entry,
+EXTRACT(MINUTES FROM date_last_entry::timestamp - date_first_entry::timestamp) as minutes,
+EXTRACT(Seconds FROM date_last_entry::timestamp - date_first_entry::timestamp) as seconds,
+date_last_entry,
+counter from
+       (select
+                conversation_id,
+                (array_agg(date order by date asc))[1] as date_first_entry,
+                (array_agg(date order by date asc))[count(conversation_id)] as date_last_entry,
+                count(conversation_id) as counter
+                from conversation group by conversation_id having count(conversation_id)>3) as x
+group by conversation_id, date_last_entry, date_first_entry, counter having EXTRACT(Minutes FROM date_last_entry::timestamp - date_first_entry::timestamp)>=1
+) as hh
+
+-- get avg stats
+
+select avg(total_seconds)/60 as minutes, CAST (avg(counter) AS DOUBLE PRECISION) as counter
+        from
+        (select conversation_id,
+        EXTRACT(MINUTES FROM date_last_entry::timestamp - date_first_entry::timestamp) * 60 +
+        EXTRACT(Seconds FROM date_last_entry::timestamp - date_first_entry::timestamp) as total_seconds,
+        counter from
+        (select
+        conversation_id,
+        (array_agg(date order by date asc))[1] as date_first_entry,
+        (array_agg(date order by date asc))[count(conversation_id)] as date_last_entry,
+        count(conversation_id) as counter from conversation group by conversation_id
+        having count(conversation_id)>3) as x
+        group by conversation_id, date_last_entry, date_first_entry, counter
+        having EXTRACT(MINUTES FROM date_last_entry::timestamp - date_first_entry::timestamp)>=1) as kj

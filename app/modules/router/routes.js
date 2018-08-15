@@ -152,8 +152,9 @@ module.exports = (app, db) => {
 	})
 
     app.get('/api/analytics/conversation/dataset', async (req, res) =>{
-        let dataset = await db.getConversationDataSet()
-        res.json(dataset)
+
+        let dataSet = await db.getConversationDataSet();
+        res.json(dataSet)
     })
 
     app.get('/api/analytics/conversation/avg', async (req, res) =>{

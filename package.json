@@ -8,7 +8,7 @@
   "description": "narrafy - software for counseling",
   "main": "server.js",
   "scripts": {
-    "start":"node server.js",
+    "start": "node server.js",
     "heroku-postbuild": "cd web-client && npm install && npm run build"
   },
   "keywords": [
@@ -40,6 +40,7 @@
     "mongoose": "^4.13.9",
     "morgan": "^1.7.0",
     "natural": "^0.5.4",
+    "pg-query-stream": "^1.1.1",
     "pino": "^4.7.2",
     "pos": "^0.4.2",
     "request": "^2.83.0",
