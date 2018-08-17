@@ -29,12 +29,6 @@ app.use(staticFiles)
 /* Bootstrap routes*/
 require('./app/modules/router/routes.js')(app, db)
 
-// The "catchall" handler: for any request that doesn't
-// match one above, send back React's index.html file.
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname+'/web-client/build/index.html'));
-});
-
 /* Connect to DB */
 db.connect(config.db_settings.posgres_uri)
 	.then(() => logger.info('Connected to DB.'))

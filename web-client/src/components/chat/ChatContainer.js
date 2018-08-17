@@ -4,7 +4,7 @@ import SendMessageForm from './SendMessageForm'
 import ApiClient from '../../api/ApiClient'
 import {apiConfig} from '../../config/index'
 
-class ChatContainer extends Component
+export default class ChatContainer extends Component
 {
     constructor(){
         super()
@@ -65,7 +65,6 @@ class ChatContainer extends Component
             context: this.state.context,
             input: this.state.input
         }
-
         this.callApi(data)
     }
 
@@ -73,12 +72,10 @@ class ChatContainer extends Component
         return(
             <section id="chatbot">
                 <div className="chat-container">
-                    <MessageList messages={this.state.messages} sendMessage = {this.sendMessage} />
+                    <MessageList messages = {this.state.messages} sendMessage = {this.sendMessage} />
                     <SendMessageForm sendMessage = {this.sendMessage} />
                 </div>
             </section>
         )
     }
 }
-
-export default ChatContainer

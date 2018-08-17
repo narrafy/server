@@ -65,12 +65,12 @@ function getStory(ctx, template_nodes, story_template)
     return story
 }
 
-async function message(conversation){
+async function parse(text){
 
-    return mineResponse(conversation.output.text)
+    return mineResponse(text)
 }
 
 module.exports = {
-    message: message,
+    parse: parse,
     getStoryStub: getStoryStub
 }

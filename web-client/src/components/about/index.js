@@ -7,7 +7,7 @@ import Testimonial from './Testimonial'
 import Contact from '../partials/Contact'
 import ReactGA from 'react-ga'
 
-class About extends Component
+export default class About extends Component
 {
     constructor()
     {
@@ -28,5 +28,3 @@ class About extends Component
         )
     }
 }
-
-export default About

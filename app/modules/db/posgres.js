@@ -1,6 +1,7 @@
 const { Pool, Client } = require('pg');
 const uuidV1 = require('uuid/v1');
 const {db_settings} = require('../config')
+const escape = require('pg-escape')
 
 let pool = null;
 
@@ -32,15 +33,6 @@ async function singleResultQuery(query)
         let res = await pool.query(query);
         let result = res.rows[0];
         return result;
-    }catch (e) {
-        console.log(e.stack);
-    }
-}
-
-function multipleRowsQueryCb(query, cb)
-{
-    try {
-        pool.query(query, cb);
     }catch (e) {
         console.log(e.stack);
     }
@@ -145,12 +137,9 @@ async function saveTranscript(doc){
 
 async function getConversationLog(conversation_id){
 
-    let query = {
-        text: 'SELECT * FROM '+ collection.conversation +' ORDER BY date DESC LIMIT 1 WHERE id=$1 ;',
-        values: [conversation_id]
-    }
+    let sql = "SELECT * FROM "+ collection.conversation +" WHERE conversation_id='" + conversation_id + "' ORDER BY date ASC"
 
-    return await multipleRowsQuery(query);
+    return await multipleRowsQuery(sql);
 }
 
 async function getContextByConversationId(id, limit){

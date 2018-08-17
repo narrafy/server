@@ -12,9 +12,9 @@ export const apiConfig = {
 export const analyticsConfig = {
     endPoint: "/api/analytics",
     conversation: {
-        dataSetEndPoint: "/api/analytics/conversation/dataset",
-        avgEndPoint: "/api/analytics/conversation/avg",
-        countEndPoint: "/api/analytics/conversation/count",
+        dataSetEndPoint: "/api/conversation/analytics/dataset",
+        avgEndPoint: "/api/conversation/analytics/avg",
+        countEndPoint: "/api/conversation/analytics/count",
         plot: {
             question_limit: 40,
             minutes_spent_limit: 40

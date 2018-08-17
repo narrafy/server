@@ -45,7 +45,7 @@ async function reply(input, stored_log, setcontext, db) {
             }
 
             //get a response from natural language generation service
-            let messageArray = await nlg.message(conversation)
+            let messageArray = await nlg.parse(conversation.output.text)
 
             for(let k =0 ; k < messageArray.length; k++)
             {
@@ -88,7 +88,7 @@ async function sendReplyToFacebook(id, conversation, text) {
 }
 
 async function updateMessage(id, conversation, db) {
-    var responseText = null
+
 
     if (conversation.output) {
 
@@ -96,14 +96,14 @@ async function updateMessage(id, conversation, db) {
         await context.runContextTasks(conversation, db)
 
         //then push context
-        conversation.id = id;
-        conversation.date = new Date();
-
+        conversation.id = id
+        conversation.date = new Date()
         await db.pushContext(conversation)
 
         if (conversation.output.text && conversation.output.text[0]) {
-            let messages = await nlg.message(conversation)
-            return  { conversation , messages }
+            let messages = await nlg.parse(conversation.output.text)
+            conversation.output.text = concatenateMessage(messages)
+            return  { conversation }
         }
     } else {
         conversation.output = {}
@@ -120,14 +120,15 @@ async function updateMessage(id, conversation, db) {
 
     await context.runContextTasks(conversation, db)
 
-    conversation.id = id;
-    conversation.date = new Date();
+    conversation.id = id
+    conversation.date = new Date()
 
     await db.pushContext(conversation)
 
-    let messages = await nlg.message(responseText)
-
-    return { conversation, messages }
+    let responseText = null
+    let messages = await nlg.parse(responseText)
+    conversation.output.text = concatenateMessage(messages)
+    return { conversation }
 }
 
 async function getContextAndReply(data, context, db){
@@ -219,6 +220,17 @@ async function webRequest(id, data, db) {
     return updateMessage(id, data, db)
 }
 
+function concatenateMessage(messages)
+{
+    let messageArray = []
+
+    if(messages){
+        messages.forEach(item => {
+            messageArray.push(item)
+        })
+    }
+    return messageArray.join(" ")
+}
 
 module.exports = {
 
@@ -226,7 +238,5 @@ module.exports = {
 
 	async web(id, data, db) {
 		return webRequest(id, data, db)
-	},
-
-    getStoryStub: nlg.getStoryStub,
+	}
 }

@@ -4,6 +4,7 @@ const Analytics = require ('../analytics')
 const mailService = require('../email')
 const config = require('../config')
 const fb = require('../facebook-api')
+const transcriptService = require('../transcript')
 
 module.exports = (app, db) => {
 
@@ -58,16 +59,8 @@ module.exports = (app, db) => {
             }
         }
 
-		const {conversation, messages} = await Conversation.web(session_id, data, db)
+		const {conversation} = await Conversation.web(session_id, data, db)
 
-		let messageArray = []
-
-		if(messages){
-            messages.forEach(item => {
-                messageArray.push(item)
-            })
-		}
-        conversation.output.text = messageArray.join(" ")
         res.json(conversation)
 	})
 
@@ -145,19 +138,30 @@ module.exports = (app, db) => {
         res.sendStatus(200)
     })
 
-	app.get('/api/analytics/conversation/count', async (req, res) =>{
+    app.get('/api/conversation/:id', async (req, res) =>{
+        let conversationId = req.params.id
+        if (conversationId) {
+            let logs = await db.getConversationLog(conversationId)
+            let tr = transcriptService.build(logs)
+            res.json(tr)
+        } else {
+            res.sendStatus(500)
+        }
+    })
+
+	app.get('/api/conversation/analytics/count', async (req, res) =>{
 
         let total_count = await db.getConversationCount()
         res.json(total_count[0])
 	})
 
-    app.get('/api/analytics/conversation/dataset', async (req, res) =>{
+    app.get('/api/conversation/analytics/dataset', async (req, res) =>{
 
         let dataSet = await db.getConversationDataSet();
         res.json(dataSet)
     })
 
-    app.get('/api/analytics/conversation/avg', async (req, res) =>{
+    app.get('/api/conversation/analytics/avg', async (req, res) =>{
         let avg = await db.getAvgStats()
         res.json(avg)
     })
