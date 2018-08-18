@@ -2,10 +2,12 @@ const emailService = require('../email')
 const config = require('../config')
 const nlu = require('../natural-language/understanding')
 const transcript = require('../transcript')
+const storage = require('./storage')
+const utils = require('../utils/email')
 
 /* tasks to run after the context of a conversation is pushed to the database
  * it's usually to send an email or parse the context variable */
-async function runContextTasks(conversation, db) {
+async function runContextTasks(conversation) {
 
     let context = conversation.context
     const conversation_id = context.conversation_id
@@ -19,7 +21,7 @@ async function runContextTasks(conversation, db) {
                     url: config.app.url + "/story?conversation_id="+ conversation_id,
                     date: new Date(),
                 };
-                let conversations = await db.getConversationLog(conversation_id)
+                let conversations = await storage.getConversationLog(conversation_id)
                 const transcript = transcript.build(conversations)
                 let doc = {
                     email: email,
@@ -27,7 +29,6 @@ async function runContextTasks(conversation, db) {
                     transcript: transcript
                 }
                 if(transcript){
-                    await db.saveTranscript(doc.transcript)
                     emailService.transcript(email, doc.transcript)
                     emailService.adminBot(data)
                 }
@@ -66,14 +67,9 @@ async function runContextTasks(conversation, db) {
 
 function getEmailFromContext(conversation){
     let email = conversation.input.text;
-    if(validateEmail(email))
+    if(utils.validate(email))
         return email
     return null
-}
-
-function validateEmail(email) {
-    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(email);
 }
 
 function hasEmail(conversation) {

@@ -1,6 +1,10 @@
 const mongo = require('mongodb')
-const posgres = require('../db/posgres')
-const config = require('../config')
+const posgres = require('./posgres')
+const transcript = require('../../transcript/index')
+const conversation = require('../../conversation/index')
+const story = require('../../story/index')
+const config = require('../../config/index')
+const customer = require('../../customer/index')
 
 const mg = mongo.MongoClient;
 
@@ -21,7 +25,7 @@ function migrateConversation()
             {
                 i++;
                 let document = await cursor.next();
-                await posgres.pushContext(document)
+                await conversation.push(document)
                 console.log(document._id);
             }
         }
@@ -51,7 +55,7 @@ function migrateStory()
             {
                 i++;
                 let document = await cursor.next();
-                await posgres.saveStory(document)
+                await story.save(document)
                 console.log(document._id);
             }
         }
@@ -79,7 +83,7 @@ function migrateStoryTemplate()
             {
                 i++;
                 let document = await cursor.next();
-                await posgres.saveStoryTemplate(document)
+                await story.save(document)
                 console.log(document._id);
             }
         }
@@ -107,7 +111,7 @@ function migrateTranscript()
             {
                 i++;
                 let document = await cursor.next();
-                await posgres.saveTranscript(document)
+                await transcript.save(document)
                 console.log(document._id);
             }
         }
@@ -164,7 +168,7 @@ function migrateCustomer()
             {
                 i++;
                 let document = await cursor.next();
-                await posgres.saveCustomer(document);
+                await customer.saveCustomer(document);
                 console.log(document._id);
             }
         }

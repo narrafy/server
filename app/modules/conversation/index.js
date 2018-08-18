@@ -3,8 +3,35 @@ const watson = require('./watson')
 const context = require('./context')
 const nlg = require('../natural-language/generation')
 const email = require('../email')
+const storage = require('./storage')
 
-async function reply(input, stored_log, setcontext, db) {
+async function getStats(db) {
+    let model= {};
+    let avg_model = await db.getAvgStats()
+
+    if(avg_model) {
+        model.avg_minutes = Number((avg_model.minutes).toFixed(2));
+        model.avg_counter = Number((avg_model.counter).toFixed(2));
+    }
+
+    let total_count = await db.getConversationCount()
+    if(total_count && total_count.length > 0){
+        model.total_count = total_count[0].total_doc
+    }
+    model.dataset = [];
+
+    let dataset = await db.getConversationDataSet()
+    if(dataset){
+        dataset.forEach(item =>
+        {
+            model.dataset.push({counter: item.counter, minutes: Number((item.minutes).toFixed(2))});
+        })
+    }
+
+    return model
+}
+
+async function reply(input, stored_log, setcontext) {
 
 	//populate the request object to send to watson
 	const request = watson.populateRequest(input, stored_log)
@@ -27,7 +54,7 @@ async function reply(input, stored_log, setcontext, db) {
         if (conversation && conversation.output) {
 
 		    //run tasks first, context might change here
-            await context.runContextTasks(conversation, db)
+            await context.runContextTasks(conversation)
 
             let ctx = conversation.context
 
@@ -39,8 +66,7 @@ async function reply(input, stored_log, setcontext, db) {
                     //then push to storage
                     conversation.id = request.id;
                     conversation.date = new Date();
-
-                    await db.pushContext(conversation)
+                    await storage.pushContext(conversation)
                 }
             }
 
@@ -87,18 +113,17 @@ async function sendReplyToFacebook(id, conversation, text) {
     console.log("Watson replies with: " + message.text + " " + id)
 }
 
-async function updateMessage(id, conversation, db) {
-
+async function updateMessage(id, conversation) {
 
     if (conversation.output) {
 
         //run context tasks first
-        await context.runContextTasks(conversation, db)
+        await context.runContextTasks(conversation)
 
         //then push context
         conversation.id = id
         conversation.date = new Date()
-        await db.pushContext(conversation)
+        await storage.pushContext(conversation)
 
         if (conversation.output.text && conversation.output.text[0]) {
             let messages = await nlg.parse(conversation.output.text)
@@ -118,12 +143,12 @@ async function updateMessage(id, conversation, db) {
         }
     }
 
-    await context.runContextTasks(conversation, db)
+    await context.runContextTasks(conversation)
 
     conversation.id = id
     conversation.date = new Date()
 
-    await db.pushContext(conversation)
+    await storage.pushContext(conversation)
 
     let responseText = null
     let messages = await nlg.parse(responseText)
@@ -131,14 +156,14 @@ async function updateMessage(id, conversation, db) {
     return { conversation }
 }
 
-async function getContextAndReply(data, context, db){
+async function getContextAndReply(data, context){
 
     const {input, stored_log} = await context.getContext(data)
 
-    await reply(input, stored_log, context, db)
+    await reply(input, stored_log, context)
 }
 
-async function PauseBot(data, context, db) {
+async function PauseBot(data, context) {
 
     data.text = "shutdown"
 
@@ -150,7 +175,7 @@ async function PauseBot(data, context, db) {
     conversation.date = new Date();
 
     //store the fact that the bot is disabled
-    await db.pushContext(conversation)
+    await storage.pushContext(conversation)
 
     let dt = {
         id: data.sender,
@@ -166,7 +191,7 @@ async function PauseBot(data, context, db) {
     email.admin("Check the facebook page!")
 }
 
-async function messengerRequest(body, context, db) {
+async function messengerRequest(body, context) {
     var events = body.entry[0].messaging
     for (var i = 0; i < events.length; i++) {
         var event = events[i]
@@ -182,7 +207,7 @@ async function messengerRequest(body, context, db) {
             switch (event.postback.payload) {
                 //user interacts with the page for the first time.
                 case 'optin': {
-                    await getContextAndReply(data, context, db)
+                    await getContextAndReply(data, context)
                 }
                     break
                 case 'CONTACT_REQUEST': {
@@ -196,7 +221,7 @@ async function messengerRequest(body, context, db) {
 
                     data.text= "let's try again"
 
-                    await getContextAndReply(data, context, db)
+                    await getContextAndReply(data, context)
                 }
                     break
                 default:
@@ -208,20 +233,19 @@ async function messengerRequest(body, context, db) {
         if (event.message) {
             if (event.message.text) {
                 data.text = event.message.text
-                await getContextAndReply(data, context, db)
+                await getContextAndReply(data, context)
             }
         }
     }
 }
 
-async function webRequest(id, data, db) {
+async function webRequest(id, data) {
     //Send the input to the conversation service
     data = await watson.ask(data);
-    return updateMessage(id, data, db)
+    return updateMessage(id, data)
 }
 
-function concatenateMessage(messages)
-{
+function concatenateMessage(messages) {
     let messageArray = []
 
     if(messages){
@@ -234,9 +258,15 @@ function concatenateMessage(messages)
 
 module.exports = {
 
-	messengerRequest: messengerRequest,
+    async web(id, data) {
+        return webRequest(id, data)
+    },
+    messengerRequest: messengerRequest,
+    log: storage.getConversationLog,
+    push: storage.pushContext,
+    get: storage.getContextById,
+    getConversationCount: storage.getConversationCount,
+    getAvgStats: storage.getAvgStats,
+    getConversationDataSet: storage.getConversationDataSet
 
-	async web(id, data, db) {
-		return webRequest(id, data, db)
-	}
 }

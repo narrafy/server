@@ -5,9 +5,8 @@ const flash = require('connect-flash')
 const morgan = require('morgan')
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
-const db = require('./app/modules/db/posgres')
+const db = require('./app/modules/utils/db/posgres')
 const config = require('./app/modules/config')
-const path = require('path')
 
 /* Bootstrap middleware */
 app.use(morgan('dev'))

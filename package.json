@@ -24,6 +24,7 @@
     "@sendgrid/client": "^6.2.1",
     "@sendgrid/mail": "^6.2.1",
     "bcrypt-nodejs": "0.0.3",
+    "bcryptjs": "^2.4.3",
     "body-parser": "1.15.1",
     "bootstrap": "^3.3.7",
     "chart.js": "^2.7.0",
@@ -35,11 +36,12 @@
     "ejs": "2.4.2",
     "express": "^4.16.1",
     "express-session": "1.13.0",
-    "jsonwebtoken": "^8.1.0",
+    "jsonwebtoken": "^8.3.0",
     "mongodb": "^2.2.31",
     "mongoose": "^4.13.9",
     "morgan": "^1.7.0",
     "natural": "^0.5.4",
+    "pg": "^7.4.3",
     "pg-query-stream": "^1.1.1",
     "pino": "^4.7.2",
     "pos": "^0.4.2",
@@ -47,8 +49,7 @@
     "request-promise-native": "^1.0.5",
     "sendgrid": "^4.7.1",
     "vis": "^4.21.0",
-    "watson-developer-cloud": "^2.40.0",
-    "pg": "^7.4.3"
+    "watson-developer-cloud": "^2.40.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",

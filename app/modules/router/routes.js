@@ -1,17 +1,22 @@
 const log = require('../log')
-const Conversation = require('../conversation/conversation')
-const Analytics = require ('../analytics')
+const Conversation = require('../conversation')
 const mailService = require('../email')
-const config = require('../config')
-const fb = require('../facebook-api')
-const transcriptService = require('../transcript')
+const Config = require('../config')
+const Fb = require('../facebook-api')
+const Transcript = require('../transcript')
+const AuthService = require('../auth')
+const Customer = require('../customer')
+const User = require('../user')
+const Story = require('../story')
+
 
 module.exports = (app, db) => {
 
-	app.get('/api/webhook', async function (req, res) {
+    // public endpoints
+    app.get('/api/webhook', async function (req, res) {
 
 		let customerVerifyToken =  req.query['hub.verify_token'];
-		let customerConfig = await config.getCustomerByToken(customerVerifyToken);
+		let customerConfig = await Customer.getCustomerByToken(customerVerifyToken);
 		if (customerConfig && (customerConfig.facebook.verify_token === customerVerifyToken)) {
             res.send(req.query['hub.challenge'])
 
@@ -73,7 +78,7 @@ module.exports = (app, db) => {
             source: "contact form",
             date: new Date()
         };
-		await db.addInquiry(data)
+		await User.contact(data)
         mailService.contact(data)
         mailService.user(data.email, data.name)
 		res.sendStatus(200)
@@ -85,29 +90,56 @@ module.exports = (app, db) => {
             date: new Date(),
         };
 		if(data.email){
-            await db.addSubscriber(data)
+            await User.subscribe(data)
             mailService.admin("Congrats, another user just subscribed!")
             mailService.subscriber(data.email)
             res.sendStatus(200)
         }
 	})
 
-	app.get('/api/transcript', async (req, res) => {
+    app.get('/api/conversation/analytics/count', async (req, res) =>{
+
+        let total_count = await Conversation.getConversationCount()
+        res.json(total_count[0])
+    })
+
+    app.get('/api/conversation/analytics/dataset', async (req, res) =>{
+
+        let dataSet = await Conversation.getConversationDataSet();
+        res.json(dataSet)
+    })
+
+    app.get('/api/conversation/analytics/avg', async (req, res) =>{
+        let avg = await Conversation.getAvgStats()
+        res.json(avg)
+    })
+
+    //protected endpoints
+
+    app.post('/api/auth/register', function (req, res) {
+        let user = AuthService.createUser(req.body.password)
+        if(!user)
+            return res.status(500).send("There was a problem registering the user. ")
+        res.status(200).send({auth:true, token: user.token})
+
+    })
+
+    app.get('/api/transcript', async (req, res) => {
 		var conversation_id = req.query['conversation_id']
 		if (conversation_id !== null) {
-			const transcript = await db.getTranscript(conversation_id, db)
+			const transcript = await Transcript.get(conversation_id, db)
 			res.json(transcript)
 		} else {
 			res.sendStatus(500)
 		}
 	})
 
-	app.get('/api/transcript/email',  async (req, res) => {
+	app.get('/api/transcript/send',  async (req, res) => {
 
 		var conversation_id = req.query['conversation_id']
 		var email = req.query['email']
 		if (conversation_id !== null) {
-			const transcript = await db.getTranscript(conversation_id, db)
+			const transcript = await Transcript.get(conversation_id, db)
 			if(transcript)
 				mailService.transcript(email, transcript)
 			res.sendStatus(200)
@@ -116,9 +148,10 @@ module.exports = (app, db) => {
 		}
 	})
 
-    app.get('/api/story', async function (req, res) {
+    app.get('/api/story/:id', async function (req, res) {
 
-        let model = await Analytics.getStoryModel(req.query['conversation_id'], db)
+        let conversationId = req.params.id
+        let model = await Story.getModel(conversationId)
         if (model) {
             res.render('profile/user.ejs', model)
         } else {
@@ -128,42 +161,24 @@ module.exports = (app, db) => {
 
     app.post('/api/story/send', async (req, res) => {
 
-        let data = await Analytics.saveStory(req.body, db)
+        let data = await Story.save(req.body)
         mailService.bot(data)
         res.sendStatus(200)
     })
 
     app.post('/api/story/save', async (req, res) => {
-        await Analytics.saveStory(req.body, db)
+        await Story.save(req.body, db)
         res.sendStatus(200)
     })
 
     app.get('/api/conversation/:id', async (req, res) =>{
         let conversationId = req.params.id
         if (conversationId) {
-            let logs = await db.getConversationLog(conversationId)
-            let tr = transcriptService.build(logs)
+            let tr = Transcript.build(conversationId)
             res.json(tr)
         } else {
             res.sendStatus(500)
         }
-    })
-
-	app.get('/api/conversation/analytics/count', async (req, res) =>{
-
-        let total_count = await db.getConversationCount()
-        res.json(total_count[0])
-	})
-
-    app.get('/api/conversation/analytics/dataset', async (req, res) =>{
-
-        let dataSet = await db.getConversationDataSet();
-        res.json(dataSet)
-    })
-
-    app.get('/api/conversation/analytics/avg', async (req, res) =>{
-        let avg = await db.getAvgStats()
-        res.json(avg)
     })
 
     //free ssl encryption
@@ -173,7 +188,7 @@ module.exports = (app, db) => {
 
     async function setContextConfig(customer_id) {
         //refactor use projection to return only this two fields
-        let customerConfig = await db.getConfig(customer_id)
+        let customerConfig = await Customer.getConfig(customer_id)
         if(customerConfig)
             return { access_token: customerConfig.facebook.access_token, workspace: customerConfig.conversation.workspace}
         return null

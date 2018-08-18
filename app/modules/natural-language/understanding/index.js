@@ -1,8 +1,6 @@
 const natural = require('natural')
 const postag = require('pos')
 const config = require('../../config')
-const db = require('../../db')
-const log = require('../../log')
 const NluClient = require('watson-developer-cloud/natural-language-understanding/v1.js')
 const nluClient = new NluClient({
 	'username': config.nlu.username,
