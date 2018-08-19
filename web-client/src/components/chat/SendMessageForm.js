@@ -38,7 +38,7 @@ class SendMessageForm extends Component{
                            value = {this.state.message}
                            placeholder="Text me maybe"
                            type="text" required />
-                    <input id="enter" type="submit" value="enter" onSubmit={this.handleSubmit} />
+                    <input id="submit-button" type="submit" value="enter" onSubmit={this.handleSubmit} />
                 </form>
             </div>
         )

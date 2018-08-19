@@ -148,6 +148,19 @@ footer a {
     .message-list .message-inner {
         max-width: 95%;
     }
+    .chat-input{
+        padding-left: 0px!important;
+        padding-right: 0px!important;
+    }
+    #submit-button {
+        display: none;
+    }
+    .send-message-form .textInput{
+        min-height: 50px;
+    }
+    #subscribe{
+        display: none;
+    }
 }
 
 .message-list .from-Narrafy .message-inner {

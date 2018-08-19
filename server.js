@@ -60,7 +60,7 @@ app.use((err, req, res, next) => {
 });
 
 /* Connect to DB */
-db.connect(config.db_settings.posgres_uri, process.env.NODE_ENV!=='development')
+db.connect(config.db_settings.posgres_uri, process.env.NODE_ENV !== 'development')
 	.then(() => logger.info('Connected to DB.'))
 	.catch((error) => {
 		logger.error('Failed to connect to DB.');
