@@ -4,14 +4,13 @@ export const mediumUrl = "https://www.medium.com/@narrafy"
 export const gaUa= "UA-106329468-1"
 
 export const apiConfig = {
-    sendMessageEndPoint : "/api/message",
-    contactEndPoint : "/api/contact",
-    subscribeEndPoint : "/api/subscribe"
+    contactEndPoint : "/api/user/contact",
+    subscribeEndPoint : "/api/user/subscribe"
 }
 
-export const analyticsConfig = {
-    endPoint: "/api/analytics",
+export const conversationConfig = {
     conversation: {
+        sendMessageEndPoint : "/api/conversation/message",
         dataSetEndPoint: "/api/conversation/analytics/dataset",
         avgEndPoint: "/api/conversation/analytics/avg",
         countEndPoint: "/api/conversation/analytics/count",

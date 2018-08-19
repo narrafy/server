@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import ApiClient from "../../api/ApiClient"
 import ConversationLegend from './ConversationLegend'
 import ConversationPlot from './ConversationPlot'
-import {analyticsConfig } from '../../config/index'
+import {conversationConfig } from '../../config/index'
 import Subscribe from '../partials/Subscribe'
 import Footer from '../partials/Footer'
 import ReactGA from 'react-ga'
@@ -49,8 +49,8 @@ class Analytics extends Component
                 count: res.data.length
             })
         }
-        this.apiClient.get(analyticsConfig.conversation.avgEndPoint, avgCb)
-        this.apiClient.get(analyticsConfig.conversation.dataSetEndPoint, dataSetCb)
+        this.apiClient.get(conversationConfig.conversation.avgEndPoint, avgCb)
+        this.apiClient.get(conversationConfig.conversation.dataSetEndPoint, dataSetCb)
     }
 
     render() {
