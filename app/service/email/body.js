@@ -7,27 +7,16 @@ function getFooterNoUsername(){
 
 function getFooter(username){
     let footer = "<p>" + username  + "<a href='https://www.narrafy.io'> Narrafy Team</a> wishes you a nice day!</p>"
-    let ps = "<hr/><p> P.S. Take a look at our <a href='https://medium.com/symbiosis-humans-and-ai'>blog</a> to find our more about our work.</p>"
+    let ps = "<hr/><p> P.S. Take a look at our <a href='https://medium.com/narrafy-labs'>blog</a> to find our more about our work.</p>"
     return footer + ps
 }
 
-function transcriptBody(transcript) {
-
+function transcriptBody(transcriptBody) {
     let startBody =  "<html><body><div>"
     let message = "<h4>" + "Thank you for training our conversational robot!" +"</h4>"
-    let k = transcript.length;
-    let transcriptHtml = "";
-    for(let i = 0; i < k; i ++){
-        if(i%2){
-            transcriptHtml += "<li>" + transcript[i] + "</li>"
-        }else {
-            transcriptHtml += "<li>" + transcript[i] + "</li>"
-        }
-    }
-
     let footer = getFooterNoUsername()
     let endBody = "</div><body/></html>"
-    return startBody + message + "<ul>" + transcriptHtml + "</ul>" + footer + endBody
+    return startBody + message + "<ul>" + transcriptBody + "</ul>" + footer + endBody
 }
 
 function getStory(data) {
@@ -50,18 +39,18 @@ function getAdminEmailBody(data){
         "<p><a target='_self' href='https://" + data.url + "'> Check Story </a></p></body></html>"
 }
 
-function getContactHtml(data) {
+function getContactHtml(message) {
     let startBody =  "<html><body><div>"
 
-    let message = "<h4>" + "You have a new message: " +"</h4>"
+    let msg = "<h4>" + "You have a new message: " +"</h4>"
 
-    let htmlBody = "<p> + data.message + </p>";
+    let htmlBody = "<p>" + message + "</p>";
 
     let footer = getFooterNoUsername()
 
     let endBody = "</div><body/></html>"
 
-    return startBody + message + htmlBody + footer + endBody
+    return startBody + msg + htmlBody + footer + endBody
 }
 
 function getSubscriberReply() {

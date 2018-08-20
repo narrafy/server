@@ -15,6 +15,7 @@ function Footer()
                     <div className="col-md-4 text-center">
                         <p><a href="/privacy-policy">Privacy policy</a></p>
                         <p><a href="/about">About Us</a></p>
+                        <p><a href="/about#contact">Contact</a></p>
                     </div>
                     <SocialMedia />
                 </div>

@@ -17,7 +17,7 @@ function Team()
                     <p><strong>CEO and Founder </strong> <br/> Engineer with 6+ years experience in software
                         development. Researcher
                         presenting <a href="https://arxiv.org/abs/1712.03080" title="path-to-ai">A path to AI</a> at
-                        <a href="https://www.ieee.org/conferences_events/conferences/conferencedetails/index.html?Conf_ID=42793"
+                        <a href="http://saiconference.com/IntelliSys2018/Agenda"
                            title="SAI"> IntelliSys Conference </a> London, September 2018.
                     </p>
                     <a href="https://www.linkedin.com/in/ion-dronic-94446337/" rel="noopener noreferrer" className="fa fa-linkedin"

@@ -1,9 +1,9 @@
 const emailService = require('../../service/email')
-const config = require('../../service/config')
 const nlu = require('../../service/nlp/understanding')
-const transcript = require('../transcript')
-const storage = require('./storage')
-const utils = require('../../service/email')
+const Transcript = require('../transcript')
+const utils = require('../../service/email/index')
+const user = require('../user')
+const config = require('../../service/config')
 
 /* tasks to run after the context of a conversation is pushed to the database
  * it's usually to send an email or parse the context variable */
@@ -18,21 +18,22 @@ async function runContextTasks(conversation) {
                 let data = {
                     email: email,
                     conversation_id: conversation_id,
-                    url: config.app.url + "/story?conversation_id="+ conversation_id,
                     date: new Date(),
                 };
-                let conversations = await storage.getConversationLog(conversation_id)
-                const transcript = transcript.build(conversations)
-                let doc = {
-                    email: email,
-                    conversation_id: conversation_id,
-                    transcript: transcript
-                }
+
+                const transcript = await Transcript.build(conversation_id)
                 if(transcript){
-                    emailService.transcript(email, doc.transcript)
-                    emailService.adminBot(data)
+                    let doc = {
+                        email: email,
+                        conversation_id: conversation_id,
+                        transcript: transcript
+                    }
+                    if(transcript){
+                        Transcript.send(email, doc.transcript)
+                        Transcript.send(config.sendGrid.contactEmail, doc.transcript)
+                    }
+                    await user.subscribe(data, conversation_id)
                 }
-                db.addSubscriber(data)
             }
     }
 
@@ -50,7 +51,7 @@ async function runContextTasks(conversation) {
     if(shouldPauseBot(conversation))
         context.bot_active = false
         
-    if (is3RdNode(conversation))
+    if (is3RdNode(conversation) && process.env.NODE_ENV === 'production')
        emailService.admin("Someone is talking to the bot. Remember to train on the input!")
 
     if(conversation.context.help_request || conversation.context.email_admin){

@@ -72,7 +72,7 @@ async function reply(input, stored_log, setcontext) {
             }
 
             //get a response from natural language generation service
-            let messageArray = await nlg.parse(conversation.output.text)
+            let messageArray = nlg.parse(conversation.output.text)
 
             for(let k =0 ; k < messageArray.length; k++)
             {
@@ -127,7 +127,7 @@ async function updateMessage(id, conversation) {
         await storage.pushContext(conversation)
 
         if (conversation.output.text && conversation.output.text[0]) {
-            let messages = await nlg.parse(conversation.output.text)
+            let messages = nlg.parse(conversation.output.text)
             conversation.output.text = concatenateMessage(messages)
             return  { conversation }
         }
@@ -152,7 +152,7 @@ async function updateMessage(id, conversation) {
     await storage.pushContext(conversation)
 
     let responseText = null
-    let messages = await nlg.parse(responseText)
+    let messages = nlg.parse(responseText)
     conversation.output.text = concatenateMessage(messages)
     return { conversation }
 }
@@ -269,10 +269,9 @@ module.exports = {
     async web(id, data) {
         return webRequest(id, data)
     },
+
     messengerRequest: messengerRequest,
     getWorkspace: getWorkspace,
-
-    log: storage.getConversationLog,
     push: storage.pushContext,
     get: storage.getContextById,
     getConversationCount: storage.getConversationCount,

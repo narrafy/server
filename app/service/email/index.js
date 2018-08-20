@@ -1,5 +1,4 @@
 const config = require('../config/index')
-const log = require('../log/index')
 const body = require('./body')
 
 const sgMail = require('@sendgrid/mail');
@@ -19,17 +18,6 @@ function admin(message) {
 	return send(msg)
 }
 
-function adminbot(data) {
-    const emailBody = body.adminEmail(data)
-    const msg = {
-        to: config.sendGrid.adminEmail,
-        from: data.email,
-        subject: "A story from Narrafy",
-        html: emailBody,
-    };
-    return send(msg)
-}
-
 function bot(data) {
     const emailBody = body.story(data)
 	const msg = {
@@ -41,23 +29,23 @@ function bot(data) {
     return send(msg)
 }
 
-function contactAdmin(data) {
-    let emailBody = body.contactHtml(data)
+function contactAdmin(email, message) {
+    let emailBody = body.contactHtml(message)
     const msg = {
         to: config.sendGrid.contactEmail,
-        from: data.email,
-        subject: "Message from " + data.name,
+        from: email,
+        subject: "Message from " + email,
         html: emailBody,
     };
     return send(msg)
 }
 
-function transcript(email, transcript) {
+function transcript(email, doc) {
 
-	const emailBody = body.transcript(transcript)
+	const emailBody = body.transcript(doc)
     const msg = {
         to: email,
-        from: config.sendGrid.adminEmail,
+        from: config.sendGrid.contactEmail,
         subject: "Conversation Transcript",
         html: emailBody,
     };
@@ -68,7 +56,7 @@ function story(email, story) {
 
     let emailBody = body.story(story)
     const msg = {
-        to: config.sendGrid.adminEmail,
+        to: config.sendGrid.contactEmail,
         from: email,
         subject: "A story from Narrafy",
         html: emailBody,
@@ -81,16 +69,16 @@ function notifySubscriber(email) {
     const emailBody = body.subscriberReply()
     const msg = {
         to: email,
-        from: config.sendGrid.adminEmail,
+        from: config.sendGrid.contactEmail,
         subject: "Narrafy got your email",
         html: emailBody,
     }
 	return send(msg)
 }
 
-function sendEmail(email, user) {
+function sendEmail(email, name) {
 
-	let emailBody = body.userReply(user)
+	let emailBody = body.userReply(name)
     const msg = {
         to: email,
         from: config.sendGrid.contactEmail,
@@ -100,18 +88,21 @@ function sendEmail(email, user) {
 	return send(msg)
 }
 
+function validateEmail(email) {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+}
+
 module.exports = {
 
 	notifySubscriber: notifySubscriber,
 	transcript: transcript,
 	story: story,
 	bot: bot,
-	adminBot: adminbot,
     sendEmail: sendEmail,
 	admin(message) {
 		return admin(message)
 	},
-	contactAdmin(data){
-		return contactAdmin(data)
-	}
+	contactAdmin: contactAdmin,
+    validate: validateEmail
 }

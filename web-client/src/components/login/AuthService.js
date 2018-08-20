@@ -4,8 +4,7 @@ import {apiConfig} from "../../config";
 
 export default class AuthService {
     // Initializing important variables
-    constructor(domain) {
-        this.domain = domain || 'http://localhost:5000' // API server domain
+    constructor() {
         this.login = this.login.bind(this)
         this.getProfile = this.getProfile.bind(this)
         this.apiClient = new ApiClient();

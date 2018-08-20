@@ -1,10 +1,9 @@
 const mailService = require('../../service/email')
 
 module.exports = {
-    notifySubscriber: function(data){
-        mailService.notifySubscriber(data.email)
-    },
-    notifyUser: function(email, name){
-        mailService.sendEmail(email, name)
-    }
+
+    notify: mailService.contactAdmin,
+    notifySubscriber: mailService.notifySubscriber,
+    notifyUser: mailService.sendEmail
+
 }

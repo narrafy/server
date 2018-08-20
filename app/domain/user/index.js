@@ -1,5 +1,4 @@
 const db = require('../../service/db/posgres')
-const mailService = require('../../service/email')
 
 async function saveContactInquiry(data){
 
@@ -11,24 +10,17 @@ async function saveContactInquiry(data){
     return await db.singleResultQuery(query);
 }
 
-async function saveSubscriber(doc)
+async function saveSubscriber(email, conversation_id = '')
 {
     let query = {
-        text: 'INSERT INTO subscriber(conversation_id, email, date) values ($1, $2, $3)',
-        values: [doc.conversation_id, doc.email, doc.date]
+        text: 'INSERT INTO subscriber(email, conversation_id, date) values ($1, $2, CURRENT_TIMESTAMP)',
+        values: [email, conversation_id]
     }
 
     return await db.singleResultQuery(query);
 }
 
 module.exports= {
-
-    async contact(data) {
-        await saveContactInquiry(data)
-    },
-    notifyAdmin: mailService.contactAdmin,
-
-    async subscribe(data) {
-        await saveSubscriber(data)
-    }
+    contact: saveContactInquiry,
+    subscribe: saveSubscriber
 }

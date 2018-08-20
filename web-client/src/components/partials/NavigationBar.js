@@ -49,10 +49,13 @@ class NavigationBar extends Component {
                                     <NavLink tag={Link} to="/">Home</NavLink>
                                 </NavItem>
                                 <NavItem>
-                                    { !profile && <NavLink target="_blank"  rel="noopener noreferrer" href="https://arxiv.org/abs/1712.03080">Research</NavLink> }
+                                    {!profile && <NavLink target="_blank"  rel="noopener noreferrer" href="https://medium.com/narrafy-labs">Labs</NavLink> }
                                 </NavItem>
                                 <NavItem>
                                     {!profile && <NavLink tag={Link} to="/about">About</NavLink> }
+                                </NavItem>
+                                <NavItem>
+                                    {!profile && <a className="nav-link" href="/about#contact">Contact</a> }
                                 </NavItem>
                             </Nav>
                         </Collapse>

@@ -12,8 +12,7 @@ function mineResponse(data) {
     return messageArray
 }
 
-
-async function parse(text){
+function parse(text){
 
     return mineResponse(text)
 }

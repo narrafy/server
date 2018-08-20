@@ -9,26 +9,28 @@ Router.post('/contact', async (req, res) => {
     let data = {
         email: req.body.email,
         message: req.body.message,
-        name: req.body.name,
-        source: "contact form",
-        date: new Date()
+        name: req.body.name
     };
-    await User.contact(data)
-    User.notifyAdmin(data)
-    Admin.notifyUser(data.email, data.name)
-    res.sendStatus(200)
+    if(data && data.email){
+        await User.contact(data)
+        Admin.notify(data.email, "A new message from :" + data.email + "\n Content: " + data.message)
+        Admin.notifyUser(data.email, data.name)
+        res.sendStatus(200)
+    } else {
+        res.sendStatus(500)
+    }
 })
 
 Router.post('/subscribe', async (req, res) => {
-    let data = {
-        email: req.body.email,
-        date: new Date(),
-    };
-    if(data.email){
-        await User.subscribe(data)
-        User.notifyAdmin({ message: "Congrats," + data.email + " just subscribed!"})
-        Admin.notifySubscriber(data.email)
+
+    let email = req.body.email
+    if(email){
+        await User.subscribe(email)
+        Admin.notify(email, "Congrats," + email + " just subscribed!")
+        Admin.notifySubscriber(email)
         res.sendStatus(200)
+    }else {
+        res.sendStatus(500)
     }
 })
 

@@ -15,7 +15,7 @@ function Banner()
                             </h3>
                             <div className="download">
                                 <a href="https://arxiv.org/abs/1712.03080" target="_blank" rel="noopener noreferrer" className="btn btn-default">
-                                    Read more
+                                    Learn more
                                 </a>
                             </div>
 
