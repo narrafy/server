@@ -20,7 +20,6 @@ async function runContextTasks(conversation) {
                     conversation_id: conversation_id,
                     date: new Date(),
                 };
-
                 const transcript = await Transcript.build(conversation_id)
                 if(transcript){
                     let doc = {

@@ -95,7 +95,7 @@ async function pushContext(doc) {
         doc.date];
 
     let query = {
-        text:'INSERT INTO conversation(id, conversation_id, intents, entities, "input", "output", context, date) ' +
+        text:'INSERT INTO conversation(_id, conversation_id, intents, entities, "input", "output", context, date) ' +
         'VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id',
         values: log
     }
