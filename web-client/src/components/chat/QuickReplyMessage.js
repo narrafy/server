@@ -1,8 +1,7 @@
 import React, {Component} from 'react'
 import QuickReply from './QuickReply'
 
-class QuickReplyMessage extends Component
-{
+export default class QuickReplyMessage extends Component {
 
     constructor(){
         super()
@@ -46,5 +45,3 @@ class QuickReplyMessage extends Component
         )
     }
 }
-
-export default QuickReplyMessage

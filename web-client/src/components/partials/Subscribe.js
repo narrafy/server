@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import ApiClient from "../../api/ApiClient"
 import {apiConfig} from '../../config'
+import {isEmailValid} from '../../utils'
 
 class Subscribe extends Component
 {
@@ -16,15 +17,10 @@ class Subscribe extends Component
         this.handleChange = this.handleChange.bind(this)
     }
 
-    isEmailValid(email)
-    {
-        return email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
-    }
-
     handleSubmit(e)
     {
         e.preventDefault();
-        if(this.isEmailValid(this.state.email))
+        if(isEmailValid(this.state.email))
         {
             let cb = () =>{
                 this.setState({

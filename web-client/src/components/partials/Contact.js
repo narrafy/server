@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import ApiClient from '../../api/ApiClient'
 import {apiConfig} from '../../config'
-import contactLogo from '../../assets/contact.jpg'
+import contactLogo from '../../assets/img/contact.jpg'
 
 class Contact extends Component
 {

@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Message(props) {
+export default function Message(props) {
     return (
         <div className="message-inner">
             <div className="message-username">{props.username}</div>
@@ -8,5 +8,3 @@ function Message(props) {
         </div>
     )
 }
-
-export default Message

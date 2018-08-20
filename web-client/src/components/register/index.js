@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
-import ChatContainer from '../chat/ChatContainer'
 import Footer from '../partials/Footer'
 import ReactGA from 'react-ga'
 
-class Home extends Component {
+export default class Login extends Component {
 
     constructor()
     {
@@ -13,9 +12,9 @@ class Home extends Component {
 
     render(){
         return (
-            <ChatContainer/>
+            <div>
+
+            </div>
         )
     }
 }
-
-export default Home;

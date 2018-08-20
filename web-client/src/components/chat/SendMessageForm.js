@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 
-class SendMessageForm extends Component{
+export default class SendMessageForm extends Component{
 
     constructor()
     {
@@ -44,5 +44,3 @@ class SendMessageForm extends Component{
         )
     }
 }
-
-export default SendMessageForm

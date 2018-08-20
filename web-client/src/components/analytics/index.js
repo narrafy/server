@@ -4,7 +4,7 @@ import ConversationLegend from './ConversationLegend'
 import ConversationPlot from './ConversationPlot'
 import {conversationConfig } from '../../config/index'
 import Subscribe from '../partials/Subscribe'
-import Footer from '../partials/Footer'
+
 import ReactGA from 'react-ga'
 
 class Analytics extends Component
@@ -24,16 +24,12 @@ class Analytics extends Component
 
     componentDidMount()
     {
-        const countCb = res => {
-            this.setState({
-                count: res.data.total_doc
-            })
-        }
-
         const avgCb = res => {
-            this.setState({
-                avg: { questions: res.data.counter.toFixed(2), minutes: res.data.minutes.toFixed(2)}
-            })
+            if(res.data.counter && res.data.minutes){
+                this.setState({
+                    avg: { questions: res.data.counter.toFixed(2), minutes: res.data.minutes.toFixed(2)}
+                })
+            }
         }
         const dataSetCb = res => {
 
@@ -68,8 +64,6 @@ class Analytics extends Component
                         </div>
                     </div>
                 </section>
-                <Subscribe />
-                <Footer/>
             </div>
         )
     }

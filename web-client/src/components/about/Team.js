@@ -1,7 +1,7 @@
 import React from 'react'
-import ceoPicture from '../../assets/ceo.jpg'
-import coFounderPicture from '../../assets/co-founder.jpg'
-import botPicture from '../../assets/robot.png'
+import ceoPicture from '../../assets/img/ceo.jpg'
+import coFounderPicture from '../../assets/img/co-founder.jpg'
+import botPicture from '../../assets/img/robot.png'
 
 function Team()
 {

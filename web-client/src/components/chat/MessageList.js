@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import Message from './Message'
 import QuickReplyMessage from './QuickReplyMessage'
 
-class MessageList extends Component{
+export default class MessageList extends Component{
 
     componentWillUpdate(){
         const node = ReactDOM.findDOMNode(this)
@@ -54,5 +54,3 @@ class MessageList extends Component{
         )
     }
 }
-
-export default MessageList

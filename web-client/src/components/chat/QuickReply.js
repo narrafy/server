@@ -1,6 +1,6 @@
 import React from 'react'
 
-class QuickReply extends React.Component
+export default class QuickReply extends React.Component
 {
     constructor(){
         super()
@@ -18,8 +18,3 @@ class QuickReply extends React.Component
         )
     }
 }
-
-
-
-
-export default QuickReply

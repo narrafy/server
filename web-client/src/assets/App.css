@@ -40,6 +40,16 @@ html, body {
     padding-bottom: 20px ;
 }
 
+.login-container {
+    padding-top: 50px;
+    margin: 0 auto;
+    max-width: 768px;
+    padding-bottom: 50px ;
+}
+.login-card{
+    width: 18rem;
+}
+
 .subscribe-container {
     padding-top: 50px;
     margin: 0 auto;
@@ -106,6 +116,15 @@ html, body {
     top: 10px;
 }
 
+.cta-link{
+    background-color: #ef6263;
+    border: none;
+    border-radius: 1.5rem;
+    color: #f9f9f9;
+    cursor: pointer;
+    padding: .5rem 2rem;
+    margin-right: 20px;
+}
 
 .message-list, .chat-input {
     padding-left: 2rem;

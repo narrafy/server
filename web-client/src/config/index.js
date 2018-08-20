@@ -5,7 +5,8 @@ export const gaUa= "UA-106329468-1"
 
 export const apiConfig = {
     contactEndPoint : "/api/user/contact",
-    subscribeEndPoint : "/api/user/subscribe"
+    subscribeEndPoint : "/api/user/subscribe",
+    customerLoginEndPoint: "/api/customer/login"
 }
 
 export const conversationConfig = {
