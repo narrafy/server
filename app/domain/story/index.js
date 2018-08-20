@@ -1,12 +1,11 @@
 const db = require('../../service/db/posgres')
 const processing = require('../../service/nlp/generation/processing')
-const conversation = require('../conversation')
 const transcript = require('../transcript')
 const emailService = require('../../service/email')
 
 async function saveStory(doc){
     let query = {
-        text: 'INSERT INTO ' + collection.story + '(conversation_id, email, story, date) values ($1, $2, $3, CURRENT_TIMESTAMP)',
+        text: 'INSERT INTO story(conversation_id, email, story, date) values ($1, $2, $3, CURRENT_TIMESTAMP)',
         values: [doc.conversation_id, doc.email, doc.story]
     }
 
@@ -14,9 +13,8 @@ async function saveStory(doc){
 }
 
 async function getStory(conversation_id){
-
     let query = {
-        text: 'SELECT * FROM ' + collection.story + 'ORDER by date DESC LIMIT 1 WHERE conversation_id=$1',
+        text: 'SELECT * FROM story WHERE conversation_id=$1 ORDER by date DESC LIMIT 1',
         values: [conversation_id]
     }
 
@@ -43,37 +41,6 @@ async function saveTemplate (doc){
     return await db.multipleRowsQuery(query);
 }
 
-async function getStub(conversation_id){
-
-    const conversation = await conversation.get(conversation_id, 1)
-    let story_templates = await getTemplate()
-    let email = ""
-    let user_name = ""
-    let cc = ""
-
-    if(conversation && conversation.length > 0){
-        let ctx = conversation[0].context
-        if(ctx["user_email"])
-            email = ctx["user_email"]
-        if(ctx["user_name"])
-            user_name = ctx["user_name"].text
-        let stories = {}
-        for(let j=0;j<story_templates.length; j++){
-            let cursor = story_templates[j]
-            let story_key = cursor.interview_type
-            let template_nodes = cursor.nodes
-            let story_template = cursor.templates
-            let story = getStory(ctx, template_nodes, story_template)
-            stories[story_key] = story
-        }
-        return {
-            name: user_name,
-            email: email,
-            story: stories,
-            cc: cc
-        }
-    }
-}
 
 function getStory(ctx, template_nodes, story_template) {
     let array = {}
@@ -94,7 +61,7 @@ function getStory(ctx, template_nodes, story_template) {
 }
 
 async function getStoryModel(conversation_id) {
-    let story = await story.get(conversation_id)
+    let story = getStory(conversation_id)
     if(story.length > 0){
         let model = {
             conversation_id: story[0].conversation_id,

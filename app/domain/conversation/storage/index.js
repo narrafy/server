@@ -106,7 +106,7 @@ async function pushContext(doc) {
 async function getContextByConversationId(id, limit){
 
     let query = {
-        text: 'SELECT * FROM conversation ORDER by date DESC LIMIT $1 WHERE conversation_id=$2',
+        text: 'SELECT * FROM conversation WHERE conversation_id=$2 ORDER by date DESC LIMIT $1',
         values: [limit, id]
     }
 
