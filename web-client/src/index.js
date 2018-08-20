@@ -5,13 +5,15 @@ import App from "./App.js";
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import registerServiceWorker from './registerServiceWorker';
 import Home from './components/home'
-import About from './components/about'
 import NavigationBar from './components/partials/NavigationBar'
 import Footer from './components/partials/Footer'
-import Privacy from './components/partials/Privacy'
-import Login from './components/login/index'
-import Register from './components/register'
-import Dashboard from './components/dashboard'
+import asyncComponent from './components/partials/AsyncComponent'
+
+const AsyncAbout = asyncComponent(() => import("./components/about"));
+const AsyncPrivacy = asyncComponent(() => import("./components/partials/Privacy"));
+const AsyncLogin = asyncComponent(() => import("./components/login"));
+const AsyncRegister = asyncComponent(() => import("./components/register"));
+const AsyncDashboard = asyncComponent(() => import("./components/dashboard"));
 
 ReactDOM.render(
     (<Router>
@@ -19,12 +21,11 @@ ReactDOM.render(
             <NavigationBar/>
             <App />
             <Route exact path="/" component={Home}  />
-            <Route path="/about" component={About} />
-            <Route path="/privacy-policy" component={Privacy} />
-            <Route path="/register" component={Register} />
-            <Route path="/login" component={Login} />
-            <Route path="/dashboard" component={Dashboard} />
-            <Route path="/logout" component={Home} />
+            <Route path="/about" component={AsyncAbout} />
+            <Route path="/privacy-policy" component={AsyncPrivacy} />
+            <Route path="/register" component={AsyncRegister} />
+            <Route path="/login" component={AsyncLogin} />
+            <Route path="/dashboard" component={AsyncDashboard} />
             <Footer/>
         </div>
     </Router>),
