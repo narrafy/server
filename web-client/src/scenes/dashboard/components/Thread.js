@@ -16,8 +16,10 @@ class Thread extends Component{
     render(){
         return(
             <li className={"list-group-item"} key={this.props.id}>
-                <span> Minutes {this.props.minutes} </span>
                 <a href={""} onClick={this.handleOnClick} > {this.props.date} </a>
+                <span class="badge badge-light">Minutes: {this.props.minutes}</span>
+                <span class="badge badge-light">Seconds: {this.props.seconds}</span>
+                <span class="badge badge-primary">Questions: {this.props.counter}</span>
             </li>
         )
     }

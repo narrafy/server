@@ -7,6 +7,8 @@ export default class Auth {
     constructor() {
         this.login = this.login.bind(this)
         this.getProfile = this.getProfile.bind(this)
+        this.getToken = this.getToken.bind(this)
+        this.loggedIn = this.loggedIn.bind(this)
         this.apiClient = new ApiClient();
     }
 

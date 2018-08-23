@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {ConversationWrapper, ThreadList } from './components'
+import {ConversationWrapper, ThreadList, ThreadPager } from './components'
 import {withRouter} from 'react-router'
 import ApiClient from '../../services/api/ApiClient'
 import Auth from '../../services/auth'
@@ -90,6 +90,7 @@ class Dashboard extends Component{
                         <div className={"row"}>
                             <div className="col-md-3  col-md-offset-1">
                                 <ThreadList threads={this.state.threads} onThreadClick={this.callThreadEndPoint}/>
+                                <ThreadPager />
                             </div>
                             <div className="col-md-9">
                                 <ConversationWrapper messages={this.state.messages} sendMessage = {this.callThreadEndPoint} />
