@@ -1,8 +1,8 @@
 import decode from 'jwt-decode';
-import ApiClient from '../../api/ApiClient'
-import {apiConfig} from "../../config";
+import ApiClient from '../../../services/api/ApiClient'
+import {apiConfig} from "../../../config/index";
 
-export default class AuthService {
+export default class Auth {
     // Initializing important variables
     constructor() {
         this.login = this.login.bind(this)

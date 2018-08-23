@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import ChatContainer from '../chat/ChatContainer'
-import Footer from '../partials/Footer'
+import ChatContainer from '../../components/chat/Container'
 import ReactGA from 'react-ga'
 
 class Home extends Component {
@@ -13,7 +12,7 @@ class Home extends Component {
 
     render(){
         return (
-            <ChatContainer/>
+            <ChatContainer />
         )
     }
 }

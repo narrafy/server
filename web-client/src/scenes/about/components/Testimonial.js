@@ -1,6 +1,6 @@
 import React from 'react'
 import Slider from 'react-slick'
-import logo from '../../assets/img/logo.svg'
+import logo from '../../../assets/img/logo.svg'
 
 const Testimonial = () => {
 

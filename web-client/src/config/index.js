@@ -9,15 +9,17 @@ export const apiConfig = {
     customerLoginEndPoint: "/api/customer/login"
 }
 
-export const conversationConfig = {
-    conversation: {
+export const conversation = {
+        analytics: {
+            dataSetEndPoint: "/api/conversation/analytics/dataset",
+            avgEndPoint: "/api/conversation/analytics/avg",
+            countEndPoint: "/api/conversation/analytics/count"
+        },
         sendMessageEndPoint : "/api/conversation/message",
-        dataSetEndPoint: "/api/conversation/analytics/dataset",
-        avgEndPoint: "/api/conversation/analytics/avg",
-        countEndPoint: "/api/conversation/analytics/count",
+        threadListEndPoint : "/api/conversation/thread/list",
+        threadEndPoint: "/api/conversation/thread",
         plot: {
             question_limit: 40,
             minutes_spent_limit: 40
         }
-    }
 }

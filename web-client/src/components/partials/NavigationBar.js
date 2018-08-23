@@ -9,17 +9,19 @@ import {
     NavItem,
     NavLink
 } from 'reactstrap'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import { faUser } from '@fortawesome/free-solid-svg-icons'
 import {SocialIcon} from 'react-social-icons'
 import logo from '../../assets/img/logo.svg'
-import {facebookUrl, mediumUrl, twitterUrl} from "../../config";
-import AuthService from '../login/AuthService'
+import {facebookUrl, mediumUrl, twitterUrl} from "../../config"
+import Auth from '../../scenes/login/services/Auth'
 import {withRouter} from 'react-router'
 
 class NavigationBar extends Component {
 
     constructor(props) {
         super(props);
-        this.auth = new AuthService();
+        this.auth = new Auth();
         this.toggle = this.toggle.bind(this);
         this.state = {
             isOpen: false,
@@ -64,11 +66,16 @@ class NavigationBar extends Component {
                     <Nav className={"float-right"}>
 
                         <NavItem>
-                            <NavLink tag={Link} to="/profile"> {profile.customer.email}</NavLink>
-                        </NavItem>
-                        <NavItem>
                             <NavLink tag={Link} to="/dashboard">Dashboard</NavLink>
                         </NavItem>
+                        <NavItem>
+                            <NavLink tag={Link} to="/analytics">Analytics</NavLink>
+                        </NavItem>
+
+                        <NavItem>
+                            <NavLink tag={Link} to="/profile"> <FontAwesomeIcon icon={faUser} /></NavLink>
+                        </NavItem>
+
                         <NavItem>
                             <button type="button" className="cta-link" onClick={this.handleLogout.bind(this)}>Logout</button>
                         </NavItem>

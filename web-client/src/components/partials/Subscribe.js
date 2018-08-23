@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
-import ApiClient from "../../api/ApiClient"
+import ApiClient from "../../services/api/ApiClient"
 import {apiConfig} from '../../config'
 import {isEmailValid} from '../../utils'
 
-class Subscribe extends Component
+export default class Subscribe extends Component
 {
     constructor(){
         super()
@@ -90,5 +90,3 @@ class Subscribe extends Component
         }
     }
 }
-
-export default Subscribe

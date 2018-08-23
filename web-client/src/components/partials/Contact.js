@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import ApiClient from '../../api/ApiClient'
+import ApiClient from '../../services/api/ApiClient'
 import {apiConfig} from '../../config'
 import contactLogo from '../../assets/img/contact.jpg'
 

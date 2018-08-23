@@ -1,8 +1,6 @@
 import React from 'react'
 import SocialMedia from './SocialMedia'
 
-
-
 function Footer()
 {
     return(

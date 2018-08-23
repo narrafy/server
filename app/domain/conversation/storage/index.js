@@ -113,11 +113,22 @@ async function getContextByConversationId(id, limit){
     return await db.multipleRowsQuery(query);
 }
 
-async function getConversationLog(conversation_id){
+async function getThreadList(limit, offset){
+    let query = {
+        text: "select conversation_id, date from conversation order by date desc limit $1 offset $2",
+        values: [limit, offset]
+    }
 
-    let sql = "SELECT * FROM conversation WHERE conversation_id='" + conversation_id + "' ORDER BY date ASC"
+    return await db.multipleRowsQuery(query)
+}
 
-    return await db.multipleRowsQuery(sql);
+async function getThread(conversation_id){
+    let query = {
+        text: "SELECT * FROM conversation WHERE conversation_id=$1 ORDER BY date ASC",
+        values: [conversation_id]
+    }
+
+    return await db.multipleRowsQuery(query)
 }
 
 module.exports = {
@@ -125,7 +136,10 @@ module.exports = {
     getContext: getContext,
     pushContext: pushContext,
     getContextById: getContextByConversationId,
-    getConversationLog: getConversationLog,
+
+    getThreadList: getThreadList,
+    getThread: getThread,
+
     getConversationCount (){
         return getTotalCount(3, 1)
     },

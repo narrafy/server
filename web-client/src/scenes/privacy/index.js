@@ -1,5 +1,4 @@
 import React from 'react'
-import Footer from './Footer'
 
 const PrivacyText = () => {
     return(<section id="privacy-section" className="section-secondary">
@@ -323,12 +322,8 @@ const PrivacyText = () => {
 function Privacy()
 {
     return(
-        <div>
-            <PrivacyText/>
-            <Footer/>
-        </div>
-
-        )
+        <PrivacyText/>
+    )
 }
 
 export default Privacy

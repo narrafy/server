@@ -276,5 +276,7 @@ module.exports = {
     get: storage.getContextById,
     getConversationCount: storage.getConversationCount,
     getAvgStats: storage.getAvgStats,
-    getConversationDataSet: storage.getConversationDataSet
+    getConversationDataSet: storage.getConversationDataSet,
+    getThreadList: storage.getThreadList,
+    getThread: storage.getThread,
 }

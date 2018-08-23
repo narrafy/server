@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 import {withRouter} from 'react-router'
-import {isEmailValid} from '../../utils'
+import {isEmailValid} from '../../../utils/index'
 import {
     FormGroup, Label, Input,
     FormText, FormFeedback,
 } from 'reactstrap';
-import AuthService from './AuthService'
+import Auth from '../services/Auth'
 
 class LoginForm extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            'email': '',
-            'password': '',
+            email: '',
+            password: '',
             validate: {
                 emailState: '',
                 formState: true
@@ -22,7 +22,7 @@ class LoginForm extends Component {
         this.handleChange = this.handleChange.bind(this);
         this.submitForm = this.submitForm.bind(this);
         this.validateEmail = this.validateEmail.bind(this);
-        this.auth = new AuthService()
+        this.auth = new Auth()
     }
 
     validateEmail(e) {

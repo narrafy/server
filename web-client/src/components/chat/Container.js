@@ -1,10 +1,10 @@
 import React, {Component} from 'react'
 import MessageList from './MessageList'
 import SendMessageForm from './SendMessageForm'
-import ApiClient from '../../api/ApiClient'
-import {conversationConfig} from '../../config/index'
+import ApiClient from '../../services/api/ApiClient'
+import {conversation} from '../../config/index'
 
-export default class ChatContainer extends Component
+export default class Container extends Component
 {
     constructor(){
         super()
@@ -34,7 +34,7 @@ export default class ChatContainer extends Component
                 res.data.context.quick_replies)
         }
 
-        this.apiClient.post(conversationConfig.conversation.sendMessageEndPoint, data, cb)
+        this.apiClient.post(conversation.sendMessageEndPoint, data, cb)
     }
 
     updateState(sender, text, context, quick_replies)

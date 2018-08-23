@@ -1,7 +1,7 @@
 import React from 'react'
-import simulaLogo from '../../assets/img/simula.png'
-import psiterraLogo from '../../assets/img/psiterra.png'
-import innovationNorwayLogo from '../../assets/img/innovation-norway.jpg'
+import simulaLogo from '../../../assets/img/simula.png'
+import psiterraLogo from '../../../assets/img/psiterra.png'
+import innovationNorwayLogo from '../../../assets/img/innovation-norway.jpg'
 
 function Partner()
 {

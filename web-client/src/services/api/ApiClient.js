@@ -6,43 +6,51 @@ export default class ApiClient{
     constructor(){
         this.post = this.post.bind(this)
         this.get = this.get.bind(this)
+        this.isValidToken = this.isValidToken.bind(this)
+        this.getHeaders = this.getHeaders.bind(this)
     }
 
-    post(endPoint, data, cb)
-    {
-
+    getHeaders(token){
         // performs api calls sending the required authentication headers
-        const headers = {
+        let headers = {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         }
 
         // Setting Authorization header
         // Authorization: Bearer xxxxxxx.xxxxxxxx.xxxxxx
-        if (this.isValidToken()) {
-            headers['Authorization'] = 'Bearer ' + this.getToken()
+        if (this.isValidToken(token)) {
+            headers['Authorization'] = 'Bearer ' + token
         }
 
-        let options = {headers};
+        return headers;
+    }
+
+    post(endPoint, data, cb, token=null)
+    {
+        let headers = this.getHeaders(token)
+        let options = {headers}
 
         axios.post(endPoint, data, options)
             .then(res=>{
                 cb(res)
             })
-            .catch(err => console.log(err));
+            .catch(err => console.log(err))
     }
 
-    get(endPoint, cb)
+    get(endPoint, cb, token = null)
     {
-        axios.get(endPoint, cb)
+        let headers = this.getHeaders(token)
+        let options = {headers}
+
+        axios.get(endPoint, options)
             .then(res => {
                 cb(res)
             })
     }
 
-    isValidToken() {
+    isValidToken(token) {
         // Checks if there is a saved token and it's still valid
-        const token = this.getToken() // GEtting token from localstorage
         return !!token && !this.isTokenExpired(token) // handwaiving here
     }
 
@@ -58,11 +66,6 @@ export default class ApiClient{
         catch (err) {
             return false;
         }
-    }
-
-    getToken() {
-        // Retrieves the user token from localStorage
-        return localStorage.getItem('id_token')
     }
 
 }

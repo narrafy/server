@@ -22,7 +22,7 @@ async function save(doc){
 }
 
 async function build(id) {
-    let logs = await Storage.getConversationLog(id)
+    let logs = await Storage.getThread(id)
     if(!logs) return null
 
     const transcript = []
