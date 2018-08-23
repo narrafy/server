@@ -3,8 +3,7 @@ import ReactGA from 'react-ga'
 import ApiClient from "../../services/api/ApiClient"
 import {ConversationLegend, ConversationPlot} from './components'
 import {conversation} from '../../config/index'
-import Auth from '../login/services/Auth';
-const auth = new Auth();
+import Auth from '../../services/auth'
 
 export default class Index extends Component
 {
@@ -21,28 +20,28 @@ export default class Index extends Component
         }
         this.handleLogout = this.handleLogout.bind(this)
         this.apiClient = new ApiClient()
+        this.auth = new Auth()
     }
 
     componentWillMount(){
-        if(!auth.loggedIn()){
+        if(!this.auth.loggedIn()){
             this.props.history.replace('/login')
         }
         else{
             try{
-                const profile = auth.getProfile()
+                const profile = this.auth.getProfile()
                 this.setState({
                     profile: profile
                 })
             }catch (e) {
-                auth.logout()
+                this.auth.logout()
                 this.props.history.replace('/login')
             }
         }
     }
 
     handleLogout(){
-        auth.logout()
-
+        this.auth.logout()
         this.setState({
             profile: null
         })
@@ -72,8 +71,8 @@ export default class Index extends Component
                 count: res.data.length
             })
         }
-        this.apiClient.get(conversation.analytics.avgEndPoint, avgCb, auth.getToken())
-        this.apiClient.get(conversation.analytics.dataSetEndPoint, dataSetCb, auth.getToken())
+        this.apiClient.get(conversation.analytics.avgEndPoint, avgCb, this.auth.getToken())
+        this.apiClient.get(conversation.analytics.dataSetEndPoint, dataSetCb, this.auth.getToken())
     }
 
     render() {

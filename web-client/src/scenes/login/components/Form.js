@@ -5,7 +5,7 @@ import {
     FormGroup, Label, Input,
     FormText, FormFeedback,
 } from 'reactstrap';
-import Auth from '../services/Auth'
+import Auth from '../../../services/auth'
 
 class LoginForm extends Component {
 
@@ -22,7 +22,7 @@ class LoginForm extends Component {
         this.handleChange = this.handleChange.bind(this);
         this.submitForm = this.submitForm.bind(this);
         this.validateEmail = this.validateEmail.bind(this);
-        this.auth = new Auth()
+        
     }
 
     validateEmail(e) {
@@ -48,13 +48,14 @@ class LoginForm extends Component {
         e.preventDefault();
         if(isEmailValid(this.state.email) && this.state.password){
             try{
-                this.auth.login(this.state.email, this.state.password, ()=>{
+                let cb = ()=>{
                     this.setState({
                         email: "",
                         password: ""
                     })
-                    this.props.history.push("/dashboard");
-                })
+                    this.props.history.push("/dashboard")    
+                }
+                this.props.login(this.state.email, this.state.password, cb)
             }catch (e) {
                 console.log(e.stack)
             }
@@ -69,7 +70,7 @@ class LoginForm extends Component {
     }
 
     componentWillMount(){
-        if(this.auth.loggedIn()){
+        if(this.props.loggedIn()){
             this.props.history.replace("/dashboard")
         }
     }

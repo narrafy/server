@@ -1,20 +1,12 @@
 import React, {Component} from 'react'
 import { Link } from "react-router-dom"
-import {
-    Collapse,
-    Navbar,
-    NavbarToggler,
-    NavbarBrand,
-    Nav,
-    NavItem,
-    NavLink
-} from 'reactstrap'
+import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink} from 'reactstrap'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import { faUser } from '@fortawesome/free-solid-svg-icons'
 import {SocialIcon} from 'react-social-icons'
 import logo from '../../assets/img/logo.svg'
 import {facebookUrl, mediumUrl, twitterUrl} from "../../config"
-import Auth from '../../scenes/login/services/Auth'
+import Auth from '../../services/auth'
 import {withRouter} from 'react-router'
 
 class NavigationBar extends Component {
@@ -28,6 +20,7 @@ class NavigationBar extends Component {
         };
         this.handleLogout = this.handleLogout.bind(this)
     }
+
     toggle() {
         this.setState({
             isOpen: !this.state.isOpen
@@ -107,7 +100,6 @@ class NavigationBar extends Component {
                         </NavItem>
                     </Nav>
                 )}
-
             </Navbar>
         );
     }

@@ -46,6 +46,12 @@ html, body {
     max-width: 768px;
     padding-bottom: 50px ;
 }
+.dashboard-container{
+    padding-top: 50px;
+    margin: 0 auto;
+    padding-bottom: 50px ;
+}
+
 .login-card{
     width: 18rem;
 }
@@ -204,6 +210,14 @@ footer a {
 }
 
 .message-list .from-You .message-inner {
+    background-color: #ef6263;
+    border-top-right-radius: .2rem;
+    box-shadow: 1px 6px 20px 2px rgba(242,129,130, .8);
+    color: #f9f9f9;
+    float: right;
+}
+
+.message-list .from-User .message-inner {
     background-color: #ef6263;
     border-top-right-radius: .2rem;
     box-shadow: 1px 6px 20px 2px rgba(242,129,130, .8);

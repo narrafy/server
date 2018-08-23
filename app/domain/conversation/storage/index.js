@@ -115,7 +115,19 @@ async function getContextByConversationId(id, limit){
 
 async function getThreadList(limit, offset){
     let query = {
-        text: "select conversation_id, date from conversation order by date desc limit $1 offset $2",
+        text: 'select conversation_id,'+
+        'date_last_entry, '+
+        'EXTRACT(MINUTES FROM date_last_entry::timestamp - date_first_entry::timestamp) as minutes, '+
+        'EXTRACT(Seconds FROM date_last_entry::timestamp - date_first_entry::timestamp) as seconds, '+
+        'counter from '+
+               '(select conversation_id,'+
+                        '(array_agg(date order by date asc))[1] as date_first_entry,'+
+                        '(array_agg(date order by date asc))[count(conversation_id)] as date_last_entry,'+
+                        'count(conversation_id) as counter '+
+                        'from conversation group by conversation_id having count(conversation_id)>3) as x '+
+        'group by conversation_id, date_last_entry, date_first_entry, counter '+
+                                   'having EXTRACT(Minutes FROM date_last_entry::timestamp - date_first_entry::timestamp)>=0 '+
+                                   'order by date_last_entry desc limit $1 offset $2',
         values: [limit, offset]
     }
 
@@ -123,6 +135,7 @@ async function getThreadList(limit, offset){
 }
 
 async function getThread(conversation_id){
+    
     let query = {
         text: "SELECT * FROM conversation WHERE conversation_id=$1 ORDER BY date ASC",
         values: [conversation_id]
@@ -140,13 +153,16 @@ module.exports = {
     getThreadList: getThreadList,
     getThread: getThread,
 
-    getConversationCount (){
+    getConversationCount: function(){
         return getTotalCount(3, 1)
     },
-    getAvgStats(){
+
+    getAvgStats: function(){
         return getAvgStats(3,1)
     },
-    getConversationDataSet(){
-        return getConversationDataSet(3, 1);
-    },
+    
+    getConversationDataSet: function(){
+        return getConversationDataSet(3, 1)
+    }
+
 }

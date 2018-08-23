@@ -17,7 +17,7 @@ export const conversation = {
         },
         sendMessageEndPoint : "/api/conversation/message",
         threadListEndPoint : "/api/conversation/thread/list",
-        threadEndPoint: "/api/conversation/thread",
+        threadEndPoint: "/api/conversation/thread/",
         plot: {
             question_limit: 40,
             minutes_spent_limit: 40

@@ -22,7 +22,6 @@ export default class Container extends Component
         this.sendMessage = this.sendMessage.bind(this)
         this.updateState = this.updateState.bind(this)
         this.callApi = this.callApi.bind(this)
-
     }
 
     callApi(data)
@@ -48,14 +47,13 @@ export default class Container extends Component
     }
 
     async sendMessage(text){
-        let context = this.state.context
 
+        let context = this.state.context
         this.updateState("You", text, context, '')
         const data = {
             input: {text},
             context: context
         }
-
         this.callApi(data)
     }
 
