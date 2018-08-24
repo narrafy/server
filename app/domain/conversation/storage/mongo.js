@@ -1,6 +1,4 @@
 
-
-
 async function getContext(input) {
     return dbConnection
         .collection(collection.log)
@@ -176,4 +174,27 @@ async function getTotalCount(){
         }, null)
         .toArray()
         .then((total_doc) => total_doc)
+}
+
+module.exports = {
+
+    getContext: getContext,
+    pushContext: pushContext,
+    getContextById: getContextByConversationId,
+
+    getThreadList: getThreadList,
+    getThread: getThread,
+
+    getConversationCount: function(){
+        return getTotalCount(3, 1)
+    },
+
+    getAvgStats: function(){
+        return getAvgStats(3,1)
+    },
+    
+    getConversationDataSet: function(){
+        return getConversationDataSet(3, 1)
+    }
+
 }
