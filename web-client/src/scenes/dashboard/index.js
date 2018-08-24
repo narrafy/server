@@ -11,24 +11,25 @@ class Dashboard extends Component{
         super();
         this.state = {
             threads: [],
+            active_thread: "",
             messages: [],
             limit: 10,
             offset: 0
         }
         this.auth = new Auth();
         this.apiClient = new ApiClient()
-        this.callThreadListEndPoint = this.callThreadListEndPoint.bind(this)
-        this.callThreadEndPoint = this.callThreadEndPoint.bind(this)
+        this.loadThreadList = this.loadThreadList.bind(this)
+        this.onThreadClick = this.onThreadClick.bind(this)
     }
 
-    callThreadListEndPoint(data)
+    loadThreadList(data)
     {
         let cb = res =>{
             if(res.data){ 
                 this.setState({ threads: res.data })
                 let firstConversationId = res.data[0].conversation_id
                 if(firstConversationId){
-                    this.callThreadEndPoint(firstConversationId)
+                    this.onThreadClick(firstConversationId)
                 }
             }
         }
@@ -61,12 +62,12 @@ class Dashboard extends Component{
         return conversations
     }
 
-    callThreadEndPoint(conversation_id)
+    onThreadClick(conversation_id)
     {
         let cb = res =>{
             if(res.data){
                 let conversations = this.parseResponse(res.data)    
-                this.setState({ messages: conversations })
+                this.setState({ messages: conversations, active_thread: conversation_id })
             }
         }
         let url = conversation.threadEndPoint+conversation_id
@@ -79,7 +80,7 @@ class Dashboard extends Component{
             limit: this.state.limit,
             offset: this.state.offset
         }
-        this.callThreadListEndPoint(data)
+        this.loadThreadList(data)
     }
 
     render(){
@@ -89,7 +90,10 @@ class Dashboard extends Component{
                     <div className={"dashboard-container"}>
                         <div className={"row"}>
                             <div className="col-md-3  col-md-offset-1">
-                                <ThreadList threads={this.state.threads} onThreadClick={this.callThreadEndPoint}/>
+                                <ThreadList 
+                                active_thread={this.state.active_thread} 
+                                threads={this.state.threads} 
+                                onThreadClick={this.onThreadClick}/>
                                 <ThreadPager />
                             </div>
                             <div className="col-md-9">

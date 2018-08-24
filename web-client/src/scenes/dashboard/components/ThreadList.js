@@ -21,8 +21,10 @@ export default class ThreadList extends Component {
                 <ul className={"list-group list-group-flush"}>
                     {
                         this.props.threads.map((thread, index) => {
+                            const isActive = thread.conversation_id === this.props.active_thread
                             return(<Thread 
                                 key = {index} 
+                                isActive = {isActive} 
                                 onThreadClick={this.onThreadClick}  
                                 id={thread.conversation_id} 
                                 date={thread.date_last_entry} 

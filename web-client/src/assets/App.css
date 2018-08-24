@@ -208,6 +208,9 @@ footer a {
 .quick-reply{
     margin-top: 20px;
 }
+.a-active {
+    color: white !important;
+}
 
 .message-list .from-You .message-inner {
     background-color: #ef6263;
