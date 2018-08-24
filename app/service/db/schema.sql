@@ -126,3 +126,32 @@ select avg(total_seconds)/60 as minutes, CAST (avg(counter) AS DOUBLE PRECISION)
         having count(conversation_id)>3) as x
         group by conversation_id, date_last_entry, date_first_entry, counter
         having EXTRACT(MINUTES FROM date_last_entry::timestamp - date_first_entry::timestamp)>=1) as kj
+
+-- select thread list
+
+
+select conversation_id,
+        date_last_entry,
+        EXTRACT(MINUTES FROM date_last_entry::timestamp - date_first_entry::timestamp) as minutes,
+        EXTRACT(Seconds FROM date_last_entry::timestamp - date_first_entry::timestamp) as seconds,
+        counter from
+               (select conversation_id,
+                        (array_agg(date order by date asc))[1] as date_first_entry,
+                        (array_agg(date order by date asc))[count(conversation_id)] as date_last_entry,
+                        count(conversation_id) as counter
+                        from conversation group by conversation_id having count(conversation_id)>$1) as x
+        group by conversation_id, date_last_entry, date_first_entry, counter
+                                   having EXTRACT(Minutes FROM date_last_entry::timestamp - date_first_entry::timestamp)>=$2
+                                   order by date_last_entry desc limit $3 offset $4
+
+
+-- select problem.text
+
+SELECT context->'problem'->>'text' as problem_description, conversation_id
+	FROM public.conversation where context->'problem'->>'text' IS NOT NULL group by conversation_id, context
+
+-- select context of the problem
+SELECT context->'context'->>'text' as problem_description, conversation_id, date
+	FROM public.conversation where context->'context'->>'text' IS NOT NULL group by conversation_id, context, date
+
+-- select 

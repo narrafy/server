@@ -32,6 +32,10 @@ class ThreadPager extends Component {
             this.setPage(this.props.initialPage);
         }
     }
+
+    onChangePage(currentPage){
+        this.props.loadThreadList(currentPage)
+    }
  
     setPage(page) {
         var { items, pageSize } = this.props;
@@ -84,7 +88,7 @@ class ThreadPager extends Component {
         var startIndex = (currentPage - 1) * pageSize;
         var endIndex = Math.min(startIndex + pageSize - 1, totalItems - 1);
  
-        // create an array of pages to ng-repeat in the pager control
+        // create an array of pages to repeat in the pager control
         var pages = [...Array((endPage + 1) - startPage).keys()].map(i => startPage + i);
  
         // return object with all pager properties required by the view

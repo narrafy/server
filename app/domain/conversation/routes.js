@@ -58,9 +58,11 @@ Router.get('/analytics/avg', authMiddleware, async (req, res) =>{
 })
 
 Router.get("/thread/list", authMiddleware, async(req, res) =>{
+    let dialogCounter = req.query["counter"] || 3
+    let minMinutes = req.query["minMinutes"] || 0
     let limit = req.query["limit"]
     let offset = req.query["offset"]
-    let list = await Storage.getThreadList(limit, offset)
+    let list = await Storage.getThreadList(dialogCounter, minMinutes, limit, offset)
     res.json(list)
 })
 

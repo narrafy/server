@@ -1,3 +1,5 @@
+const mongo  = require('mongodb')
+
 
 async function getContext(input) {
     return dbConnection
@@ -175,6 +177,14 @@ async function getTotalCount(){
         .toArray()
         .then((total_doc) => total_doc)
 }
+function getThreadList(){
+
+}
+
+function getThread(){
+
+}
+
 
 module.exports = {
 
@@ -196,5 +206,4 @@ module.exports = {
     getConversationDataSet: function(){
         return getConversationDataSet(3, 1)
     }
-
 }

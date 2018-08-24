@@ -113,7 +113,7 @@ async function getContextByConversationId(id, limit){
     return await db.multipleRowsQuery(query);
 }
 
-async function getThreadList(limit, offset){
+async function getThreadList(dialogCounter, minMinutes, limit, offset){
     let query = {
         text: 'select conversation_id,'+
         'date_last_entry, '+
@@ -124,11 +124,11 @@ async function getThreadList(limit, offset){
                         '(array_agg(date order by date asc))[1] as date_first_entry,'+
                         '(array_agg(date order by date asc))[count(conversation_id)] as date_last_entry,'+
                         'count(conversation_id) as counter '+
-                        'from conversation group by conversation_id having count(conversation_id)>3) as x '+
+                        'from conversation group by conversation_id having count(conversation_id)>=$1) as x '+
         'group by conversation_id, date_last_entry, date_first_entry, counter '+
-                                   'having EXTRACT(Minutes FROM date_last_entry::timestamp - date_first_entry::timestamp)>=0 '+
-                                   'order by date_last_entry desc limit $1 offset $2',
-        values: [limit, offset]
+                                   'having EXTRACT(Minutes FROM date_last_entry::timestamp - date_first_entry::timestamp)>=$2 '+
+                                   'order by date_last_entry desc limit $3 offset $4',
+        values: [ dialogCounter, minMinutes, limit, offset]
     }
 
     return await db.multipleRowsQuery(query)

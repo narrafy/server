@@ -4,13 +4,13 @@ module.exports = {
 
     getContext: client.getContext,
     pushContext: client.pushContext,
-    getContextById: client.getContextByConversationId,
+    getContextById: client.getContextById,
 
     getThreadList: client.getThreadList,
     getThread: client.getThread,
 
     getConversationCount: function(){
-        return client.getTotalCount(3, 1)
+        return client.getConversationCount(3, 1)
     },
 
     getAvgStats: function(){

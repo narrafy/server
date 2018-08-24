@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {ConversationWrapper, ThreadList, ThreadPager } from './components'
+import DashboardContainer  from './components/DashboardContainer'
 import {withRouter} from 'react-router'
 import ApiClient from '../../services/api/ApiClient'
 import Auth from '../../services/auth'
@@ -8,39 +8,40 @@ import {conversation} from "../../config"
 class Dashboard extends Component{
 
     constructor(){
-        super();
+        super()
         this.state = {
             threads: [],
-            activeThread: "",
             messages: [],
+            activeThread: "",
+            page: 0,
             limit: 10,
-            page: 0
         }
-        this.auth = new Auth();
+        this.auth = new Auth()
         this.apiClient = new ApiClient()
+        
+        this.onChangePage = this.onChangePage.bind(this)
         this.loadThreadList = this.loadThreadList.bind(this)
-        this.onThreadClick = this.onThreadClick.bind(this)
         this.onChangePage = this.onChangePage.bind(this)
         this.callThreadListApi = this.callThreadListApi.bind(this)
+        this.onThreadClick = this.onThreadClick.bind(this)
     }
 
-    loadThreadList(page)
+    componentDidMount()
+    {
+        this.loadThreadList(this.state.page)   
+    }
+
+    onThreadClick(conversation_id)
     {
         let cb = res =>{
-            if(res.data){ 
-                this.setState({ threads: res.data })
-                let firstConversationId = res.data[0].conversation_id
-                if(firstConversationId){
-                    this.onThreadClick(firstConversationId)
-                }
+            if(res.data){
+                let conversations = this.parseResponse(res.data)
+                this.setState({ messages: conversations, 
+                    activeThread: conversation_id })
+
             }
         }
-        this.callThreadListApi(page, cb)
-    }
-
-    callThreadListApi(page, cb){
-        let offset = page * this.state.limit
-        let url = conversation.threadListEndPoint + "?limit="+ this.state.limit + "&offset=" + offset
+        let url = conversation.threadEndPoint + conversation_id
         this.apiClient.get(url, cb, this.auth.getToken())
     }
 
@@ -69,55 +70,44 @@ class Dashboard extends Component{
         return conversations
     }
 
-    onThreadClick(conversation_id)
-    {
-        let cb = res =>{
-            if(res.data){
-                let conversations = this.parseResponse(res.data)    
-                this.setState({ messages: conversations, activeThread: conversation_id })
-            }
-        }
-        let url = conversation.threadEndPoint+conversation_id
+    callThreadListApi(page, cb){
+        let offset = page * this.state.limit
+        
+        let url = conversation.threadListEndPoint + "?limit="+ 
+        this.state.limit + "&offset=" + offset + "&counter=3" +
+        "&minMinutes=0" 
         this.apiClient.get(url, cb, this.auth.getToken())
     }
 
-    componentDidMount()
+    loadThreadList(page)
     {
-        this.loadThreadList(this.state.page)
+        let cb = res =>{
+            if(res.data){                  
+                this.setState({ 
+                    threads: res.data,                                     
+                    page: page 
+                })
+                let activeThread = res.data[0].conversation_id
+                this.onThreadClick(activeThread)
+            }
+        }
+        this.callThreadListApi(page, cb)
     }
 
-    onChangePage(currentPage) {
-        // update state with new page of items
-        this.callThreadListApi(currentPage - 1)
+    onChangePage(currentPage){
+        this.loadThreadList(currentPage)
     }
 
     render(){
-        if(this.state.threads) {
-            return (
-                <div className={"container"}>
-                    <div className={"dashboard-container"}>
-                        <div className={"row"}>
-                            <div className="col-md-3  col-md-offset-1">
-                                <ThreadList 
-                                activeThread={this.state.activeThread} 
-                                threads={this.state.threads} 
-                                onThreadClick={this.onThreadClick}/>
-                                <ThreadPager 
-                                items={this.state.threads} 
-                                onChangePage={this.onChangePage} />
-                            </div>
-                            <div className="col-md-9">
-                                <ConversationWrapper 
-                                messages={this.state.messages} 
-                                sendMessage = {this.callThreadEndPoint} />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )
-        } else {
-            return(<div> "Hello"</div>)
-        }
+        return (
+                <DashboardContainer 
+                    threads={this.state.threads} 
+                    messages = {this.state.messages}
+                    activeThread = {this.state.activeThread}
+                    onThreadClick = {this.onThreadClick}
+                    onChangePage = {this.onChangePage} 
+                />
+        )
     }
 }
 
