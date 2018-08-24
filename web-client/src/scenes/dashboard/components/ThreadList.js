@@ -3,15 +3,6 @@ import Thread from './Thread'
 
 export default class ThreadList extends Component {
 
-    constructor(){
-        super()
-        this.onThreadClick = this.onThreadClick.bind(this)
-    }
-    
-    onThreadClick(e){
-        this.props.onThreadClick(e)
-    }
-
     render(){
         return(
             <div className="card">
@@ -25,7 +16,7 @@ export default class ThreadList extends Component {
                             return(<Thread 
                                 key = {index} 
                                 isActive = {isActive} 
-                                onThreadClick={this.onThreadClick}  
+                                onThreadClick={this.props.onThreadClick}  
                                 id={thread.conversation_id} 
                                 date={thread.date_last_entry} 
                                 minutes={thread.minutes}

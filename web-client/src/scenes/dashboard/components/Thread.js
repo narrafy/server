@@ -34,7 +34,6 @@ class Thread extends Component{
                 </li>
             )
         }
-        
     }
 }
 

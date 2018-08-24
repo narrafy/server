@@ -2,7 +2,6 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types';
  
 const propTypes = {
-    items: PropTypes.array.isRequired,
     onChangePage: PropTypes.func.isRequired,
     initialPage: PropTypes.number,
     pageSize: PropTypes.number
