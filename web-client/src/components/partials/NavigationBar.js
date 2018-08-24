@@ -4,7 +4,7 @@ import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink} fr
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import { faUser } from '@fortawesome/free-solid-svg-icons'
 import {SocialIcon} from 'react-social-icons'
-import logo from '../../assets/img/logo.svg'
+import logo from '../../assets/img/coin.png'
 import {facebookUrl, mediumUrl, twitterUrl} from "../../config"
 import Auth from '../../services/auth'
 import {withRouter} from 'react-router'
