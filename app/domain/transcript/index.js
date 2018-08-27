@@ -40,6 +40,18 @@ async function build(id) {
     return transcript;
 }
 
+function transcriptToText(transcript){
+    let string = ""
+    if(!transcript) return string
+
+    let n = transcript.length;
+    for(let i = 0; i < n; i++){
+        string+= transcript[i].senderId = "\r"
+        string+= transcript[i].text + "\r"
+    }
+    return string
+}
+
 function email(email, transcript){
 
     let filePath = Path.join(__dirname, '..', 'transcript', 'template', 'index.html')
@@ -63,7 +75,9 @@ function email(email, transcript){
         const msg = {
             to: email,
             from: Config.sendGrid.contactEmail,
+            fromname: Config.app.name,
             subject: "Conversation Transcript",
+            text: data.title + " : " + transcriptToText(transcript),
             html: str,
         }
         Email.sendMessage(msg)
