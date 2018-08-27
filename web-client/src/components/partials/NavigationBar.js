@@ -59,14 +59,14 @@ class NavigationBar extends Component {
                     <Nav className={"float-right"}>
 
                         <NavItem>
-                            <NavLink tag={Link} to="/dashboard">Dashboard</NavLink>
+                            <NavLink tag={Link} className={"secondary-color"} to="/dashboard">Dashboard</NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink tag={Link} to="/analytics">Analytics</NavLink>
+                            <NavLink tag={Link} className={"secondary-color"} to="/analytics">Analytics</NavLink>
                         </NavItem>
 
                         <NavItem>
-                            <NavLink tag={Link} to="/profile"> <FontAwesomeIcon icon={faUser} /></NavLink>
+                            <NavLink tag={Link} className={"secondary-color"} to="/profile"> <FontAwesomeIcon icon={faUser} /></NavLink>
                         </NavItem>
 
                         <NavItem>

@@ -31,7 +31,7 @@ async function getTemplate (){
     return await db.multipleRowsQuery(query);
 }
 
-async function saveTemplate (doc){
+async function saveTemplate(doc){
 
     let query = {
         text: 'INSERT INTO story_template(interview_type, nodes, stub) values ($1, $2, $3)',
@@ -91,13 +91,42 @@ async function getStoryModel(conversation_id) {
     }
 }
 
-function send(){
-    emailService.bot(data)
+function send(email){
+
+    const emailBody = buildEmail(data)
+    const msg = {
+        to: email,
+        from: config.sendGrid.adminEmail,
+        subject: "A Narrafy Story",
+        html: emailBody,
+    }
+
+    return emailService.sendMessage(msg)
+}
+
+function buildEmail(story) {
+
+    let header = "<html><body>"
+    let content = ""
+
+    if(story){
+        content += "<p style='font-size: medium'>"+ story + "</p>"
+    }
+
+    let footer = getFooterNoUsername()
+    return header + content + footer
+}
+
+function getFooterNoUsername(){
+    let footer = "<hr/><p style='font-size: medium'> <a href='https://www.narrafy.io'>Narrafy Team</a>, wishes you a nice day!</p>"
+    let ps = "<p style='font-size: medium'> P.S. Take a look at our <a href='https://medium.com/narrafy-labs'>blog</a> to find out more about our work.</p>"
+    return footer + ps
 }
 
 module.exports = {
     save: saveStory,
     get: getStory,
     send: send,
-    getModel: getStoryModel
+    getModel: getStoryModel,
+    saveTemplate: saveTemplate
 }

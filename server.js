@@ -38,6 +38,10 @@ app.get('/.well-known/acme-challenge/:content', (req, res) => {
     res.send(config.sslSecret)
 })
 
+app.get('logo.svg', (req,res) => {
+    res.send('public/logo.svg')
+})
+
 /* Bootstrap routes*/
 
 const customer = require('./app/domain/customer/routes');

@@ -1,10 +1,12 @@
 const db = require('../../service/db/posgres')
 const Storage = require('../conversation/storage')
 const nlp = require('../../service/nlp/generation')
-const EmailService = require('../../service/email')
+const Email = require('../../service/email')
+const Config = require('../../service/config')
+const Ejs = require('ejs')
+const Path = require('path')
 
 async function get(conversation_id){
-
     let query = {
         text: 'SELECT * FROM transcript WHERE conversation_id=$1 ;',
         values: [conversation_id]
@@ -13,7 +15,6 @@ async function get(conversation_id){
 }
 
 async function save(doc){
-
     let query = {
         text: 'INSERT INTO transcript(conversation_id, email, transcript, date) values ($1, $2, $3, $4)',
         values: [doc.conversation_id, doc.email, JSON.stringify(doc.transcript), doc.date]
@@ -28,37 +29,50 @@ async function build(id) {
     const transcript = []
     logs.forEach(conversation => {
         if (conversation.input && conversation.input.text) {
-                transcript.push({ senderId: "You" , text: conversation.input.text })
+            let text = nlp.parse([conversation.input.text]);
+            transcript.push({ senderId: "You" , text })
         }
         if (conversation.output && conversation.output.text) {
-            transcript.push({ senderId: "Narrafy" , text: conversation.output.text.join(' ') })
+            let text = nlp.parse([conversation.output.text.join(' ')]);
+            transcript.push({ senderId: "Narrafy" , text })
         }
     })
     return transcript;
 }
 
-function toHtml(transcript) {
+function email(email, transcript){
 
-    let k = transcript.length;
-    let transcriptHtml = "";
-    for(let i = 0; i < k; i ++){
-        if(i%2){
-            transcriptHtml += "<li> <strong>" + transcript[i].senderId +":</strong> " + nlp.parse([transcript[i].text]) + "</li>"
-        }else {
-            transcriptHtml += "<li><strong>"+ transcript[i].senderId +":</strong> " + nlp.parse([transcript[i].text]) + "</li>"
-        }
+    let filePath = Path.join(__dirname, '..', 'transcript', 'template', 'index.html')
+    let data = {
+        title: "Your conversation transcript",
+        header: "Thank you for training our robot!",
+        type_of_action:"conversation transcript",
+        websiteUrl: Config.website.url,
+        unsubscribeUrl: Config.website.unsubscribe + "?email=" + email,
+        blogUrl: Config.website.blog,
+        transcript: transcript
     }
-    return transcriptHtml
-}
+    let options= {}
 
-function send(email, transcript){
-    let html = toHtml(transcript)
-    EmailService.transcript(email, html)
+    Ejs.renderFile(filePath, data, options, function(err, str){
+        if(err){
+            console.log(err)
+            return
+        }
+
+        const msg = {
+            to: email,
+            from: Config.sendGrid.contactEmail,
+            subject: "Conversation Transcript",
+            html: str,
+        }
+        Email.sendMessage(msg)
+    })
 }
 
 module.exports = {
     build: build,
     get: get,
     save: save,
-    send: send
+    send: email
 }

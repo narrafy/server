@@ -1,4 +1,4 @@
-const emailService = require('../../service/email')
+const admin = require('../admin')
 const nlu = require('../../service/nlp/understanding')
 const Transcript = require('../transcript')
 const utils = require('../../service/email/index')
@@ -51,15 +51,15 @@ async function runContextTasks(conversation) {
         context.bot_active = false
         
     if (is3RdNode(conversation) && process.env.NODE_ENV === 'production')
-       emailService.admin("Someone is talking to the bot. Remember to train on the input!")
+        admin.alert("Someone is talking to the bot. Remember to train on the input!")
 
     if(conversation.context.help_request || conversation.context.email_admin){
-        emailService.admin("Help is needed! Check the facebook page ASAP!")
+        admin.alert("Help is needed! Check the facebook page ASAP!")
         conversation.context.email_admin = false
     }
 
     if(conversation.context.email_admin && conversation.context.email_admin === true ){
-        emailService.admin("Narrafy is struggling! Check the facebook page ASAP!")
+        admin.alert("Narrafy is struggling! Check the facebook page ASAP!")
         conversation.context.email_admin = false
     }
 }

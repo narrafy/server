@@ -30,6 +30,9 @@ html, body {
 .second-color{
     background-color: lightgray;
 }
+.secondary-color{
+    color: #7a5b6b
+}
 
 /* REST OF CSS */
 

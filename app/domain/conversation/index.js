@@ -2,7 +2,7 @@ const facebookApi = require('../facebook')
 const watson = require('./watson')
 const context = require('./context')
 const nlg = require('../../service/nlp/generation')
-const email = require('../../service/email')
+const admin = require('../admin')
 const storage = require('./storage')
 const Customer = require('../customer')
 
@@ -189,7 +189,7 @@ async function PauseBot(data, context) {
     await facebookApi.sendMessage(dt)
 
     //notify admin
-    email.admin("Check the facebook page!")
+    admin.alert("Check the facebook page!")
 }
 
 async function messengerRequest(body, context) {

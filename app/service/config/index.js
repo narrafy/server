@@ -2,6 +2,12 @@ require('dotenv').config({silent: true})
 
 module.exports = {
 
+	website:{
+	    url: process.env.APP_URL,
+		blog: process.env.BLOG_URL,
+        unsubscribe: process.env.UNSUBSCRIBE_URL
+	},
+
 	app: {
 		port: process.env.PORT || 5000,
 		name: process.env.APP_NAME,
