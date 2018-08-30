@@ -40,19 +40,19 @@ Router.post('/message', async function (req, res) {
     res.json(conversation)
 })
 
-Router.get('/analytics/count', authMiddleware, async (req, res) =>{
+Router.get('/analytics/count', async (req, res) =>{
 
     let total_count = await Storage.getConversationCount()
     res.json(total_count[0])
 })
 
-Router.get('/analytics/dataset', authMiddleware, async (req, res) =>{
+Router.get('/analytics/dataset', async (req, res) =>{
 
     let dataSet = await Storage.getConversationDataSet();
     res.json(dataSet)
 })
 
-Router.get('/analytics/avg', authMiddleware, async (req, res) =>{
+Router.get('/analytics/avg', async (req, res) =>{
     let avg = await Storage.getAvgStats()
     res.json(avg)
 })

@@ -62,7 +62,7 @@ class NavigationBar extends Component {
                             <NavLink tag={Link} className={"secondary-color"} to="/dashboard">Dashboard</NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink tag={Link} className={"secondary-color"} to="/analytics">Analytics</NavLink>
+                            <NavLink tag={Link} className={"secondary-color"} to="/stats">Analytics</NavLink>
                         </NavItem>
 
                         <NavItem>

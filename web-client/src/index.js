@@ -28,6 +28,7 @@ ReactDOM.render(
             <Route path="/register" component={AsyncRegister} />
             <Route path="/login" component={AsyncLogin} />
             <Route path="/analytics" component={AsyncAnalytics} />
+            <Route path="/stats" component={AsyncAnalytics} />
             <Route path="/dashboard" component={AsyncDashboard} />
             <Footer/>
         </div>

@@ -24,7 +24,7 @@ export default class Index extends Component
     }
 
     componentWillMount(){
-        if(!this.auth.loggedIn()){
+        /*if(!this.auth.loggedIn()){
             this.props.history.replace('/login')
         }
         else{
@@ -37,7 +37,7 @@ export default class Index extends Component
                 this.auth.logout()
                 this.props.history.replace('/login')
             }
-        }
+        }*/
     }
 
     handleLogout(){
@@ -77,6 +77,21 @@ export default class Index extends Component
 
     render() {
         if(this.state.profile){
+            return (
+                <section className="section analytics">
+                    <div className="container">
+                        <div className="row">
+                            <div className="col-md-4">
+                                <ConversationLegend avg={this.state.avg} count={this.state.count} />
+                            </div>
+                            <div className="col-md-8">
+                                <ConversationPlot x={this.state.xMinutes} y={this.state.yQuestions} />
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            )
+        }else{
             return (
                 <section className="section analytics">
                     <div className="container">

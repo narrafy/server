@@ -10,15 +10,15 @@ module.exports = {
     getThread: client.getThread,
 
     getConversationCount: function(){
-        return client.getConversationCount(3, 1)
+        return client.getConversationCount(2, 0)
     },
 
     getAvgStats: function(){
-        return client.getAvgStats(3,1)
+        return client.getAvgStats(2,0)
     },
     
     getConversationDataSet: function(){
-        return client.getConversationDataSet(3, 1)
+        return client.getConversationDataSet(2, 0)
     }
 
 }
