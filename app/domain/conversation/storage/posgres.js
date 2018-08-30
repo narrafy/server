@@ -153,16 +153,10 @@ module.exports = {
     getThreadList: getThreadList,
     getThread: getThread,
 
-    getConversationCount: function(){
-        return getTotalCount(3, 1)
-    },
+    getConversationCount: getTotalCount,
 
-    getAvgStats: function(){
-        return getAvgStats(3,1)
-    },
+    getAvgStats: getAvgStats,
     
-    getConversationDataSet: function(){
-        return getConversationDataSet(3, 1)
-    }
+    getConversationDataSet: getConversationDataSet,
 
 }

@@ -50,6 +50,9 @@ class NavigationBar extends Component {
                                     {!profile && <NavLink tag={Link} to="/about">About</NavLink> }
                                 </NavItem>
                                 <NavItem>
+                                    {!profile && <NavLink tag={Link} className={"secondary-color"} to="/stats">Analytics</NavLink> }
+                                </NavItem>
+                                <NavItem>
                                     {!profile && <a className="nav-link" href="/about#contact">Contact</a> }
                                 </NavItem>
                             </Nav>
