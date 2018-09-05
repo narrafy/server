@@ -12,6 +12,7 @@ export default class Index extends Component
         super()
         ReactGA.pageview(window.location.pathname + window.location.search)
         this.state = {
+            loading: true,
             profile: null,
             count: "",
             avg: "",
@@ -65,11 +66,13 @@ export default class Index extends Component
                 x.push(res.data[item].minutes)
                 y.push(res.data[item].counter)
             }
-            this.setState({
-                xMinutes: x,
-                yQuestions: y,
-                count: res.data.length
-            })
+            setTimeout(()=>{
+                this.setState({               
+                    xMinutes: x,
+                    yQuestions: y,
+                    count: res.data.length
+                })
+            }, 5000)
         }
         this.apiClient.get(conversation.analytics.avgEndPoint, avgCb, this.auth.getToken())
         this.apiClient.get(conversation.analytics.dataSetEndPoint, dataSetCb, this.auth.getToken())
