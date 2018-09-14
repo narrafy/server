@@ -26,16 +26,12 @@ export default class ApiClient{
         return headers;
     }
 
-    post(endPoint, data, cb, token=null)
+    post(endPoint, data, token=null)
     {
         let headers = this.getHeaders(token)
         let options = {headers}
 
-        axios.post(endPoint, data, options)
-            .then(res=>{
-                cb(res)
-            })
-            .catch(err => console.log(err))
+        return axios.post(endPoint, data, options)
     }
 
     get(endPoint, cb, token = null)

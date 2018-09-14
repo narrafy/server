@@ -1,15 +1,20 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+import {postQuickReplyMessage} from "../../actions";
+import {connect} from "react-redux";
 
-export default class QuickReply extends React.Component
+class QuickReply extends React.Component
 {
     constructor(){
         super()
         this.handleOnClick = this.handleOnClick.bind(this)
     }
 
-    handleOnClick()
+
+    handleOnClick(e)
     {
-        this.props.sendQuickReply(this.props.title)
+        const {dispatch, ctx} = this.props
+        dispatch(postQuickReplyMessage("You", e, ctx))
     }
 
     render () {
@@ -18,3 +23,13 @@ export default class QuickReply extends React.Component
         )
     }
 }
+
+QuickReply.propTypes = {
+    handleOnClick: PropTypes.func.isRequired
+}
+
+const mapStateToProps = state => {
+    return { ctx: state.context }
+}
+
+export default connect(mapStateToProps)(QuickReply)

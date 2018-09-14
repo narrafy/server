@@ -1,43 +1,30 @@
 import React, {Component} from 'react'
 import QuickReply from './QuickReply'
+import {connect} from "react-redux";
 
-export default class QuickReplyMessage extends Component {
-
-    constructor(){
-        super()
-        this.state = {
-            displayQuickReply: true
-        }
-        this.sendQuickReply = this.sendQuickReply.bind(this)
-    }
-
-    sendQuickReply(e)
-    {
-        this.props.sendMessage(e)
-        this.setState({
-            displayQuickReply: false
-        })
-    }
+class QuickReplyMessage extends Component {
 
     render() {
-        if(!this.state.displayQuickReply)
-        {
+
+        const {show_quick_reply, username, text, quickReplies} = this.props
+
+        if(!show_quick_reply) {
             return (
                 <div className="message-inner">
-                    <div className="message-username">{this.props.username}</div>
-                    <p> {this.props.text} </p>
+                    <div className="message-username">{username}</div>
+                    <p> {text} </p>
                 </div>
             )
         }
 
         return (
             <div className="message-inner">
-                <div className="message-username">{this.props.username}</div>
-                <p> {this.props.text} </p>
+                <div className="message-username">{username}</div>
+                <p> {text} </p>
                 {
-                    this.props.quickReplies.map((reply, index)=>{
+                    quickReplies.map((reply, index) => {
                         return(
-                            <QuickReply key={index} sendQuickReply = {this.sendQuickReply} title = {reply.title} />
+                            <QuickReply key={index} title = {reply.title} />
                         )
                     })
                 }
@@ -45,3 +32,10 @@ export default class QuickReplyMessage extends Component {
         )
     }
 }
+
+const mapStateToProps = state => {
+    return { show_quick_reply: state.show_quick_reply }
+}
+
+export default connect(mapStateToProps)(QuickReplyMessage)
+

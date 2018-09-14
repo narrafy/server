@@ -1,9 +1,10 @@
 import React, {Component} from 'react'
+import {connect} from 'react-redux'
 import ReactDOM from 'react-dom'
 import Message from './Message'
 import QuickReplyMessage from './QuickReplyMessage'
 
-export default class MessageList extends Component{
+class MessageList extends Component{
 
     componentWillUpdate(){
         const node = ReactDOM.findDOMNode(this)
@@ -19,12 +20,18 @@ export default class MessageList extends Component{
     }
 
     render(){
+        const {messages, isLoading} = this.props
         return (
             <div className="message-list">
                 <div className="segments load">
-                    {this.props.messages.map((message, index) => {
 
-                        let className = "from-" + message.senderId;
+                    { messages && messages.map((message, index) => {
+
+                        let className = "from-" + message.senderId
+
+                        if(isLoading){
+                            <span>Bubbles</span>
+                        }
                         if(message.quick_replies)
                         {
                             return (
@@ -33,11 +40,10 @@ export default class MessageList extends Component{
                                              quickReplies={message.quick_replies}
                                              username={message.senderId}
                                              text={message.text}
-                                             sendMessage={this.props.sendMessage}
                                     />
                                 </div>
                             )
-                        }else{
+                        } else {
                             return (
                                 <div className={className}>
                                     <Message key={index} class="message-inner"
@@ -53,3 +59,9 @@ export default class MessageList extends Component{
         )
     }
 }
+
+const mapStateToProps = state => {
+    return {messages: state.messages, isLoading: state.isLoading }
+}
+
+export default connect(mapStateToProps)(MessageList)

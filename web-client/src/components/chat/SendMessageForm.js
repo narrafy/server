@@ -1,31 +1,24 @@
 import React, {Component} from 'react'
+import { sendMessage, userTyping } from "../../actions"
+import { connect } from "react-redux"
 
-export default class SendMessageForm extends Component{
+class SendMessageForm extends Component{
 
     constructor()
     {
         super()
-        this.state = {
-            message: ''
-        }
         this.handleChange = this.handleChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
     }
 
     handleChange(e){
-        this.setState({
-            message: e.target.value
-        })
+        this.props.dispatch(userTyping(e.target.value))
     }
 
-    handleSubmit(e)
-    {
+    handleSubmit(e) {
+        const {dispatch, msg, ctx}  = this.props
         e.preventDefault();
-        this.props.sendMessage(this.state.message)
-        this.setState({
-                message: ''
-            }
-        )
+        dispatch(sendMessage("You", msg, ctx))
     }
 
     render(){
@@ -35,7 +28,7 @@ export default class SendMessageForm extends Component{
                       className="send-message-form">
                     <input className="textInput"
                            onChange={this.handleChange}
-                           value = {this.state.message}
+                           value = {this.props.msg}
                            placeholder="Text me maybe"
                            type="text" required />
                     <input id="submit-button" type="submit" value="enter" onSubmit={this.handleSubmit} />
@@ -44,3 +37,9 @@ export default class SendMessageForm extends Component{
         )
     }
 }
+
+const mapStateToProps = state => {
+    return { msg: state.current_message, ctx: state.context }
+}
+
+export default connect(mapStateToProps)(SendMessageForm)

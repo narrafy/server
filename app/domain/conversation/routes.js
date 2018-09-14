@@ -37,6 +37,8 @@ Router.post('/message', async function (req, res) {
     }
 
     const {conversation} = await Conversation.web(session_id, data)
+    conversation.server = config.app.name
+
     res.json(conversation)
 })
 
