@@ -1,7 +1,8 @@
 import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import MessageList from './MessageList'
 import SendMessageForm from './SendMessageForm'
+import TypingIndicator from './TypingIndicator'
 import { startConversation } from '../../actions'
 
 class Container extends Component
@@ -12,10 +13,12 @@ class Container extends Component
     }
 
     render(){
+        const {messages, isLoading} = this.props
         return(
             <section id="chatbot">
                 <div className="chat-container">
-                    <MessageList />
+                    <MessageList messages = {messages} isLoading={isLoading} />
+                    <TypingIndicator />
                     <SendMessageForm />
                 </div>
             </section>
@@ -24,7 +27,8 @@ class Container extends Component
 }
 
 const mapStateToProps = state => {
-    return { }
+    const {messages, isLoading} = state.conversationReducer
+    return { messages, isLoading }
 }
 
 export default connect(mapStateToProps)(Container)

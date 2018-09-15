@@ -28,10 +28,23 @@ export default class ApiClient{
 
     post(endPoint, data, token=null)
     {
+        console.log('axios.post')
         let headers = this.getHeaders(token)
         let options = {headers}
 
         return axios.post(endPoint, data, options)
+    }
+
+
+    fetch(endPoint, msg){
+        return fetch(endPoint, {
+            method: 'post',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(msg)
+        })
     }
 
     get(endPoint, cb, token = null)

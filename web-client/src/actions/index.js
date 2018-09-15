@@ -1,24 +1,34 @@
 import * as types from './types'
 import ApiClient from '../services/api/ApiClient'
 import { conversation } from "../config";
+const apiClient = new ApiClient()
 
-export const startConversation = () => ({type: types.START_CONVERSATION , payload: []})
+export function startConversation() {
 
-export const userTyping = text => ({type: types.USER_TYPING, text})
+    let text = '';
+    let msg = {
+        message: { senderId: null, text},
+        context: initialCtx,
+        input: {text}
+    }
 
-export const sendMessage = (sender, text, ctx) => ({type: types.SEND_MESSAGE, payload: postMessage(sender, text, ctx) })
+    return dispatch => {
+        dispatch(serverTyping(1000));
+        return callApi(msg)
+            .then(handleErrors)
+            .then(res => res.json())
+            .then(json => {
+                const reply = parseServerResponse(json)
+                dispatch(serverEndTyping())
+                dispatch(saveMessage(reply))
+                return reply;
+            })
+            .catch(error => dispatch(handleErrors(error)))
+    };
+}
 
-export const postQuickReplyMessage = (sender, text, ctx) => ({type: types.POST_QUICK_REPLY_MESSAGE, payload: postMessage(sender, text, ctx) })
-
-const saveMessage = (msg) => ({type: types.SAVE_MESSAGE, payload: msg })
-
-const receiveMessage = (msg) => ({type: types.RECEIVE_MESSAGE, payload : msg})
-
-const startTyping = delay => ({ type: types.START_TYPING, payload: delay })
-
-const endTyping = () => ({ type: types.END_TYPING })
-
-function postMessage(sender, text, ctx) {
+//a user sends a message to the server
+export function postMessage(sender, text, ctx) {
 
     let msg = {
         message: { senderId: sender, text},
@@ -27,28 +37,67 @@ function postMessage(sender, text, ctx) {
     }
 
     return dispatch => {
+        dispatch(userStopTyping())
+        dispatch(saveMessage(msg))
+        setTimeout(() => {
+            dispatch(serverTyping())
+        }, 500)
 
-        dispatch(saveMessage(msg)) //save the user message into local state
-        dispatch(startTyping(1000)) // wait for 1 second and launch the server typing icon
+        return callApi(msg)
+            .then(handleErrors)
+            .then(res => res.json())
+            .then(json => {
+                const reply = parseServerResponse(json)
+                const replyLength = reply.message.text.length * 30 // purposely delay the reply, to create a good user xp
+                console.log(replyLength)
+                setTimeout(() => {
+                    dispatch(saveMessage(reply))
+                    dispatch(serverEndTyping())
+                    return json.data;
+                }, replyLength)
+            })
+            .catch(error => dispatch(handleErrors(error)));
+    };
+}
 
-        return callApi(msg).
-            then(res => {
-                dispatch(endTyping())
-                    let serverMessage = {
-                        message: {
-                            senderId: res.data.server,
-                            text: res.data.output.text,
-                            quick_replies: res.data.context.quick_replies
-                        },
-                        context: res.data.context,
-                        input: res.data.input
-                    }
-                dispatch(receiveMessage(serverMessage)) //save the server message into local state
+export const userStartTyping = text => ({type: types.USER_TYPING, text})
 
-            }).catch(err => console.log(err))
+export const quickButtonClick = text => ({type: types.QUICK_BUTTON_CLICK, text})
+
+const userStopTyping = () => ({type: types.USER_END_TYPING})
+
+const saveMessage = (msg) => ({type: types.SAVE_MESSAGE, payload: msg })
+
+const serverTyping = () => ({ type: types.SERVER_TYPING })
+
+const serverEndTyping = () => ({ type: types.SERVER_END_TYPING })
+
+const callApi = (msg) => {
+    return apiClient.fetch(conversation.sendMessageEndPoint, msg)
+}
+
+function parseServerResponse(data){
+
+    return {
+        input: data.input,
+        context: data.context,
+        message: {
+            senderId: data.server,
+            text: data.output.text,
+            quick_replies: data.context.quick_replies
+        }
     }
 }
 
-const callApi = (msg) => {
-    return ApiClient.post(conversation.sendMessageEndPoint, msg)
+// Handle HTTP errors since fetch won't.
+function handleErrors(response) {
+    if (!response.ok) {
+        throw Error(response.statusText);
+    }
+    return response;
+}
+
+const initialCtx = {
+    customer_id : conversation.customer_id,
+    web_user : true
 }

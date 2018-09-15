@@ -32,6 +32,7 @@
     "react-scripts": "^1.1.4",
     "react-slick": "^0.23.1",
     "react-social-icons": "^3.0.0",
+    "react-timeout": "^1.1.2",
     "reactstrap": "^6.3.1",
     "redux": "^4.0.0",
     "redux-logger": "^3.0.6",

@@ -1,26 +1,38 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {postQuickReplyMessage} from "../../actions";
+import {postMessage, quickButtonClick} from "../../actions";
 import {connect} from "react-redux";
 
 class QuickReply extends React.Component
 {
     constructor(){
         super()
+        this.state = {
+            show_quick_reply : true
+        }
         this.handleOnClick = this.handleOnClick.bind(this)
     }
 
-
-    handleOnClick(e)
+    handleOnClick()
     {
-        const {dispatch, ctx} = this.props
-        dispatch(postQuickReplyMessage("You", e, ctx))
+        const {dispatch, ctx, title} = this.props
+        this.setState({
+            show_quick_reply : false
+        })
+        dispatch(quickButtonClick(title))
+        dispatch(postMessage("You", title, ctx))
     }
 
     render () {
-        return (
-            <button type="button" onClick={this.handleOnClick} className="btn btn-default btn-outline quick-reply">{this.props.title}</button>
-        )
+        const { title } = this.props
+        const { show_quick_reply } = this.state
+        if(show_quick_reply){
+            return (
+                <button type="button" onClick={this.handleOnClick} className="btn btn-default btn-outline quick-reply">{title}</button>
+            )
+        } else {
+            return(<span></span>)
+        }
     }
 }
 
@@ -29,7 +41,9 @@ QuickReply.propTypes = {
 }
 
 const mapStateToProps = state => {
-    return { ctx: state.context }
+
+    const { context } = state.conversationReducer
+    return { ctx: context }
 }
 
 export default connect(mapStateToProps)(QuickReply)

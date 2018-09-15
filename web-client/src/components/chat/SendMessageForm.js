@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { sendMessage, userTyping } from "../../actions"
+import { postMessage, userStartTyping } from "../../actions"
 import { connect } from "react-redux"
 
 class SendMessageForm extends Component{
@@ -12,13 +12,13 @@ class SendMessageForm extends Component{
     }
 
     handleChange(e){
-        this.props.dispatch(userTyping(e.target.value))
+        this.props.dispatch(userStartTyping(e.target.value))
     }
 
     handleSubmit(e) {
         const {dispatch, msg, ctx}  = this.props
         e.preventDefault();
-        dispatch(sendMessage("You", msg, ctx))
+        dispatch(postMessage("You", msg, ctx))
     }
 
     render(){
@@ -39,7 +39,8 @@ class SendMessageForm extends Component{
 }
 
 const mapStateToProps = state => {
-    return { msg: state.current_message, ctx: state.context }
+    const {current_message, context} = state.conversationReducer
+    return { msg: current_message, ctx: context }
 }
 
 export default connect(mapStateToProps)(SendMessageForm)

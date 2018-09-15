@@ -1,22 +1,10 @@
 import React, {Component} from 'react'
 import QuickReply from './QuickReply'
-import {connect} from "react-redux";
 
 class QuickReplyMessage extends Component {
 
     render() {
-
-        const {show_quick_reply, username, text, quickReplies} = this.props
-
-        if(!show_quick_reply) {
-            return (
-                <div className="message-inner">
-                    <div className="message-username">{username}</div>
-                    <p> {text} </p>
-                </div>
-            )
-        }
-
+        const { username, text, quickReplies} = this.props
         return (
             <div className="message-inner">
                 <div className="message-username">{username}</div>
@@ -33,9 +21,5 @@ class QuickReplyMessage extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return { show_quick_reply: state.show_quick_reply }
-}
-
-export default connect(mapStateToProps)(QuickReplyMessage)
+export default QuickReplyMessage
 

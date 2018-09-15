@@ -1,18 +1,9 @@
 import * as types from "../actions/types"
-import {conversation} from "../config";
 
 const conversationReducer = (state = {
-                                 messages: [],
-                                 input: {
-                                     text: '',
-                                 },
-                                 context: {
-                                     customer_id : conversation.customer_id,
-                                     web_user : true
-                                 }
-                             }, action) => {
+    messages: []
+}, action) => {
     switch (action.type){
-        case types.START_CONVERSATION:
         case types.RECEIVE_MESSAGE:
         case types.SAVE_MESSAGE: {
             return {...state,
@@ -27,24 +18,28 @@ const conversationReducer = (state = {
                 current_message: action.text
             }
         }
-        case types.POST_QUICK_REPLY_MESSAGE: {
+        case types.QUICK_BUTTON_CLICK: {
             return {...state,
-                messages: [...state.messages, action.payload.message],
-                context: action.payload.context,
-                input: action.payload.input,
-                show_quick_reply: false
+                current_message: action.text
             }
         }
 
-        case types.START_TYPING: {
+        case types.USER_END_TYPING: {
             return {...state,
-                isTyping: true
+                current_message: '',
+                isServerTyping: true
             }
         }
 
-        case types.END_TYPING: {
+        case types.SERVER_TYPING: {
             return {...state,
-                isTyping: false
+                isServerTyping: true
+            }
+        }
+
+        case types.SERVER_END_TYPING: {
+            return {...state,
+                isServerTyping: false
             }
         }
 
