@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import MessageList from './MessageList'
 import SendMessageForm from './SendMessageForm'
 import TypingIndicator from './TypingIndicator'
-import { startConversation } from '../../actions'
+import { startConversation } from '../../actions/conversation'
 
 class Container extends Component
 {
@@ -27,7 +27,7 @@ class Container extends Component
 }
 
 const mapStateToProps = state => {
-    const {messages, isLoading} = state.conversationReducer
+    const {messages, isLoading} = state.conversation
     return { messages, isLoading }
 }
 

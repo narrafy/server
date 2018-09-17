@@ -1,8 +1,10 @@
 import * as types from './types'
-import {apiConfig} from "../../config";
+import {decode} from 'jwt-decode'
+import {apiConfig} from "../config";
 import ApiClient from '../services/api/ApiClient'
-const apiClient = new ApiClient()
+import {isEmailValid, handleErrors} from '../utils'
 
+const apiClient = new ApiClient()
 const tokenKey = "id_token"
 const dashboardUrl = "/dashboard"
 
@@ -31,7 +33,7 @@ export const loginUser = (email, password, history) => {
         
         return dispatch => {
 
-            dispatch(request(email))
+            dispatch(requestLogin(email))
             
             return login(email, password)
                 .then(handleErrors)
@@ -72,8 +74,7 @@ function getProfile() {
     try{
         // Using jwt-decode npm package to decode the token
         return decode(this.getToken());
-
-    }catch (e) {
+    } catch (e) {
         return null
     }
 }

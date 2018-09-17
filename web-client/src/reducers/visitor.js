@@ -6,7 +6,7 @@ const visitor = (state = {isOpen: false}, action) =>{
 
         case types.TOGGLE_NAVBAR: {
             return {...state,
-                isOpen: !isOpen
+                isOpen: action.payload.isOpen
             }
         }
 

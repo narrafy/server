@@ -1,12 +1,12 @@
 import * as types from '../actions/types'
 
-let profile = JSON.parse(localStorage.getItem('profile'))
+let profile = JSON.parse(localStorage.getItem('id_token'))
 const initialState = profile ? {loggedIn: true, profile}: {}
 
 const authentication = (state = initialState, action) =>{
 
     switch(action.type){
-
+        
         case types.LOGIN_REQUEST:{
             return {...state,
                 loggingIn: true
@@ -21,6 +21,7 @@ const authentication = (state = initialState, action) =>{
                 profile: action.payload
             }
         }
+        
         case types.LOGOUT:
         case types.LOGIN_FAILURE: {
             return {...state,

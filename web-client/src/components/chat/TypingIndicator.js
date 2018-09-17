@@ -21,7 +21,7 @@ class TypingIndicator extends Component{
 }
 
 const mapStateToProps = state => {
-    const { isServerTyping } = state.conversationReducer
+    const { isServerTyping } = state.conversation
     return { isServerTyping: isServerTyping }
 }
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import {connect} from 'react-redux'
 import ReactGA from 'react-ga'
 import { ConversationPlot} from './components'
-import {fetchConversationAvg, fetchConversationDataSet } from '../../actions/analytics'
+import {fetchConversationAvg, fetchConversationDataSet } from '../../actions/conversation'
 
 class Index extends Component
 {

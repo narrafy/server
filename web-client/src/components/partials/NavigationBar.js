@@ -33,12 +33,18 @@ class NavigationBar extends Component {
 
     constructor(props) {
         
-        super(props);    
+        super(props)
+        this.state = {
+            isOpen: false
+        }
         this.toggle = this.toggle.bind(this);
         this.handleLogout = this.handleLogout.bind(this)
     }
 
     toggle() {
+        this.setState({
+            isOpen: !this.state.isOpen
+        })
         this.props.dispatch(toggleNavbar())
     }
 
@@ -72,8 +78,8 @@ class NavigationBar extends Component {
                                 </NavItem>
                             </Nav>
                         </Collapse>
-
                 {profile? (
+                    
                     <Nav className={"float-right"}>
 
                         <NavItem>

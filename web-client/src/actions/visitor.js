@@ -1,5 +1,5 @@
 import * as types from './types'
-import {apiConfig} from "../../config";
+import {apiConfig} from "../config";
 import ApiClient from '../services/api/ApiClient'
 const apiClient = new ApiClient()
 

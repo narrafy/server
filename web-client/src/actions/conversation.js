@@ -1,6 +1,7 @@
 import * as types from './types'
 import ApiClient from '../services/api/ApiClient'
 import { conversation } from "../config"
+import {handleErrors} from '../utils'
 const apiClient = new ApiClient()
 
 export function startConversation() {
@@ -80,7 +81,6 @@ export const receiveConversationDataSet = (xMinutes, yQuestions, count) => ({
 
 export function fetchConversationDataSet(token){
     return dispatch => {
-        dispatch(requestConversationAnalytics())
         dispatch(requestConversationDataSet())
         return apiClient.get(conversation.analytics.dataSetEndPoint, token)
             .then(handleErrors)
@@ -145,14 +145,6 @@ function parseServerResponse(data){
             quick_replies: data.context.quick_replies
         }
     }
-}
-
-// Handle HTTP errors since fetch won't.
-function handleErrors(response) {
-    if (!response.ok) {
-        throw Error(response.statusText);
-    }
-    return response;
 }
 
 const initialCtx = {

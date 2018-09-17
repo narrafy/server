@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {postMessage, quickButtonClick} from "../../actions";
+import {postMessage, quickButtonClick} from "../../actions/conversation";
 import {connect} from "react-redux";
 
 class QuickReply extends React.Component
@@ -42,7 +42,7 @@ QuickReply.propTypes = {
 
 const mapStateToProps = state => {
 
-    const { context } = state.conversationReducer
+    const { context } = state.conversation
     return { ctx: context }
 }
 

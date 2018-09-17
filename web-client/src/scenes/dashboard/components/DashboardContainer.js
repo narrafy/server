@@ -3,8 +3,7 @@ import ConversationContainer from './ConversationContainer'
 import ThreadList from './ThreadList'
 
 import {withRouter} from 'react-router'
-import ApiClient from '../../../services/api/ApiClient'
-import Auth from '../../../services/auth'
+
 import {conversation} from "../../../config"
 
 class DashboardContainer extends Component{
@@ -17,8 +16,7 @@ class DashboardContainer extends Component{
             activeThread: "",            
             limit: 10,
         }
-        this.auth = new Auth()
-        this.apiClient = new ApiClient()
+
         this.loadThreadList = this.loadThreadList.bind(this)
         this.callThreadListApi = this.callThreadListApi.bind(this)
         this.onThreadClick = this.onThreadClick.bind(this)

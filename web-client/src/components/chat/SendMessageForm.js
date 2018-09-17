@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { postMessage, userStartTyping } from "../../actions"
+import { postMessage, userStartTyping } from "../../actions/conversation"
 import { connect } from "react-redux"
 
 class SendMessageForm extends Component{
@@ -39,7 +39,7 @@ class SendMessageForm extends Component{
 }
 
 const mapStateToProps = state => {
-    const {current_message, context} = state.conversationReducer
+    const {current_message, context} = state.conversation
     return { msg: current_message, ctx: context }
 }
 
