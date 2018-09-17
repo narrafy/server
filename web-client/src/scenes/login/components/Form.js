@@ -8,7 +8,7 @@ import { FormGroup, Label, Input, FormText, FormFeedback } from 'reactstrap'
 class LoginForm extends Component {
 
     constructor(props) {
-        super(props);
+        super();
         this.state = {
             email: '',
             password: '',
