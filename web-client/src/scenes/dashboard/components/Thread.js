@@ -24,7 +24,7 @@ class Thread extends Component{
                     <span class="badge badge-primary">Questions: {this.props.counter}</span>
                 </li>
             )
-        }else{
+        } else {
             return(
                 <li className={"list-group-item"} key={this.props.id}>
                     <a href={""} onClick={this.handleOnClick} > {this.props.date} </a>

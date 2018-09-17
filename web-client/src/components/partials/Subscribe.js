@@ -1,18 +1,17 @@
 import React, {Component} from 'react'
-import ApiClient from "../../services/api/ApiClient"
-import {apiConfig} from '../../config'
+import {connect} from 'react-redux'
+import {subscribe} from '../../actions/visitor'
 import {isEmailValid} from '../../utils'
 
-export default class Subscribe extends Component
+class Subscribe extends Component
 {
     constructor(){
+        
         super()
-
         this.state = {
             email: '',
-            isSubscribed: false
         }
-        this.apiClient = new ApiClient();
+        
         this.handleSubmit = this.handleSubmit.bind(this)
         this.handleChange = this.handleChange.bind(this)
     }
@@ -20,18 +19,10 @@ export default class Subscribe extends Component
     handleSubmit(e)
     {
         e.preventDefault();
-        if(isEmailValid(this.state.email))
+        const { email } = this.state
+        if(isEmailValid(email))
         {
-            let cb = () =>{
-                this.setState({
-                    isSubscribed: true
-                })
-            }
-
-            const data = {
-                email: this.state.email
-            }
-            this.apiClient.post(apiConfig.subscribeEndPoint, data, cb)
+            this.props.dispatch(subscribe(email))
         }
     }
 
@@ -46,7 +37,11 @@ export default class Subscribe extends Component
     }
 
     render(){
-        if(this.state.isSubscribed)
+
+        const {submit_notification} = this.props
+        const {email} = this.state
+
+        if(submit_notification)
         {
             return(
                 <section id="subscribe">
@@ -54,14 +49,14 @@ export default class Subscribe extends Component
                         <div className="row">
                             <div className="col-md-12 text-center">
                                 <p>
-                                    We will contact you when there is something important.
+                                    { submit_notification }
                                 </p>
                             </div>
                         </div>
                     </div>
                 </section>
             )
-        }else{
+        } else {
             return(
                 <section id="subscribe">
                     <div className="subscribe-container">
@@ -74,7 +69,7 @@ export default class Subscribe extends Component
                                                id="subscribe-box"
                                                onChange={this.handleChange}
                                                placeholder="Your Email"
-                                               name="email" type="email" value = {this.state.email}
+                                               name="email" type="email" value = {email}
                                                required />
                                     </div>
                                     <button type="submit" className="btn btn-secondary btn-subscribe"
@@ -90,3 +85,9 @@ export default class Subscribe extends Component
         }
     }
 }
+const mapStateToProps = state => {
+    const {submit_notification} = state.visitor
+    return {submit_notification}
+}
+
+export default connect(mapStateToProps)(Subscribe) 

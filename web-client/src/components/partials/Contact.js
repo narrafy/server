@@ -1,21 +1,19 @@
 import React, {Component} from 'react'
-import ApiClient from '../../services/api/ApiClient'
-import {apiConfig} from '../../config'
 import contactLogo from '../../assets/img/contact.jpg'
+import {contact} from '../../actions/visitor'
+import {isEmailValid} from '../../utils'
+import { connect } from 'react-redux';
 
 class Contact extends Component
 {
     constructor()
     {
         super()
-
         this.state = {
             name: '',
             email: '',
-            message: '',
-            isSubmitted: false
+            message: ''
         }
-        this.apiClient = new ApiClient();
         this.handleSubmit = this.handleSubmit.bind(this)
         this.handleChange = this.handleChange.bind(this)
     }
@@ -23,18 +21,10 @@ class Contact extends Component
     handleSubmit(e)
     {
         e.preventDefault();
-        let cb = () =>{
-            this.setState({
-                isSubmitted: true
-            })
+        const {name, email, message} = this.state
+        if(isEmailValid(email)){
+            this.props.dispatch(contact(name, email, message))
         }
-
-        const data = {
-            name: this.state.name,
-            message: this.state.message,
-            email: this.state.email
-        }
-        this.apiClient.post(apiConfig.contactEndPoint, data, cb)
     }
 
     handleChange(e)
@@ -49,13 +39,15 @@ class Contact extends Component
 
     render()
     {
+        const {contact_notification} = this.props
+        const {name, email, message} = this.state
 
         const ContactLogo = () =>
         {
-            return ( <img src={contactLogo} alt="icon" className="team img-responsive" />)
+            return ( <img src={contactLogo} alt = "icon" className="team img-responsive" />)
         }
 
-        if(this.state.isSubmitted){
+        if(contact_notification){
             return(
                 <section id="contact" className="section-secondary">
                     <div className="container">
@@ -67,7 +59,7 @@ class Contact extends Component
                             <div className="col-md-8 ">
                                 <div id="email-notification">
                                     <p className="text-center big">
-                                        Thank you for your message. We will get back to you shortly.
+                                        {contact_notification}
                                     </p>
                                 </div>
                             </div>
@@ -90,13 +82,13 @@ class Contact extends Component
                                         <div className="form-group">
                                             <input id="name-box" type="name" name="name"
                                                    className="form-input-text form-control" placeholder="Name"
-                                                   required value={this.state.name}
+                                                   required value={name}
                                                    onChange={this.handleChange} />
                                         </div>
                                         <div className="form-group">
                                             <input id="email-box" type="email" name="email"
                                                    className="form-input-text form-control" placeholder="Email"
-                                                   required value={this.state.email}
+                                                   required value={email}
                                                    onChange={this.handleChange} />
                                         </div>
                                         <div className="form-group">
@@ -105,7 +97,7 @@ class Contact extends Component
                                               className="form-input-text form-control"
                                               rows="4"
                                               placeholder="Message"
-                                              value = {this.state.message}
+                                              value = {message}
                                               onChange={this.handleChange}
                                               required ></textarea>
                                         </div>
@@ -125,4 +117,11 @@ class Contact extends Component
     }
 }
 
-export default Contact
+const mapStateToProps = state => {
+    const {contact_notification} = state.visitor
+    return {
+        contact_notification
+    }
+}
+
+export default connect(mapStateToProps)(Contact) 

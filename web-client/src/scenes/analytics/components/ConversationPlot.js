@@ -1,24 +1,27 @@
 import React from 'react';
 import Plot from '../../../../node_modules/react-plotly.js/react-plotly'
+import { connect } from 'react-redux';
 
 class ConversationPlot extends React.Component {
+
     render() {
+        const {count, avg, x, y} = this.props
         return (
             <Plot
                 data={[
                     {
-                        x: this.props.x,
-                        y: this.props.y,
+                        x: x,
+                        y: y,
                         type: 'bar',
                         marker: {color: 'blue'},
                     }
                 ]}
                 layout={
                     {
-                        title: 'Narrafy Analytics',
+                        title: 'Narrafy Analytics' + ' Sample: (' + count + ')',
                         //barmode: 'stack',
                         yaxis: {
-                            title: 'Questions answered',
+                            title: 'Questions answered: ( ' + avg.questions + ' )',
                             range: [ 0, 60 ],
                         titlefont: {
                             size: 16,
@@ -30,7 +33,7 @@ class ConversationPlot extends React.Component {
                             }
                         },
                         xaxis: {
-                            title: 'Session time (minutes)',
+                            title: 'Session time (minutes), Average: ( ' + avg.minutes+ ' )' ,
                             range: [ 1, 60 ],
                             titlefont: {
                             size: 16,
@@ -48,4 +51,9 @@ class ConversationPlot extends React.Component {
     }
 }
 
-export default ConversationPlot
+const mapStateToProps = state => {
+    const {count, avg, x, y}  = state.conversationReducer
+    return { avg, count, x, y }
+}
+
+export default connect(mapStateToProps)(ConversationPlot)

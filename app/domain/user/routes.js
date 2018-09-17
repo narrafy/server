@@ -15,7 +15,7 @@ Router.post('/contact', async (req, res) => {
         await User.contact(data)
         Admin.notify(data.email, "A new message from :" + data.email + "\n Content: " + data.message)
         User.notifyOnContact(data.email, data.name)
-        res.sendStatus(200)
+        res.json("Thank you for your message. We will get back to you shortly.")
     } else {
         res.sendStatus(500)
     }
@@ -28,7 +28,7 @@ Router.post('/subscribe', async (req, res) => {
         await User.subscribe(email)
         Admin.notify(email, "Congrats," + email + " just subscribed!")
         User.notifyOnSubscribe(email)
-        res.sendStatus(200)
+        res.json("Thank you for joining our newsletter!") 
     } else {
         res.sendStatus(500)
     }

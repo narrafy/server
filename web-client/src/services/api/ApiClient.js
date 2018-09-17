@@ -13,7 +13,7 @@ export default class ApiClient{
     getHeaders(token){
         // performs api calls sending the required authentication headers
         let headers = {
-            'Accept': 'application/json',
+            'Accept': 'application/json, text/plain, */*',
             'Content-Type': 'application/json'
         }
 
@@ -22,40 +22,30 @@ export default class ApiClient{
         if (this.isValidToken(token)) {
             headers['Authorization'] = 'Bearer ' + token
         }
-
-        return headers;
+        return headers
     }
 
     post(endPoint, data, token=null)
     {
-        console.log('axios.post')
         let headers = this.getHeaders(token)
         let options = {headers}
-
         return axios.post(endPoint, data, options)
     }
 
 
-    fetch(endPoint, msg){
+    fetch(endPoint, msg, token=null){
         return fetch(endPoint, {
             method: 'post',
-            headers: {
-                'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json'
-            },
+            headers: this.getHeaders(token),
             body: JSON.stringify(msg)
         })
     }
 
-    get(endPoint, cb, token = null)
+    get(endPoint, token = null)
     {
         let headers = this.getHeaders(token)
         let options = {headers}
-
-        axios.get(endPoint, options)
-            .then(res => {
-                cb(res)
-            })
+        return axios.get(endPoint, options)
     }
 
     isValidToken(token) {
@@ -76,5 +66,4 @@ export default class ApiClient{
             return false;
         }
     }
-
 }

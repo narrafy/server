@@ -1,10 +1,9 @@
 import * as types from "../actions/types"
 
-const conversationReducer = (state = {
+const conversation = (state = {
     messages: []
 }, action) => {
     switch (action.type){
-        case types.RECEIVE_MESSAGE:
         case types.SAVE_MESSAGE: {
             return {...state,
                 messages: [...state.messages, action.payload.message],
@@ -43,10 +42,38 @@ const conversationReducer = (state = {
             }
         }
 
+        case types.REQUEST_CONVERSATION_ANALYTICS: {
+            return { ...state,
+                analytics_loading: true
+            }
+        }
+
+        case types.RECEIVE_CONVERSATION_ANALYTICS: {
+            return { ...state,
+                analytics_loading: false,
+                avg: action.payload.avg,
+            }
+        }
+
+        case types.REQUEST_CONVERSATION_DATASET: {
+            return { ...state,
+                dataset_loading: true
+            }
+        }
+
+        case types.RECEIVE_CONVERSATION_DATASET: {
+            return { ...state,
+                dataset_loading: false,
+                xQuestions: action.payload.xQuestions,
+                yMinutes: action.payload.yMinutes,
+                count: action.payload.count
+            }
+        }
+
         default:
             return state
     }
 }
 
-export default conversationReducer
+export default conversation
 
