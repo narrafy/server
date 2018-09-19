@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
+import {connect} from 'react-redux'
 import Thread from './Thread'
 
-export default class ThreadList extends Component {
+class ThreadList extends Component {
 
     render(){
         return(
@@ -12,11 +13,8 @@ export default class ThreadList extends Component {
                 <ul className={"list-group list-group-flush"}>
                     {
                         this.props.threads.map((thread, index) => {
-                            const isActive = thread.conversation_id === this.props.activeThread
                             return(<Thread 
-                                key = {index} 
-                                isActive = {isActive} 
-                                onThreadClick={this.props.onThreadClick}  
+                                key = {index}  
                                 id={thread.conversation_id} 
                                 date={thread.date_last_entry} 
                                 minutes={thread.minutes}
@@ -30,3 +28,12 @@ export default class ThreadList extends Component {
         )
     }
 }
+
+const mapStateToProps = state => {
+
+    const { threads} = state.thread
+
+    return { threads }
+}
+
+export default connect(mapStateToProps)(ThreadList)

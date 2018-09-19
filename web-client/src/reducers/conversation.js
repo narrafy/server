@@ -42,31 +42,44 @@ const conversation = (state = {
             }
         }
 
-        case types.REQUEST_CONVERSATION_ANALYTICS: {
-            return { ...state,
-                analytics_loading: true
+        case types.REQUEST_CONVERSATION_AVG: {
+            return {...state,
+                avg_loading: true
             }
         }
 
-        case types.RECEIVE_CONVERSATION_ANALYTICS: {
-            return { ...state,
-                analytics_loading: false,
+        case types.SUCCESS_CONVERSATION_AVG: {
+            return {...state,
+                avg_loading: false,
                 avg: action.payload.avg,
+            }
+        }
+        case types.FAILURE_CONVERSATION_AVG: {
+            return {...state,
+                avg_loading: false,
+                error: action.payload
             }
         }
 
         case types.REQUEST_CONVERSATION_DATASET: {
-            return { ...state,
+            return {...state,
                 dataset_loading: true
             }
         }
 
-        case types.RECEIVE_CONVERSATION_DATASET: {
-            return { ...state,
+        case types.SUCCESS_CONVERSATION_DATASET: {
+            return {...state,
                 dataset_loading: false,
                 xQuestions: action.payload.xQuestions,
                 yMinutes: action.payload.yMinutes,
                 count: action.payload.count
+            }
+        }
+
+        case types.FAILURE_CONVERSATION_DATASET: {
+            return {...state,
+                dataset_loading: false,
+                error: action.payload
             }
         }
 

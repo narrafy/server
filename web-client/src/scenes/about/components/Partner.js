@@ -18,9 +18,9 @@ function Partner()
                     <div className="col-md-8 member-text">
                         <h4> The Simula Garage</h4>
                         <p><strong> The Simula Garage </strong> is an initiative from
-                            <a href="https://www.simula.no/" rel="noopener noreferrer" title="Simula" target="_blank">Simula Research
-                                Laboratory</a> that gives
-                            ambitious entrepreneurs office space and ongoing technical support. <br/>
+                            <a href="https://www.simula.no/" rel="noopener noreferrer" title="Simula" target="_blank"> Simula Research
+                                Laboratory</a> that provides
+                            ambitious entrepreneurs office space. <br/>
                         </p>
 
                         <a href="https://grundergarasjen.no/" target="_blank" rel="noopener noreferrer" className="fa fa-link" title="Web"></a>

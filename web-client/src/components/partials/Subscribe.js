@@ -23,6 +23,9 @@ class Subscribe extends Component
         if(isEmailValid(email))
         {
             this.props.dispatch(subscribe(email))
+            this.setState({
+                email: ""
+            })
         }
     }
 

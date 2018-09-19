@@ -1,19 +1,21 @@
 import * as types from '../actions/types'
+import {authToken, isValidToken, getProfile} from '../utils'
 
-let profile = JSON.parse(localStorage.getItem('id_token'))
-const initialState = profile ? {loggedIn: true, profile}: {}
+const initialState = authToken && isValidToken(authToken) ? 
+    {loggedIn: true, profile: getProfile(authToken)}: 
+    {}
 
-const authentication = (state = initialState, action) =>{
+const auth = (state = initialState, action) =>{
 
     switch(action.type){
         
-        case types.LOGIN_REQUEST:{
+        case types.REQUEST_LOGIN:{
             return {...state,
                 loggingIn: true
             }
         }
 
-        case types.LOGIN_SUCCESS: {
+        case types.SUCCESS_LOGIN: {
 
             return {...state,
                 loggingIn: false,
@@ -23,7 +25,7 @@ const authentication = (state = initialState, action) =>{
         }
         
         case types.LOGOUT:
-        case types.LOGIN_FAILURE: {
+        case types.FAILURE_LOGIN: {
             return {...state,
                 loggingIn: false,
                 loggedIn: false,
@@ -36,4 +38,4 @@ const authentication = (state = initialState, action) =>{
     }
 }
 
-export default authentication
+export default auth

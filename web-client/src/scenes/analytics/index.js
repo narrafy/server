@@ -34,7 +34,7 @@ class Index extends Component
 }
 
 const mapStateToProps = state => {
-    const {token} = state.authenticationReducer
+    const {token} = state.authentication
     return { token }
 }
 

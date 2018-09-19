@@ -10,27 +10,27 @@ const visitor = (state = {isOpen: false}, action) =>{
             }
         }
 
-        case types.CONTACT_REQUEST: {
+        case types.REQUEST_CONTACT: {
             return {...state,
                 contact_submitted: true
             }
         }
 
-        case types.CONTACT_FAILURE:
-        case types.CONTACT_SUCCESS: {
+        case types.FAILURE_CONTACT:
+        case types.SUCCESS_CONTACT: {
             return {...state,
                 contact_notification: action.payload.message
             }
         }
 
-        case types.SUBMIT_REQUEST: {
+        case types.REQUEST_SUBSCRIBE: {
             return {...state,
                 submitRequest: true
             }
         }
 
-        case types.SUBMIT_FAILURE:
-        case types.SUBMIT_SUCCESS: {
+        case types.FAILURE_SUBSCRIBE:
+        case types.SUCCESS_SUBSCRIBE: {
             return {...state,
                 submit_notification: action.payload.message
             }

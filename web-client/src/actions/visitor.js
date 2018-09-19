@@ -3,17 +3,17 @@ import {apiConfig} from "../config";
 import ApiClient from '../services/api/ApiClient'
 const apiClient = new ApiClient()
 
-export const requestContact = (name, email, message) => ({ type: types.CONTACT_REQUEST, payload: { name, email, message} })
+export const requestContact = (name, email, message) => ({ type: types.REQUEST_CONTACT, payload: { name, email, message} })
 
-export const successContact = message => ({ type: types.CONTACT_SUCCESS, payload: message })
+export const successContact = message => ({ type: types.SUCCESS_CONTACT, payload: message })
 
-export const failureContact = message => ({ type: types.CONTACT_FAILURE, payload: message })
+export const failureContact = message => ({ type: types.FAILURE_CONTACT, payload: message })
 
-export const requestSubscribe = email => ({ type: types.SUBMIT_REQUEST, payload: email })
+export const requestSubscribe = email => ({ type: types.REQUEST_SUBSCRIBE, payload: email })
 
-export const successSubscribe = message => ({ type: types.SUBMIT_SUCCESS, payload: message })
+export const successSubscribe = message => ({ type: types.SUCCESS_SUBSCRIBE, payload: message })
 
-export const failureSubscribe = message => ({ type: types.SUBMIT_FAILURE, payload: message })
+export const failureSubscribe = message => ({ type: types.FAILURE_SUBSCRIBE, payload: message })
 
 export const toggleNavbar = () => ({type: types.TOGGLE_NAVBAR })
 

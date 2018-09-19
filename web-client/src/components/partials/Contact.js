@@ -24,6 +24,11 @@ class Contact extends Component
         const {name, email, message} = this.state
         if(isEmailValid(email)){
             this.props.dispatch(contact(name, email, message))
+            this.setState({
+                name: '',
+                email: '',
+                message: ''
+            })
         }
     }
 

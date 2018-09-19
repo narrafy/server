@@ -1,4 +1,7 @@
 import React, {Component} from 'react'
+import {connect} from 'react-redux'
+import { loadThread } from '../../../actions/thread'
+import {authToken} from '../../../utils'
 
 class Thread extends Component{
 
@@ -10,11 +13,14 @@ class Thread extends Component{
     handleOnClick(e)
     {   
         e.preventDefault()
-        this.props.onThreadClick(this.props.id)
+        const { dispatch, activeThread } = this.props
+        dispatch(loadThread(activeThread, authToken))
+    
     }
     
     render(){
-        const isActive = this.props.isActive
+        const { id, activeThread } = this.props
+        const isActive = id === activeThread
         if(isActive){
             return(
                 <li className={"list-group-item active"} key={this.props.id}>
@@ -36,6 +42,9 @@ class Thread extends Component{
         }
     }
 }
+const mapStateToProps = state => {
+    return {activeThread: state.thread.activeThread}
+}
 
-export default Thread
+export default connect(mapStateToProps)(Thread) 
 

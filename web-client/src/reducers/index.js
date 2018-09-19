@@ -1,11 +1,13 @@
 import {combineReducers} from 'redux'
 import conversation  from './conversation'
-import authentication from './authentication'
+import auth from './authentication'
 import visitor from './visitor'
+import thread from './thread'
 
 const rootReducer = combineReducers({
     conversation,
-    authentication,
-    visitor
+    auth,
+    visitor,
+    thread
 })
 export default rootReducer
