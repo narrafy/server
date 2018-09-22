@@ -65,9 +65,9 @@ export const requestConversationAvg = () => ({
     type: types.REQUEST_CONVERSATION_AVG
 })
 
-export const successFetchConversationAvg = avg => ({
+export const successFetchConversationAvg = (avg_minutes, avg_questions)  => ({
     type: types.SUCCESS_CONVERSATION_AVG,
-    payload: avg
+    payload: { avg_minutes, avg_questions }
 })
 
 export const failureFetchConversationAvg = error => ({
@@ -86,8 +86,9 @@ export function fetchConversationAvg(token){
             .then(res => res.json())
             .then(json => {
                 if(json.counter && json.minutes){
-                    let avg = { questions: json.counter.toFixed(2), minutes: json.minutes.toFixed(2)}
-                    dispatch(successFetchConversationAvg(avg))                   
+                    let avg_questions = json.counter.toFixed(2) 
+                    let avg_minutes = json.minutes.toFixed(2)
+                    dispatch(successFetchConversationAvg(avg_minutes, avg_questions))                   
                 }
             })
             .catch(error => dispatch(failureFetchConversationAvg(error)))

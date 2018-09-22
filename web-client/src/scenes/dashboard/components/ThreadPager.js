@@ -1,16 +1,4 @@
 import React, {Component} from 'react'
-import PropTypes from 'prop-types';
- 
-const propTypes = {
-    onChangePage: PropTypes.func.isRequired,
-    initialPage: PropTypes.number,
-    pageSize: PropTypes.number
-}
- 
-const defaultProps = {
-    initialPage: 1,
-    pageSize: 3
-}
  
 class ThreadPager extends Component {
     constructor(props) {
@@ -137,7 +125,5 @@ class ThreadPager extends Component {
         );
     }
 }
- 
-ThreadPager.propTypes = propTypes;
-ThreadPager.defaultProps = defaultProps;
+
 export default ThreadPager

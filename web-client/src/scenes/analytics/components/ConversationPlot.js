@@ -5,8 +5,9 @@ import { connect } from 'react-redux';
 class ConversationPlot extends React.Component {
 
     render() {
-        const {count, avg, x, y} = this.props
+        const { avg, x, y} = this.props
         return (
+
             <Plot
                 data={[
                     {
@@ -18,10 +19,10 @@ class ConversationPlot extends React.Component {
                 ]}
                 layout={
                     {
-                        title: 'Narrafy Analytics' + ' Sample: (' + count + ')',
+                        title: 'Narrafy Analytics',
                         //barmode: 'stack',
                         yaxis: {
-                            title: 'Questions answered: ( ' + avg.questions + ' )',
+                            title: 'Questions answered',
                             range: [ 0, 60 ],
                         titlefont: {
                             size: 16,
@@ -33,7 +34,7 @@ class ConversationPlot extends React.Component {
                             }
                         },
                         xaxis: {
-                            title: 'Session time (minutes), Average: ( ' + avg.minutes+ ' )' ,
+                            title: 'Session time (minutes)' ,
                             range: [ 1, 60 ],
                             titlefont: {
                             size: 16,
@@ -51,9 +52,4 @@ class ConversationPlot extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
-    const {count, avg, x, y}  = state.conversationReducer
-    return { avg, count, x, y }
-}
-
-export default connect(mapStateToProps)(ConversationPlot)
+export default ConversationPlot

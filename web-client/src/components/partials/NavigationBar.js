@@ -54,7 +54,7 @@ class NavigationBar extends Component {
     }
 
     render() {
-        const { profile, isOpen } = this.props
+        const { user, isOpen } = this.props
         return (
             <Navbar className="navbar-light bg-primary" color="light" light expand="md">
                         <NavbarBrand href="/"><img src={logo} alt="logo" className="logo" /></NavbarBrand>
@@ -62,33 +62,31 @@ class NavigationBar extends Component {
                         <Collapse isOpen={isOpen} navbar>
                             <Nav className="float-left" navbar>
                                 <NavItem>
-                                    <NavLink tag={Link} to="/">Home</NavLink>
+                                    {!user && <NavLink tag={Link} to="/">Home</NavLink> } 
                                 </NavItem>
                                 <NavItem>
-                                    {!profile && <NavLink target="_blank"  rel="noopener noreferrer" href="https://medium.com/narrafy-labs">Labs</NavLink> }
+                                    {!user && <NavLink tag={Link} to="/about">About</NavLink> }
                                 </NavItem>
                                 <NavItem>
-                                    {!profile && <NavLink tag={Link} to="/about">About</NavLink> }
+                                    {!user && <a className="nav-link" href="/about#contact">Contact</a> }
                                 </NavItem>
                                 <NavItem>
-                                    {!profile && <NavLink tag={Link} className={"secondary-color"} to="/stats">Analytics</NavLink> }
-                                </NavItem>
-                                <NavItem>
-                                    {!profile && <a className="nav-link" href="/about#contact">Contact</a> }
+                                    {!user && <NavLink target="_blank"  rel="noopener noreferrer" href="https://medium.com/@narrafy">Blog</NavLink> }
                                 </NavItem>
                             </Nav>
                         </Collapse>
-                {profile? (
+                {user? (
                     
                     <Nav className={"float-right"}>
 
                         <NavItem>
                             <NavLink tag={Link} className={"secondary-color"} to="/dashboard">Dashboard</NavLink>
                         </NavItem>
-                        <NavItem>
-                            <NavLink tag={Link} className={"secondary-color"} to="/stats">Analytics</NavLink>
-                        </NavItem>
 
+                        <NavItem>
+                            <NavLink tag={Link} className={"secondary-color"} to="/analytics">Analytics</NavLink>
+                        </NavItem>
+                        
                         <NavItem>
                             <NavLink tag={Link} className={"secondary-color"} to="/profile"> <FontAwesomeIcon icon={faUser} /></NavLink>
                         </NavItem>
@@ -122,9 +120,9 @@ class NavigationBar extends Component {
 }
 
 const mapStateToProps = state => {
-    const {profile} = state.auth
+    const {user} = state.auth
     return {
-        profile
+        user
     }
 }
 

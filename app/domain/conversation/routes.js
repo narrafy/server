@@ -10,24 +10,23 @@ const authMiddleware = passport.authenticate('jwt', { session : false });
 // public endpoints
 Router.post('/message', async function (req, res) {
 
-    let session_id = req.sessionID;
-    let body = req.body;
-    let data = {};
+    let session_id = req.sessionID
+    let body = req.body
+    let data = {}
 
     if (body)
     {
         if (body.input){
             data.text = body.input.text
         }
-
         if (body.context)
         {
             data.context = body.context
             let customer_id = body.context.customer_id
             let decoded = jwt.decode(customer_id);
             if(decoded) {
-                data.access_token = decoded.user.access_token
-                data.workspace = decoded.user.workspace
+                data.access_token = decoded.customer.access_token
+                data.workspace = decoded.customer.workspace
             } else {
                 const {access_token, workspace} = await Conversation.getWorkspace(config.sendGrid.adminEmail)
                 data.access_token = access_token
@@ -71,7 +70,7 @@ Router.get("/thread/list", authMiddleware, async(req, res) =>{
 Router.get("/thread/:id", authMiddleware, async(req, res) =>{
     let conversation_id = req.params.id
     let thread = await Storage.getThread(conversation_id)
-    res.json({thread})
+    res.json({data: thread})
 })
 
 module.exports =  Router

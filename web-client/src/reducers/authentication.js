@@ -4,7 +4,7 @@ import {getToken, isValidToken, getProfile} from '../utils'
 const token = getToken()
 
 const initialState = token && isValidToken(token) ? 
-    {loggedIn: true, profile: getProfile(token)}: 
+    {loggedIn: true, user: getProfile(token)}: 
     {}
 
 const auth = (state = initialState, action) =>{

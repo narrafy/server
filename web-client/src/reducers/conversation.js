@@ -33,6 +33,7 @@ const conversation = (state = { messages: [] }, action) => {
 
         case types.SERVER_TYPING: {
             return {...state,
+                messages:[],
                 isServerTyping: true
             }
         }
@@ -52,7 +53,8 @@ const conversation = (state = { messages: [] }, action) => {
         case types.SUCCESS_CONVERSATION_AVG: {
             return {...state,
                 avg_loading: false,
-                avg: action.payload.avg,
+                avg_minutes: action.payload.avg_minutes,
+                avg_questions: action.payload.avg_questions
             }
         }
         case types.FAILURE_CONVERSATION_AVG: {
@@ -71,8 +73,8 @@ const conversation = (state = { messages: [] }, action) => {
         case types.SUCCESS_CONVERSATION_DATASET: {
             return {...state,
                 dataset_loading: false,
-                xQuestions: action.payload.xQuestions,
-                yMinutes: action.payload.yMinutes,
+                yQuestions: action.payload.yQuestions,
+                xMinutes: action.payload.xMinutes,
                 count: action.payload.count
             }
         }

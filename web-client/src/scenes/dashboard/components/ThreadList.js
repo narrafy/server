@@ -4,6 +4,7 @@ import Thread from './Thread'
 
 class ThreadList extends Component {
 
+
     render(){
 
         const { threads } = this.props
@@ -17,6 +18,7 @@ class ThreadList extends Component {
                     {
                         threads && threads.map((thread, index) => {
                             return(<Thread 
+                                onClick={this.handleOnClick}
                                 key = {index}  
                                 id={thread.conversation_id} 
                                 date={thread.date_last_entry} 

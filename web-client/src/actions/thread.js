@@ -17,14 +17,15 @@ export const loadThread = (thread_id, token) => {
     let url = conversation.threadEndPoint + thread_id
 
     return dispatch => {        
-        
+        dispatch(setActiveThread(thread_id))
         dispatch(requestThread(thread_id))
         
         return apiClient.get(url, token)
         .then(handleErrors)
         .then(res => res.json())
         .then(json => {
-            let messages = parseResponse(json)
+            console.log(json.data)
+            let messages = parseResponse(json.data)
             dispatch(successFetchThread(messages))
         })
         .catch(error => dispatch(failureFetchThread(error)))        
@@ -49,12 +50,12 @@ export const loadThreadList = (page, limit, token) =>
         .then(handleErrors)
         .then(res => res.json())
         .then(json => {
-            let threads = json
+            let threads = json.data
             if(threads && threads.length>0){
                 dispatch(successFetchThreadList(threads))
             
                 let activeThread = threads[0].conversation_id
-                dispatch(setActiveThread(activeThread))
+                dispatch(loadThread(activeThread, token))
             }
         })
         .catch(error => dispatch(failureFetchThreadList(error)))

@@ -1,5 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import ChatContainer from '../../components/chat/Container'
+import {resetConversation } from '../../actions/conversation'
 import ReactGA from 'react-ga'
 
 class Home extends Component {
