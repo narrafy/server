@@ -1,5 +1,6 @@
 import * as types from '../_constants/types'
-import {apiConfig} from "../config";
+import {apiConfig} from "../config"
+import {handleErrors} from "../utils"
 import ApiClient from '../services/api/ApiClient'
 const apiClient = new ApiClient()
 
@@ -22,7 +23,7 @@ export function contact(name, email, message){
     return dispatch => {
         const data = { name, email, message }
         dispatch(requestContact())
-        return apiClient.post(apiConfig.contactEndPoint, data)
+        return apiClient.fetch(apiConfig.contactEndPoint, data)
         .then(handleErrors)
                 .then(res => res.json())
                 .then(json => {
@@ -35,7 +36,7 @@ export function contact(name, email, message){
 export function subscribe(email){
     return dispatch => {
         dispatch(requestSubscribe())
-        return apiClient.post(apiConfig.subscribeEndPoint, email)
+        return apiClient.fetch(apiConfig.subscribeEndPoint, {email})
         .then(handleErrors)
                 .then(res => res.json())
                 .then(json => {
@@ -43,12 +44,4 @@ export function subscribe(email){
                 })
                 .catch(error => dispatch(failureSubscribe(error)))
     }
-}
-
-// Handle HTTP errors since fetch won't.
-function handleErrors(response) {
-    if (!response.ok) {
-        throw Error(response.statusText);
-    }
-    return response;
 }

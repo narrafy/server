@@ -19,7 +19,7 @@ const visitor = (state = {isOpen: false}, action) =>{
         case types.FAILURE_CONTACT:
         case types.SUCCESS_CONTACT: {
             return {...state,
-                contact_notification: action.payload.message
+                contact_notification: action.payload
             }
         }
 
@@ -31,8 +31,8 @@ const visitor = (state = {isOpen: false}, action) =>{
 
         case types.FAILURE_SUBSCRIBE:
         case types.SUCCESS_SUBSCRIBE: {
-            return {...state,
-                submit_notification: action.payload.message
+            return {
+                submit_notification: action.payload
             }
         }
 
