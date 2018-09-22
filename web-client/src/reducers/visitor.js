@@ -1,4 +1,4 @@
-import * as types from '../actions/types'
+import * as types from '../_constants/types'
 
 const visitor = (state = {isOpen: false}, action) =>{
 

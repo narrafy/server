@@ -26,8 +26,8 @@ Router.post('/message', async function (req, res) {
             let customer_id = body.context.customer_id
             let decoded = jwt.decode(customer_id);
             if(decoded) {
-                data.access_token = decoded.customer.access_token
-                data.workspace = decoded.customer.workspace
+                data.access_token = decoded.user.access_token
+                data.workspace = decoded.user.workspace
             } else {
                 const {access_token, workspace} = await Conversation.getWorkspace(config.sendGrid.adminEmail)
                 data.access_token = access_token
@@ -65,13 +65,13 @@ Router.get("/thread/list", authMiddleware, async(req, res) =>{
     let limit = req.query["limit"]
     let offset = req.query["offset"]
     let list = await Storage.getThreadList(dialogCounter, minMinutes, limit, offset)
-    res.json(list)
+    res.json({data: list})
 })
 
 Router.get("/thread/:id", authMiddleware, async(req, res) =>{
     let conversation_id = req.params.id
     let thread = await Storage.getThread(conversation_id)
-    res.json(thread)
+    res.json({thread})
 })
 
 module.exports =  Router

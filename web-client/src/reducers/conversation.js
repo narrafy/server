@@ -1,9 +1,9 @@
-import * as types from "../actions/types"
+import * as types from "../_constants/conversation.constants"
 
-const conversation = (state = {
-    messages: []
-}, action) => {
+const conversation = (state = { messages: [] }, action) => {
+    
     switch (action.type){
+        
         case types.SAVE_MESSAGE: {
             return {...state,
                 messages: [...state.messages, action.payload.message],
@@ -17,6 +17,7 @@ const conversation = (state = {
                 current_message: action.text
             }
         }
+        
         case types.QUICK_BUTTON_CLICK: {
             return {...state,
                 current_message: action.text

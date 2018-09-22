@@ -7,7 +7,7 @@ const router = express.Router()
 router.post('/register', passport.authenticate('register', {session: false}), async (req, res, next) => {
     res.json({
         message: 'Register successful',
-        user: req.customer
+        user: req.user
     })
 })
 
@@ -26,11 +26,10 @@ router.post('/login', async (req, res, next) => {
                 //do not store sensitive information in jwt tokens
                 const body = {
                     email: customer.email,
-                    workspace: customer.config.config.conversation.workspace,
-                    access_token: customer.config.config.facebook.access_token
+                    workspace: customer.config.config.conversation.workspace                    
                 }
                 //sign the jwt token and load the payload with customer info
-                const token = jwt.sign({customer: body}, jwtConfig.secret, {expiresIn: '10d'})
+                const token = jwt.sign({user: body}, jwtConfig.secret, {expiresIn: '10d'})
                 //send the token back
                 return res.json({token})
             })
@@ -44,7 +43,7 @@ router.get('/me', passport.authenticate('jwt', { session : false }), (req, res, 
 
     res.json({
         message : 'You made it to the secure route',
-        customer : req.customer,
+        user : req.user,
         token: req.token
     })
 })

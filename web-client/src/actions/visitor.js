@@ -1,4 +1,4 @@
-import * as types from './types'
+import * as types from '../_constants/types'
 import {apiConfig} from "../config";
 import ApiClient from '../services/api/ApiClient'
 const apiClient = new ApiClient()

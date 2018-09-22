@@ -36,10 +36,6 @@ class QuickReply extends React.Component
     }
 }
 
-QuickReply.propTypes = {
-    handleOnClick: PropTypes.func.isRequired
-}
-
 const mapStateToProps = state => {
 
     const { context } = state.conversation

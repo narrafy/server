@@ -1,8 +1,9 @@
-import * as types from './types'
+import * as types from '../_constants/auth.constants'
 import {loginUrl, dashboardUrl, removeToken, setToken, tokenKey} from '../utils'
 import {apiConfig} from "../config"
 import ApiClient from '../services/api/ApiClient'
 import { isEmailValid, handleErrors, getProfile} from '../utils'
+
 const apiClient = new ApiClient()
 
 export const requestLogin = user => ({ type: types.REQUEST_LOGIN, payload: user }) 
@@ -25,9 +26,9 @@ export const loginUser = (email, password, history) => {
                 .then(json => {
                     const token = json.token
                     setToken(token) // Setting the token in localStorage
-                    const profile = getProfile(token)
-                    dispatch(successLogin(profile))                        
-                    history.push(dashboardUrl) 
+                    const decoded = getProfile(token)
+                    dispatch(successLogin(decoded.user))                     
+                    history.push(dashboardUrl)
                 })
                 .catch(error => dispatch(loginFailure(error)))
         };

@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import { loadThread } from '../../../actions/thread'
-import {authToken} from '../../../utils'
+import { setActiveThread } from '../../../actions/thread'
+import {getToken} from '../../../utils'
 
 class Thread extends Component{
 
@@ -14,35 +14,36 @@ class Thread extends Component{
     {   
         e.preventDefault()
         const { dispatch, activeThread } = this.props
-        dispatch(loadThread(activeThread, authToken))
+        dispatch(setActiveThread(activeThread))
     
     }
     
     render(){
-        const { id, activeThread } = this.props
+        const { id, activeThread , minutes, date, seconds, counter } = this.props
         const isActive = id === activeThread
         if(isActive){
             return(
-                <li className={"list-group-item active"} key={this.props.id}>
-                    <a className="a-active" href={""} onClick={this.handleOnClick} > {this.props.date} </a>
-                    <span class="badge badge-light">Minutes: {this.props.minutes}</span>
-                    <span class="badge badge-light">Seconds: {this.props.seconds}</span>
-                    <span class="badge badge-primary">Questions: {this.props.counter}</span>
+                <li className={"list-group-item active"} key={id}>
+                    <a className="a-active" href={""} onClick={this.handleOnClick} > {date} </a>
+                    <span class="badge badge-light">Minutes: {minutes}</span>
+                    <span class="badge badge-light">Seconds: {seconds}</span>
+                    <span class="badge badge-primary">Questions: {counter}</span>
                 </li>
             )
         } else {
             return(
-                <li className={"list-group-item"} key={this.props.id}>
-                    <a href={""} onClick={this.handleOnClick} > {this.props.date} </a>
-                    <span class="badge badge-light">Minutes: {this.props.minutes}</span>
-                    <span class="badge badge-light">Seconds: {this.props.seconds}</span>
-                    <span class="badge badge-primary">Questions: {this.props.counter}</span>
+                <li className={"list-group-item"} key={id}>
+                    <a href={""} onClick={this.handleOnClick()} > {date} </a>
+                    <span class="badge badge-light">Minutes: {minutes}</span>
+                    <span class="badge badge-light">Seconds: {seconds}</span>
+                    <span class="badge badge-primary">Questions: {counter}</span>
                 </li>
             )
         }
     }
 }
 const mapStateToProps = state => {
+    
     return {activeThread: state.thread.activeThread}
 }
 

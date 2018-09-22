@@ -1,8 +1,10 @@
-import * as types from '../actions/types'
-import {authToken, isValidToken, getProfile} from '../utils'
+import * as types from '../_constants/auth.constants'
+import {getToken, isValidToken, getProfile} from '../utils'
 
-const initialState = authToken && isValidToken(authToken) ? 
-    {loggedIn: true, profile: getProfile(authToken)}: 
+const token = getToken()
+
+const initialState = token && isValidToken(token) ? 
+    {loggedIn: true, profile: getProfile(token)}: 
     {}
 
 const auth = (state = initialState, action) =>{
@@ -20,15 +22,15 @@ const auth = (state = initialState, action) =>{
             return {...state,
                 loggingIn: false,
                 loggedIn: true,
-                profile: action.payload
+                user: action.payload
             }
         }
         
         case types.LOGOUT:
+            return {}
+
         case types.FAILURE_LOGIN: {
-            return {...state,
-                loggingIn: false,
-                loggedIn: false,
+            return {
                 error: action.payload
             }
         }

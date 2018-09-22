@@ -1,6 +1,6 @@
-import * as types from '../actions/types'
+import * as types from '../_constants/thread.constants'
 
-const thread = (state = {threads: [], limit: 10, activePage: 1}, action) =>{
+const thread = (state = {threads: [], limit: 10, activePage: 0}, action) =>{
 
     switch(action.type){
 
@@ -9,13 +9,14 @@ const thread = (state = {threads: [], limit: 10, activePage: 1}, action) =>{
                 requestingList: true
             }
         }
+
         case types.SUCCESS_THREAD_LIST : {
             return {...state,
                 requestingThreadList: false,
                 threads: action.payload
-                
             }
         }
+
         case types.FAILURE_THREAD_LIST : {
             return {...state,
                 requestingThreadList: false,
@@ -23,15 +24,22 @@ const thread = (state = {threads: [], limit: 10, activePage: 1}, action) =>{
             }
         }
 
-        case types.REQUEST_THREAD: {
+        case types.SET_ACTIVE_THREAD: {
             return {...state,
                 activeThread: action.payload
             }
         }
 
+        case types.REQUEST_THREAD: {
+            return {...state,
+                requestingActiveThread: true
+            }
+        }
+
         case types.SUCCESS_FETCH_THREAD: {
             return {...state,
-                threads: action.payload    
+                requestingActiveThread: false,
+                messages: action.payload    
             }
         }
 

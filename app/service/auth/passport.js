@@ -3,7 +3,7 @@ const localStrategy = require('passport-local').Strategy
 const JWTStrategy  = require('passport-jwt').Strategy
 const ExtractJwt = require('passport-jwt').ExtractJwt
 const CustomerModel  = require('../../domain/customer/model')
-const {jwtConfig} = require('../config/index')
+const { jwtConfig } = require('../config/index')
 const bcrypt = require('bcrypt')
 
 const localOptions = {
@@ -21,7 +21,7 @@ passport.use('register', new localStrategy(localOptions, async (email, password,
             return done(null, customer)
         }
         next()
-    }catch (e) {
+    } catch (e) {
         done(e)
     }
 }));

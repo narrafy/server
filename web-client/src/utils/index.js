@@ -1,5 +1,3 @@
-import {decode} from 'jwt-decode'
-
 export const dashboardUrl = "/dashboard"
 export const loginUrl = "/login"
 
@@ -18,17 +16,30 @@ export function removeToken(tokenKey){
         // Clear user token and profile data from localStorage
         localStorage.removeItem(tokenKey);
     }
-    
-    
+
 export function setToken(idToken) {
         // Saves user token to localStorage
         localStorage.setItem(tokenKey, idToken)
 }
 
-export function getProfile(token) {
+export function getProfile(token){
+    if(token!==null && isValidToken(token)){
+        return decode(token)
+    } else {
+        return null
+    }
+}
+
+function decode(token){
+    var base64Url = token.split('.')[1]
+    var base64 = base64Url.replace('-', '+').replace('_', '/')
+    return JSON.parse(window.atob(base64))
+}
+
+export function getPayload(token) {
     try{
         // Using jwt-decode npm package to decode the token
-        return decode(token)
+        return token.payload
     } catch (e) {
         console.log(e.stack)
     } finally {
@@ -55,14 +66,8 @@ export const isValidToken = (token) => {
         }
     }
     
-export const tokenKey = "id_token"
-export const authToken = () =>{
-    try{
-        return JSON.parse(localStorage.getItem(tokenKey))
-    } catch(error){
-        console.log(error)
-    }
-    finally{
-        return null
-    }
-} 
+export const tokenKey = "user"
+
+export const getToken = () => {
+    return localStorage.getItem(tokenKey)
+}

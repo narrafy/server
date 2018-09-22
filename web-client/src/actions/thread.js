@@ -1,16 +1,18 @@
-import * as types from './types'
+import * as types from '../_constants/thread.constants'
 import ApiClient from '../services/api/ApiClient'
 import { conversation } from "../config"
 import {handleErrors} from '../utils'
 const apiClient = new ApiClient()
 
-export const requestThread = (active_thread) => ({ type: types.REQUEST_THREAD, payload: active_thread})
+export const setActiveThread = (active_thread) => ({ type: types.SET_ACTIVE_THREAD, payload: active_thread })
+
+export const requestThread = () => ({ type: types.REQUEST_THREAD})
 
 export const successFetchThread = (messages) => ({ type: types.SUCCESS_FETCH_THREAD, payload: messages })
 
 export const failureFetchThread = error => ({ type: types.FAILURE_FETCH_THREAD, payload: error })
 
-export const loadThread = (thread_id, token) =>{
+export const loadThread = (thread_id, token) => {
 
     let url = conversation.threadEndPoint + thread_id
 
@@ -47,10 +49,13 @@ export const loadThreadList = (page, limit, token) =>
         .then(handleErrors)
         .then(res => res.json())
         .then(json => {
-            let threads = json.data
-            dispatch(successFetchThreadList(threads))
-            let activeThread = threads[0].conversation_id
-            dispatch(loadThread(activeThread, token))
+            let threads = json
+            if(threads && threads.length>0){
+                dispatch(successFetchThreadList(threads))
+            
+                let activeThread = threads[0].conversation_id
+                dispatch(setActiveThread(activeThread))
+            }
         })
         .catch(error => dispatch(failureFetchThreadList(error)))
     }    

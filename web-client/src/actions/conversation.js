@@ -1,4 +1,4 @@
-import * as types from './types'
+import * as types from '../_constants/conversation.constants'
 import ApiClient from '../services/api/ApiClient'
 import { conversation } from "../config"
 import {handleErrors} from '../utils'
@@ -22,7 +22,7 @@ export function startConversation() {
                 const reply = parseServerResponse(json)
                 dispatch(serverEndTyping())
                 dispatch(saveMessage(reply))
-                return reply;
+                return reply
             })
             .catch(error => dispatch(handleErrors(error)))
     };

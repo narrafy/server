@@ -11,6 +11,8 @@ import Home from './scenes/home'
 import NavigationBar from './components/partials/NavigationBar'
 import Footer from './components/partials/Footer'
 import asyncScene from './components/partials/AsyncComponent'
+import { PrivateRoute } from './components/partials/PrivateRoute'
+import { history } from './utils/history'
 
 const AsyncAbout = asyncScene(() => import("./scenes/about"))
 const AsyncPrivacy = asyncScene(() => import("./scenes/privacy"))
@@ -20,9 +22,10 @@ const AsyncDashboard = asyncScene(() => import("./scenes/dashboard"))
 const AsyncAnalytics = asyncScene(() => import("./scenes/analytics"))
 const store = configureStore()
 
+
 ReactDOM.render(
     (<Provider store = {store}>
-            <Router>
+            <Router history={history} >
                 <div>
                     <NavigationBar/>
                     <App />
@@ -31,9 +34,9 @@ ReactDOM.render(
                     <Route path="/privacy-policy" component={AsyncPrivacy} />
                     <Route path="/register" component={AsyncRegister} />
                     <Route path="/login" component={AsyncLogin} />
-                    <Route path="/analytics" component={AsyncAnalytics} />
-                    <Route path="/stats" component={AsyncAnalytics} />
-                    <Route path="/dashboard" component={AsyncDashboard} />
+                    <Route path="/stats" component={AsyncAnalytics} />                    
+                    <PrivateRoute path="/analytics" component={AsyncAnalytics} />                    
+                    <PrivateRoute path="/dashboard" component={AsyncDashboard} />
                     <Footer/>
                 </div>
             </Router>

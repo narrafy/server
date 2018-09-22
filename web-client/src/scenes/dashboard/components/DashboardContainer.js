@@ -4,14 +4,15 @@ import {withRouter} from 'react-router'
 import ConversationContainer from './ConversationContainer'
 import ThreadList from './ThreadList'
 import { loadThreadList } from '../../../actions/thread'
-import {authToken} from '../../../utils'
+import {getToken} from '../../../utils'
 
 class DashboardContainer extends Component{
 
     componentDidMount()
     {
+        const token = getToken()
         const { dispatch, activePage, limit } = this.props
-        dispatch(loadThreadList(activePage, limit, authToken))
+        dispatch(loadThreadList(activePage, limit, token))
     }
 
     render(){

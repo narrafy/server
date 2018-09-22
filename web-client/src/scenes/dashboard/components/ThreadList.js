@@ -5,6 +5,9 @@ import Thread from './Thread'
 class ThreadList extends Component {
 
     render(){
+
+        const { threads } = this.props
+
         return(
             <div className="card">
                 <div className={"card-header"}>
@@ -12,7 +15,7 @@ class ThreadList extends Component {
                 </div>
                 <ul className={"list-group list-group-flush"}>
                     {
-                        this.props.threads.map((thread, index) => {
+                        threads && threads.map((thread, index) => {
                             return(<Thread 
                                 key = {index}  
                                 id={thread.conversation_id} 
@@ -31,7 +34,7 @@ class ThreadList extends Component {
 
 const mapStateToProps = state => {
 
-    const { threads} = state.thread
+    const { threads } = state.thread
 
     return { threads }
 }
