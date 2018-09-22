@@ -33,7 +33,6 @@ const conversation = (state = { messages: [] }, action) => {
 
         case types.SERVER_TYPING: {
             return {...state,
-                messages:[],
                 isServerTyping: true
             }
         }
