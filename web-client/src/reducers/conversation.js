@@ -31,6 +31,12 @@ const conversation = (state = { messages: [] }, action) => {
             }
         }
 
+        case types.CLEAR_CONVERSATION: {
+            return {...state,
+                messages: []
+            }
+        }
+
         case types.SERVER_TYPING: {
             return {...state,
                 isServerTyping: true

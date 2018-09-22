@@ -14,7 +14,8 @@ export function startConversation() {
     }
 
     return dispatch => {
-        dispatch(serverTyping(1000));
+        dispatch(clearConversation())
+        dispatch(serverTyping());
         return callApi(msg)
             .then(handleErrors)
             .then(res => res.json())
@@ -138,6 +139,8 @@ const userStopTyping = () => ({type: types.USER_END_TYPING})
 const saveMessage = (msg) => ({type: types.SAVE_MESSAGE, payload: msg })
 
 const serverTyping = () => ({ type: types.SERVER_TYPING })
+
+const clearConversation = () => ({ type: types.CLEAR_CONVERSATION})
 
 const serverEndTyping = () => ({ type: types.SERVER_END_TYPING })
 
