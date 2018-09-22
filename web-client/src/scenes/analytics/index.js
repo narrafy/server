@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {connect} from 'react-redux'
 import ReactGA from 'react-ga'
-import { ConversationPlot} from './components'
+import ConversationPlot from './components/ConversationPlot'
 import {fetchConversationAvg, fetchConversationDataSet } from '../../actions/conversation'
 import {getToken} from '../../utils'
 

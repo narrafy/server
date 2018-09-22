@@ -7,7 +7,7 @@ import { FormGroup, Label, Input, FormText, FormFeedback } from 'reactstrap'
 
 class LoginForm extends Component {
 
-    constructor(props) {
+    constructor() {
         super();
         this.state = {
             email: '',

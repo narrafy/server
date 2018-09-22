@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 class ConversationPlot extends React.Component {
 
     render() {
-        const { avg, x, y} = this.props
+        const { x, y} = this.props
         return (
 
             <Plot
