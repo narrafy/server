@@ -14,11 +14,10 @@ function Banner()
                                 <br/>
                             </h3>
                             <div className="download">
-                                <a href="https://arxiv.org/abs/1712.03080" target="_blank" rel="noopener noreferrer" className="btn btn-default">
+                                <a href="#video" rel="noopener noreferrer" className="btn btn-default">
                                     Learn more
                                 </a>
                             </div>
-
                         </div>
                     </div>
                 </div>

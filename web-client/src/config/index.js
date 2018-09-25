@@ -1,6 +1,8 @@
 export const facebookUrl = "https://www.facebook.com/narrafy"
 export const twitterUrl = "https://www.twitter.com/narrafy"
 export const mediumUrl = "https://www.medium.com/@narrafy"
+export const youtubeUrl = "https://www.youtube.com/embed/2D-6AHNu9wM"
+
 export const gaUa= "UA-106329468-1"
 
 export const apiConfig = {
